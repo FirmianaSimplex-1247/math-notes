@@ -102,6 +102,8 @@ jobs:
 
       - name: Compile ${{ matrix.subject }}
         uses: xu-cheng/latex-action@v3
+        env:
+            TEXINPUTS: "${{ github.workspace }}/template//:"
         with:
           root_file: ${{ matrix.root }}
           latexmk_use_xelatex: true

@@ -1,0 +1,90 @@
+% template/mybook_common.sty
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mybook_common}[2025/12/16 Common macros for my notes]
+
+% ---- 基础依赖（尽量只放“通用且稳定”的） ----
+\RequirePackage{geometry}
+\RequirePackage{xcolor}
+\RequirePackage{amsmath}
+\RequirePackage{array}
+\RequirePackage{longtable}
+\RequirePackage{float}
+\RequirePackage{framed}
+\RequirePackage{ocgx2}
+\RequirePackage[ruled,vlined]{algorithm2e}
+
+% 公式/图按 section 编号（通用需求）
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+
+% ---- 颜色 / 小工具 ----
+\definecolor{customcolor}{RGB}{245, 250, 246}
+\colorlet{coverlinecolor}{customcolor}
+
+\newcommand{\ccr}[1]{\makecell{{\color{#1}\rule{1cm}{1cm}}}}
+
+% ---- 习题与解答环境（通用） ----
+\definecolor{shadecolor}{RGB}{241, 241, 255}
+\newcounter{exnum}
+\newcounter{solnum}
+
+\newenvironment{ex}{%
+  \begin{shaded}\stepcounter{exnum}\par\noindent\textbf{题目\arabic{exnum}.}%
+}{%
+  \end{shaded}\par%
+}
+
+\newenvironment{solve}{%
+  \par\noindent\textbf{解答：}\stepcounter{solnum}\it
+  \switchocg{\arabic{solnum}}{\textbf{\rm Show answer}}
+  \begin{ocg}{Ex}{\arabic{solnum}}{1}\par%
+}{%
+  \end{ocg}\par%
+}
+
+% ---- 常用的数学宏 ----
+\def\p{\partial}
+\def\d{{\rm d}}
+\def\Q{\mathbb{Q}}
+\def\R{\mathbb{R}}
+\def\C{\mathbb{C}}
+\def\K{\mathbb{K}}
+\def\F{\mathbb{F}}
+\def\E{\mathbb{E}}
+\def\N{\mathbb{N}}
+\def\Z{\mathbb{Z}}
+\def\D{\mathbb{D}}
+\def\e{{\rm e}}
+\def\i{{\rm i}}
+\def\L{\mathcal{L}}
+
+\def\defeq{\mathop{=}\limits^{\rm def}}
+\def\eq#1{\mathop{=}\limits^{#1}}
+\def\Ra#1{\mathop{\Rightarrow}\limits^{#1}}
+\def\ve#1{\textit{\textbf{#1}}}
+\def\sve#1{\boldsymbol{#1}}
+
+\newcommand*{\ag}[1]{\langle #1 \rangle}
+\newcommand*{\agl}[2]{\langle #1,#2 \rangle}
+\newcommand*{\fun}[2]{\mathop{\rm #1}\limits_{#2}}
+\newcommand*{\ms}[1]{\left\lVert #1 \right\rVert}
+
+\def\wto{\mathop{\rightarrow}\limits^{w}}
+\def\w*to{\mathop{\rightarrow}\limits^{w^*}}
+
+% ---- CI-safe 字体兜底（通用） ----
+% 注意：这些需要 XeLaTeX
+\RequirePackage{fontspec}
+\RequirePackage{xeCJK}
+
+% 把覆盖动作推迟到 preamble 结束后，避免被 cls 再次改回去
+\AtBeginDocument{%
+  \IfFontExistsTF{TeX Gyre Pagella}{\setmainfont{TeX Gyre Pagella}}{\setmainfont{TeX Gyre Termes}}%
+  \IfFontExistsTF{TeX Gyre Heros}{\setsansfont{TeX Gyre Heros}}{}%
+  \IfFontExistsTF{CMU Typewriter Text}{\setmonofont{CMU Typewriter Text}}{}%
+  \IfFontExistsTF{FandolSong}{%
+    \setCJKmainfont{FandolSong}%
+    \setCJKsansfont{FandolHei}%
+    \setCJKmonofont{FandolFang}%
+  }{}%
+}

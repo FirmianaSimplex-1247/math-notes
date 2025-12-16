@@ -1,109 +1,31 @@
 \documentclass[lang=cn,10pt]{../../template/mybook_ver230809}
-\usepackage{geometry}
-%\geometry{landscape}%,margin=2in,legalpaper,
-%标题、题记、作者、组织、日期、版本、邮箱
-\title{Functional Analysis}                                  
+
+% 引入统一宏包（相对路径）
+\usepackage{../../template/mybook_common}
+
+% 标题
+\title{Functional Analysis}
+% 副标题
 \subtitle{课程笔记}
+% 作者
 \author{Fir1247}
+% 组织
 \institute{USTC}
+% 日期
 \date{\today}
-%\version{1.1}
+% 联系方式
 \bioinfo{联系方式}{fa1247@mail.ustc.edn.cn或者QQ：3105292483}
-%封面下方的那行话
+% 封面底部
 \extrainfo{泛函分析}
-%目录显示级数
-\setcounter{tocdepth}{2}
-%封面右下角小方块头像
+% logo
 \logo{logo.jpg}
-%封面
+% 封面
 \cover{cover.jpg}
-%本文档命令
-\usepackage{array}
-\usepackage{amsmath}
-\usepackage[ruled,vlined]{algorithm2e}
-\numberwithin{equation}{section}%公式按节编号
-\numberwithin{figure}{section}%图表按节编号
+% 目录层级
+\setcounter{tocdepth}{2}
 
-\newcommand{\ccr}[1]{\makecell{{\color{#1}\rule{1cm}{1cm}}}}
-% 修改标题页的橙色带
-\definecolor{customcolor}{RGB}{245, 250, 246}
-\colorlet{coverlinecolor}{customcolor}
-\usepackage{zhlipsum}
-\usepackage{longtable}
-%习题集模板
-\usepackage{ocgx2}
-\usepackage{color}
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{241, 241, 255}
-\newcounter{exnum}
-\newcounter{solnum}
-\newenvironment{ex}{\begin{shaded}\stepcounter{exnum}\par\noindent\textbf{题目\arabic{exnum}.}}{\end{shaded}\par}
-%注意，ocgx2宏包的切换解答显示对pdf阅读器有很高要求，如果你正在使用的阅读器无法正常使用，推荐Adobe Acrobat DC，或者使用下面这行代码。
-%\newenvironment{solve}{\par\noindent\textbf{解答：}\it}{\par}
-\newenvironment{solve}{\par\noindent\textbf{解答：}\stepcounter{solnum}\it\switchocg{\arabic{solnum}}{\textbf{\rm Show answer}}\begin{ocg}{Ex}{\arabic{solnum}}{1}\par}{\end{ocg}\par}
-%\newenvironment{note}{\par\noindent\textbf{注. }}{\par}
-%表格相关
-\usepackage{float}
-%自己加的宏定义
-\def\p{\partial}
-\def\d{{\rm d}}
-\def\Q{\mathbb{Q}}
-\def\R{\mathbb{R}}
-\def\C{\mathbb{C}}
-\def\K{\mathbb{K}}
-\def\F{\mathbb{F}}
-\def\E{\mathbb{E}}
-\def\N{\mathbb{N}}
-\def\Z{\mathbb{Z}}
-\def\D{\mathbb{D}}
-\def\e{ {\rm e} }
-\def\i{ {\rm i} }
-\def\L{\mathcal{L}}
-
-
-\def\defeq{ \mathop{=}\limits^{\rm def} }
-\def\eq#1{ \mathop{=}\limits^{#1} }
-\def\Ra#1{ \mathop{\Rightarrow}\limits^{#1} }
-\def\ve#1{ \textit{\textbf{#1}} }
-\def\sve#1{ \boldsymbol{#1} }
-\newcommand*{\ag}[1]{
-        \langle #1 \rangle
-}
-\newcommand*{\agl}[2]{
-        \langle #1,#2 \rangle
-}
-\newcommand*{\fun}[2]{
-	\mathop{\rm #1}\limits_{#2}
-}
-\newcommand*{\ms}[1]{
-	\left|\left|#1\right|\right|
-}
-\def\wto{ \mathop{\rightarrow}\limits^{w} }
-\def\w*to{ \mathop{\rightarrow}\limits^{w^*} }
-
-\usepackage{xcolor}
-
-% 覆盖动作推迟到 preamble 结束后，避免被 cls 再次改回去
-\AfterEndPreamble{%
-  \IfFontExistsTF{TeX Gyre Pagella}{
-    \setmainfont{TeX Gyre Pagella}%
-  }{
-    \setmainfont{TeX Gyre Termes}%
-  }%
-  \IfFontExistsTF{TeX Gyre Heros}{\setsansfont{TeX Gyre Heros}}{}%
-  \IfFontExistsTF{CMU Typewriter Text}{\setmonofont{CMU Typewriter Text}}{}%
-}
-% ===============================================================
-
-% 中文字体兜底
-\usepackage{xeCJK}
-\IfFontExistsTF{FandolSong}{
-  \setCJKmainfont{FandolSong}
-  \setCJKsansfont{FandolHei}
-  \setCJKmonofont{FandolFang}
-}{}
-
-%开始！
 \begin{document}
+
 \input{content.tex}
+
 \end{document}

@@ -12,9 +12,9 @@
     部分作业是课上某个定理、推论、命题或其中一个步骤的证明，
     就直接抄录在笔记里了。本章内容$=$课后作业$\cap $课本习题。
 \section{第一章}
-    \begin{ex}{\rm (1.1.1)}
+    \begin{exer}{\rm (1.1.1)}
         完备度量空间的闭子空间也是完备的；任一度量空间的完备子空间一定是闭子空间。
-    \end{ex}
+    \end{exer}
 \begin{solve}
         \begin{enumerate}[$(1)$]
             \item 设$E$是完备度量空间$X$的闭子集，由于$X$是完备的，所以$E$上任意柯西列都在$X$上收敛，且由$E$是闭集
@@ -25,14 +25,14 @@
         \end{enumerate}
 \end{solve}
 
-    \begin{ex}{\rm (1.2.1)}
+    \begin{exer}{\rm (1.2.1)}
         $S$为复数列全体构成的集合，定义距离为
         \begin{equation*}
             \rho(x,y)=\sum_{k=1}^n \frac{1}{2^k}\cdot \frac{|\xi_k-\eta_k|}{1+|\xi_k-\eta_k|}
         \end{equation*}
         其中$x=(\xi_1,\cdots,\xi_k,\cdots)$，$y=(\eta_1,\cdots,\eta_k,\cdots)$.
         求证：$(S,\rho)$为完备度量空间。
-    \end{ex}
+    \end{exer}
 \begin{solve}
     先验证$\rho$是距离函数：
     \begin{enumerate}[$1^\circ$]
@@ -90,9 +90,9 @@
     再取充分大的$n_0$使得$2^{-n_0}<\frac{\varepsilon}{2}$，得到$\rho(x^{(n)},x^*)<\varepsilon$，由$\varepsilon$的任意性可知$\rho(x^{(n)},x^*)\rightarrow 0$，完备性得证。
 \end{solve}
 
-    \begin{ex}{\rm (1.2.2)}
+    \begin{exer}{\rm (1.2.2)}
         度量空间上的基本列是收敛列当且仅当它存在一列收敛子列。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         必要性显然，只说明充分性：设$\{x_n\}$是基本列，且存在收敛子列$\{x_{n_k}\}$，并设$x_{n_k}\rightarrow x$.任意$\varepsilon>0$，存在
         $N$使得$n,m>N$时
@@ -107,14 +107,14 @@
         $\{x_n\}$为收敛列。
     \end{solve}
 
-    \begin{ex}{\rm (1.2.3)}
+    \begin{exer}{\rm (1.2.3)}
         $F$是只有有限项不为0的实数列全体构成的集合，定义距离为
         \begin{equation*}
             \rho(x,y)=\fun{sup}{k\geqslant 1}|\xi_k-\eta_k|
         \end{equation*}
         其中$x=(\xi_1,\cdots,\xi_k,\cdots)$，$y=(\eta_1,\cdots,\eta_k,\cdots)$.
         求证：$(F,\rho)$不是完备度量空间，并指出其完备化。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         令$x^{(n)}=(1,\frac{1}{2},\cdots,\frac{1}{n},0,0,\cdots)\in F$，
     $m>n$时，
@@ -173,13 +173,13 @@
     \end{equation*}
     \end{solve}
 
-    \begin{ex}{\rm (1.2.4)}
+    \begin{exer}{\rm (1.2.4)}
         $[0,1]$上的多项式全体记作$P[0,1]$，定义距离
         \begin{equation*}
             \rho(p,q)=\int_0^1 p(x)q(x)\d x
         \end{equation*}
         求证：$(P[0,1],\rho)$不是完备度量空间，并指出其完备化。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         设
     \begin{equation*}
@@ -202,9 +202,9 @@
     $L^1[0,1]$是$P[0,1]$的完备化。
     \end{solve}
 
-    \begin{ex}{\rm (1.3.1)}
+    \begin{exer}{\rm (1.3.1)}
         在完备度量空间中，子集$A$列紧的充要条件是：$\forall \varepsilon>0$，存在$A$的列紧的$\varepsilon$网。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         必要性：列紧$\Rightarrow $完全有界，所以$\forall \varepsilon>0$，存在$A$的有限$\varepsilon$网，有限集是列紧的（因为有限集的无穷点列中一定能取出全由某个特定元素组成的点列，进而收敛），所以也是列紧$\varepsilon$网。
 
@@ -220,9 +220,9 @@
     所以$N_0$是$A$的有穷$\varepsilon$网，所以$A$完全有界，完备度量空间所以$A$列紧。
     \end{solve}
 
-    \begin{ex}{\rm (1.3.2)}
+    \begin{exer}{\rm (1.3.2)}
         度量空间中，紧集上的连续函数一定有界，且能够达到上、下确界。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         假设$f(x)$无上界，则存在$\{x_n\}\subset M$使得$f(x_n)>n$，由于$M$是紧集，所以自列紧，
         所以存在子列$x_{n_k}\rightarrow x_0\in M$，$f$连续所以
@@ -247,13 +247,13 @@
         因此$f(x_0)=\beta$，能达到上确界。下确界同理。
     \end{solve}
 
-    \begin{ex}{\rm (1.3.4)}
+    \begin{exer}{\rm (1.3.4)}
         $(X,\rho)$是度量空间，$F_1,F_2$是$X$的两个紧子集，求证：
         $\exists x_i\in F_i$，使得$\rho(F_1,F_2)=\rho(x_1,x_2)$，其中
         \begin{equation*}
             \rho(F_1,F_2):={\rm inf}\{ \rho(x,y)|x\in F_1,y\in F_2 \}
         \end{equation*}
-    \end{ex}
+    \end{exer}
     \begin{solve}
         设$\rho(F_1,F_2)=d$，由inf的定义，
         \begin{equation*}
@@ -268,9 +268,9 @@
         令$j\rightarrow 0$，得$d=\rho(x',y')$.  
     \end{solve}
 
-    \begin{ex}{\rm (1.3.6)}
+    \begin{exer}{\rm (1.3.6)}
         $E=\{ \sin{nt} \}_{n=1}^\infty$，证明$E\subset C[0,\pi]$不是列紧的。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         只需证明$\{ \sin{nt} \}_{n=1}^\infty$不是等度连续的。对$\varepsilon_0=1$，
         $\forall \delta>0$，取$k\in\N$使得$\frac{1}{k}<\delta$，设$n_k=2k$，$t_k=\frac{\pi}{4k}\in[0,\pi]$，于是
@@ -283,9 +283,9 @@
         所以$\{ \sin{nt} \}_{n=1}^\infty$不是等度连续的。
     \end{solve}
     
-    \begin{ex}{\rm (1.3.7)}
+    \begin{exer}{\rm (1.3.7)}
         $S$空间的子集$A$列紧的充要条件是$\forall n\in\N,\exists C_n>0{\rm\ s.t.\ }\forall x=\{\xi_n\}_{n=1}^\infty\in A,|\xi_n|\leqslant C_n $.
-    \end{ex}
+    \end{exer}
     \begin{solve}
         必要性：$A$在$S$中列紧，
         任取无穷点列$\{\xi^{(m)}\}_{m=1}^\infty\subset A$
@@ -318,13 +318,13 @@
         所以$H$可看做是$n$维空间中的有界集，从而是列紧的.
     \end{solve}
     
-    \begin{ex}{\rm (1.3.9)}
+    \begin{exer}{\rm (1.3.9)}
         $(M,\rho)$是紧度量空间，$E\subset C(M)$，$E$中的函数一致有界并且满足：
         \begin{equation*}
             |x(t_1)-x(t_2)|\leqslant C\rho(t_1,t_2)^\alpha\ (\forall x\in E,\forall t_1,t_2\in M)
         \end{equation*}
         其中$0<\alpha\leqslant 1,C>0$，求证$E\subset C(M)$是列紧集。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         $\forall \varepsilon>0$，取$\delta=\left( \frac{\varepsilon}{C} \right)^{\frac{1}{\alpha}}$，
         当$\rho(t_1,t_2)<\delta$时，
@@ -332,13 +332,13 @@
         所以$E$是等度连续的，再由{\rm Argela‑Ascoli}定理可得列紧。
     \end{solve}
     
-    \begin{ex}{\rm (1.4.2)}
+    \begin{exer}{\rm (1.4.2)}
         $\forall x\in C(0,1]$，令$||x||=\fun{sup}{0<t\leqslant 1}|x(t)|$，求证：
         \begin{enumerate}
             \item $||\cdot||$是$C(0,1]$上的范数；
             \item $l^\infty$与$C(0,1]$的一个子空间是等距同构的。
         \end{enumerate}
-    \end{ex}
+    \end{exer}
     \begin{solve}
         $||\cdots ||$是$C(0,1]$上的范数：
         \begin{enumerate}[$(1)$]
@@ -366,13 +366,13 @@
         \end{equation*}
     \end{solve}
     
-    \begin{ex}{\rm (1.4.3)}
+    \begin{exer}{\rm (1.4.3)}
         $\forall f\in C^1[a,b]$，令
         \begin{equation*}
             ||f||_1=\left( \int_a^b ( |f|^2+|f'|^2 )\d x \right)^\frac{1}{2}
         \end{equation*}
         证明$||\cdot||_1$是$C^1[a,b]$上的范数，在该范数下是否完备？
-    \end{ex}
+    \end{exer}
     \begin{solve}
         $||\cdot||_1$是$C^1[a,b]$上的范数：
         \begin{enumerate}[$(1)$]
@@ -403,7 +403,7 @@
         \end{enumerate}
     \end{solve}
     
-    \begin{ex}{\rm (1.4.4)}
+    \begin{exer}{\rm (1.4.4)}
         $\forall f\in C[0,1]$，令：
         \begin{equation*}
             ||f||_1=\left( \int_0^1 |f(x)|^2\d x \right)^\frac{1}{2}
@@ -412,12 +412,12 @@
             ||f||_2=\left( \int_0^1 (1+x)|f(x)|^2\d x \right)^\frac{1}{2}
         \end{equation*}
         证明两个范数等价。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         $1\leqslant 1+x\leqslant 2\Rightarrow ||f||_1\leqslant ||f||_2\leqslant \sqrt{2}||f||_1$，故为等价范数。
     \end{solve}
     
-    \begin{ex}{\rm (1.4.5)}
+    \begin{exer}{\rm (1.4.5)}
         $BC[0,\infty)$代表$[0,\infty)$上连续有界函数全体，$\forall x\in BC[0,\infty),a>0$，
         定义
         \begin{equation*}
@@ -428,7 +428,7 @@
             \item $||\cdot ||_a$是$BC[0,\infty)$上的范数；
             \item 若$a,b>0,a\neq b$，求证两个范数不等价。
         \end{enumerate}
-    \end{ex}
+    \end{exer}
     \begin{solve}
         $||\cdot ||_a$是$BC[0,+\infty)$上的范数：
         \begin{enumerate}[$(1)$]
@@ -465,13 +465,13 @@
         所以两个范数不等价。
     \end{solve}
     
-    \begin{ex}{\rm (1.4.6)}
+    \begin{exer}{\rm (1.4.6)}
         两个Banach空间$(X_1,X_2)$的乘积空间上赋予范数
         \begin{equation*}
             ||(x_1,x_2)||={\rm max}( ||x_1||_1,||x_2||_2 )
         \end{equation*}
         证明乘积空间仍然是Banach空间。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         任取$\mathfrak{X}$中的柯西列$\{x^{(n)}\}_{n=1}^\infty$，
         则$\{x_i^{(n)}\}_{n=1}^\infty$是$\mathfrak{X}_i$中的柯西列$(i=1,2)$，
@@ -482,12 +482,12 @@
         即$x^{(n)}\mathop{\rightarrow}\limits^{||\cdot||}(x_1,x_2)$.
     \end{solve}
 
-    \begin{ex}{\rm (1.4.7)}
+    \begin{exer}{\rm (1.4.7)}
         $X$是$B^*$空间，求证：$X$是Banach空间的充要条件为：
         \begin{equation*}
             \forall \{x_n\}_{n=1}^\infty \subset X,\sum_{n=1}^\infty ||x_n||<\infty\Rightarrow \sum_{n=1}^\infty x_n\mbox{收敛}
         \end{equation*}
-    \end{ex}
+    \end{exer}
     \begin{solve}
         必要性：设$a_n=\sum_{k=1}^n x_k$，如果$\sum_{n=1}^\infty||x_n||<\infty$，
         则$\forall \varepsilon>0$，存在$N$，使得
@@ -517,7 +517,7 @@
         此即为$\{x_n\}$的收敛子列。
     \end{solve}
     
-    \begin{ex}{\rm (1.4.14)}
+    \begin{exer}{\rm (1.4.14)}
         $C_0$为以0为极限的实数全体，赋予范数：
         \begin{equation*}
             ||x||=\fun{max}{n\geqslant 1}|\xi_n|,\ \forall x=\{\xi_n\}_{n=1}^\infty\in C_0 
@@ -535,7 +535,7 @@
                 \end{equation*}
                 但是$\forall y\in M$有$||x_0-y||>1$.
         \end{enumerate}
-    \end{ex}
+    \end{exer}
     \begin{solve}
         \begin{enumerate}[$(1)$]
             \item 先证明$M$是线性子空间，只需说明$M$中的元素关于$\R$上的加法和数乘封闭：
@@ -587,10 +587,10 @@
         \end{enumerate}
     \end{solve}
     
-    \begin{ex}{\rm (1.4.15)}
+    \begin{exer}{\rm (1.4.15)}
         设$X$是$B^*$空间，$M$是$X$的有限维真子空间，求证：
         $\exists y\in X,||y||=1$，使得$\forall x\in M,||y-x||\geqslant 1$.
-    \end{ex}
+    \end{exer}
     \begin{solve}
         $M$是有限维子空间，所以闭，进而$\forall y_0\in X\backslash M$，
         $d\defeq \fun{inf}{x\in M}\ms{y_0-x}>0$，于是
@@ -609,13 +609,13 @@
         \end{equation*}
     \end{solve}
     
-    \begin{ex}{\rm (1.6.2)}
+    \begin{exer}{\rm (1.6.2)}
         求证$C[a,b]$中的范数：
         \begin{equation*}
             ||f||=\fun{max}{a\leqslant x\leqslant b}|f(x)|
         \end{equation*}
         不可能由内积诱导。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         只需给出不满足平行四边形法则的例子，如下：取
         $[a,b]=[0,1]$，$f(x)=\frac{1}{2}$，$g(x)=x$，则
@@ -627,22 +627,22 @@
         \end{equation*}
     \end{solve}
     
-    \begin{ex}{\rm (1.6.4)}
+    \begin{exer}{\rm (1.6.4)}
         $M,N$是内积空间中的两个子集，求证：
         \begin{equation*}
             M\subset N\Rightarrow N^\perp \subset M^\perp
         \end{equation*}
-    \end{ex}
+    \end{exer}
     \begin{solve}
         $\forall x\in N^\perp,m\in M\subset N\Rightarrow\agl{x,m}=0\Rightarrow x\in M^\perp$，故$N^\perp\subset M^\perp$.
     \end{solve}
     
-    \begin{ex}{\rm (1.6.5)}
+    \begin{exer}{\rm (1.6.5)}
         $M$是Hilbert空间的子集，求证：
         \begin{equation*}
             (M^\perp)^\perp=\overline{ {\rm span}(M) }
         \end{equation*}
-    \end{ex}
+    \end{exer}
     \begin{solve}
         $x\in M^\perp\Leftrightarrow x\perp {\rm span}(M)\Leftrightarrow x\perp \overline{ {\rm span}(M) }\Leftrightarrow x\in ( {\rm span}(M) )^\perp$，
         所以$M^\perp=( {\rm span}(M) )^\perp$，即证
@@ -659,9 +659,9 @@
         于是$z\in M^\perp\cap (M^\perp)^\perp\Rightarrow z=0\Rightarrow x\in M$，矛盾。
     \end{solve}
     
-    \begin{ex}{\rm (1.6.6)}
+    \begin{exer}{\rm (1.6.6)}
         $L^2[-1,1]$中，偶函数集的正交补是什么？
-    \end{ex}
+    \end{exer}
     \begin{solve}
         偶函数集记作$X$，奇函数集记作$Y$.
     
@@ -682,13 +682,13 @@
         所以$h\in Y\Rightarrow X^\perp\subset Y$，于是$Y=X^\perp$得证。
     \end{solve}
     
-    \begin{ex}{\rm (1.6.9)}
+    \begin{exer}{\rm (1.6.9)}
         Hilbert空间$X$中的两个正交规范集$\{e_n\}_{n=1}^\infty,\{f_n\}_{n=1}^\infty$满足：
         \begin{equation*}
             \sum_{n=1}^\infty ||e_n-f_n||^2<1
         \end{equation*}
         求证：两者其中一个完备蕴含另一个完备。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         假设$\{e_n\}$完备，$\{f_n\}$不完备，则存在$u\in X,u\neq 0$，使得
         $\agl{u}{f_n}=0,\forall n$，则
@@ -700,11 +700,11 @@
         矛盾。
     \end{solve}
     
-    \begin{ex}{\rm (1.6.10)}
+    \begin{exer}{\rm (1.6.10)}
         $X_0$为Hilbert空间$X$的闭线性子空间，
         $\{e_n\},\{f_n\}$分别是$X_0,X_0^\perp$的正交规范基，求证：
         $\{e_n\}\cup \{f_n\}$是$X$的正交规范基。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         $X$是{\rm Hilbert}空间，$X_0$是其闭线性子空间，
         所以$X=X_0\oplus X_0^\perp$，即$\forall x\in X$，存在唯一的
@@ -721,7 +721,7 @@
         所以$\{\alpha_n\}$是{\rm O.N.B}.
     \end{solve}
     
-    \begin{ex}{\rm (1.6.11)}
+    \begin{exer}{\rm (1.6.11)}
         这道题要用到课本例1.6.28相关内容。
         \begin{enumerate}[(1).]
             \item 如果$u(z)$的泰勒展开式为
@@ -747,7 +747,7 @@
                 \end{equation*}
             \item 验证$H^2(D)$是Hilbert空间。
         \end{enumerate}
-    \end{ex}
+    \end{exer}
     \begin{solve}
         \begin{enumerate}[(1).]
             \item 由例{\rm 1.6.28}，$\varphi_n(z)=\sqrt{\frac{n}{\pi}}z^{n-1}$是一组{\rm O.N.B.}那么
@@ -797,13 +797,13 @@
         \end{enumerate}
     \end{solve}
     
-    \begin{ex}{\rm (1.6.12)}
+    \begin{exer}{\rm (1.6.12)}
         $X$是内积空间，$\{e_n\}$是$X$中的正交规范集，求证：
         \begin{equation*}
             \left| \sum_{n=1}^\infty (x,e_n)\overline{(y,e_n)} \right|
             \leqslant ||x||\cdot ||y||,\ \forall x,y\in X
         \end{equation*}
-    \end{ex}
+    \end{exer}
     \begin{solve}
         \begin{align*}
             LHS&=\sum_{n=1}^\infty (x,e_n)\overline{(y,e_n)}\\
@@ -815,7 +815,7 @@
         \end{align*}
     \end{solve}
     
-    \begin{ex}{\rm (1.6.13)}
+    \begin{exer}{\rm (1.6.13)}
         $X$是内积空间，令
         \begin{equation*}
             C=\{ x\in X:||x-x_0||\leqslant r \}
@@ -831,7 +831,7 @@
             \end{equation*}
             是$x$在$C$中的最佳逼近元。
         \end{enumerate}
-    \end{ex}
+    \end{exer}
     \begin{solve}
         \begin{enumerate}[$(1)$]
             \item $C$闭显然，只需证明为凸集：$\forall x_1,x_2\in C,\forall \theta\in(0,1)$，
@@ -856,9 +856,9 @@
 
 \section{第二章}
 \subsection{线性算子}
-\begin{ex}{\rm (2.1.1)}
+\begin{exer}{\rm (2.1.1)}
     证明：线性映射$T:X\rightarrow Y$有界当且仅当$T$将有界集映为有界集。
-\end{ex}
+\end{exer}
 \begin{solve}
     必要性：任取有界集$A\subset X$，存在$B(0,r)\supset A$，则
     \begin{equation*}
@@ -875,13 +875,13 @@
     因此$T$有界。
 \end{solve}
 
-\begin{ex}{\rm (2.1.2)}
+\begin{exer}{\rm (2.1.2)}
     设线性映射$A:X\rightarrow Y$有界，证明：
     \begin{enumerate}[(1).]
         \item $\ms{A}=\fun{sup}{\ms{x}\leqslant 1}\ms{Ax}$
         \item $\ms{A}=\fun{sup}{\ms{x}<1}\ms{Ax}$
     \end{enumerate}
-\end{ex}
+\end{exer}
 \begin{solve}
     \begin{enumerate}[$(1)$]
         \item 一方面
@@ -913,13 +913,13 @@
     \end{enumerate}
 \end{solve}
 
-\begin{ex}{\rm (2.1.5)}
+\begin{exer}{\rm (2.1.5)}
     $f$是$X$上的非零有界线性泛函，令：
     \begin{equation*}
         d={\rm inf}\{ \ms{x}:f(x)=1,x\in X \}
     \end{equation*}
     证明$\ms{f}=\frac{1}{d}$.
-\end{ex}
+\end{exer}
 \begin{solve}
     \begin{equation*}
         d={\rm inf}\{ ||x||:f(x)=1,x\in X \}
@@ -946,7 +946,7 @@
     令$\varepsilon\rightarrow0^+$得证。
 \end{solve}
 
-\begin{ex}{\rm (2.1.7)}
+\begin{exer}{\rm (2.1.7)}
     线性映射$T:X\rightarrow Y$，令：
     \begin{equation*}
         N(T)\defeq \{ x\in X:Tx=0 \}
@@ -958,7 +958,7 @@
             f\in X^*\Leftrightarrow N(f)\mbox{是闭线性子空间}
         \end{equation*}
     \end{enumerate}
-\end{ex}
+\end{exer}
 \begin{solve}
     \begin{enumerate}[$(1)$]
         \item $\{x_n\}\subset N(T)$，$x_n\rightarrow x$，$Tx_n=0$，$T$有界所以连续，令$n\rightarrow\infty$得到$Tx=0\Rightarrow x\in N(T)$，所以$N(T)$闭。
@@ -1011,7 +1011,7 @@
     \end{enumerate}
 \end{solve}
 
-\begin{ex}{\rm (2.1.8)}
+\begin{exer}{\rm (2.1.8)}
     $f$是$X$上的线性泛函，记
     \begin{equation*}
         H_f^\lambda \defeq \{ x\in X:f(x)=\lambda \}
@@ -1022,7 +1022,7 @@
         \item $\forall \lambda\in\K$，$H_f^\lambda$上的任一点$x$到$H_f^0$的距离都等于$|\lambda|$.
     \end{enumerate}
     并对$X=\R^2,\K=\R$的情形解释上述命题的几何意义。
-\end{ex}
+\end{exer}
 \begin{solve}
     \begin{enumerate}[$(1)$]
         \item 记$d={\rm inf}\{ ||x-z||:\forall z\in H_f^0 \}$，
@@ -1055,7 +1055,7 @@
 \end{solve}
 
 \subsection{Riesz表示定理}
-\begin{ex}{\rm (2.2.1)}%done
+\begin{exer}{\rm (2.2.1)}%done
     $H$是Hilbert空间，设$f_1,\cdots,f_n$是$H$上的一组有界线性泛函，对于$k=1,2,\cdots,n$，定义
     \begin{equation*}
         M\defeq \bigcap_{k=1}^n N(f_k),\ N(f_k)\defeq \{ x\in H:f_k(x)=0 \}
@@ -1065,7 +1065,7 @@
     \begin{equation*}
         y_0=x_0-\sum_{k=1}^n \alpha_k y_k
     \end{equation*}
-\end{ex}
+\end{exer}
 \begin{solve}
     由{\rm Riesz}表示定理，
     \begin{equation*}
@@ -1086,7 +1086,7 @@
     \end{equation*}
 \end{solve}
 
-\begin{ex}{\rm (2.2.3)}%done
+\begin{exer}{\rm (2.2.3)}%done
     $H$是Hilbert空间，$H$的元素是定义在集合$S$上的复值函数。$\forall x\in S$
     ，由
     \begin{equation*}
@@ -1097,7 +1097,7 @@
         \item 对任意固定的$y\in S$，作为$x$的函数有$K(x,y)\in H$.
         \item $f(y)=(f,K(\cdot,y))$，$\forall f\in H$，$\forall y\in S$.
     \end{enumerate}
-\end{ex}
+\end{exer}
 \begin{solve}
     由{\rm Riesz}表示定理，
     \begin{equation*}
@@ -1115,14 +1115,14 @@
     所以$K(x,y)$满足题意。
 \end{solve}
 
-\begin{ex}{\rm (2.2.5)}
+\begin{exer}{\rm (2.2.5)}
     $H$是Hilbert空间，$L,M$是$H$上的闭线性子空间，求证：
     \begin{enumerate}[(1).]
         \item $L\perp M\Leftrightarrow P_LP_M=0$.
         \item $L=M^\perp\Leftrightarrow P_L+P_M=I$.
         \item $P_LP_M=P_{L\cap M}\Leftrightarrow P_LP_M=P_MP_L$.
     \end{enumerate}
-\end{ex}
+\end{exer}
 \begin{solve}
     \begin{enumerate}[$(1)$]
         \item 必要性：
@@ -1168,13 +1168,13 @@
     本小节没有布置课本上的习题。
 
 \subsection{共鸣定理}
-\begin{ex}{\rm (2.3.7)}%done
+\begin{exer}{\rm (2.3.7)}%done
     设$X,Y$是Banach空间，$\{A_n\}\subset \mathcal{L}(X,Y)$，
     若对于$\forall x\in X$，$\{A_n x\}$在$Y$中收敛，求证：存在$A\in\mathcal{L}(X,Y)$使得
     \begin{equation*}
         A_n x\rightarrow Ax,\ ||A||\leqslant \fun{liminf}{n\rightarrow\infty}||A_n||
     \end{equation*}
-\end{ex}
+\end{exer}
 \begin{solve}
     对于$\forall x\in X$，因为$\{A_n x\}$收敛，可定义
     $A:x\mapsto\fun{lim}{n\rightarrow\infty}A_n x$，不难验证$A$是线性算子。
@@ -1194,7 +1194,7 @@
     这就证明了$A$有界且$||A||\leqslant\fun{liminf}{n\rightarrow\infty}||A_n||$.
 \end{solve}
 
-\begin{ex}{\rm (2.3.8)}%done
+\begin{exer}{\rm (2.3.8)}%done
     设$1<p<\infty$，$p^{-1}+q^{-1}=1$，如果序列$\{\alpha_k\}$
     使得对于$\forall x\in \{\xi_k\}\in \ell^p$保证
     $\sum_{k=1}^\infty \alpha_k\xi_k$收敛，求证：$\{\alpha_k\}\in \ell^q$.
@@ -1208,7 +1208,7 @@
         ||f||=\left(  \sum_{k=1}^\infty |\alpha_k|^q  \right)
         ^\frac{1}{q}
     \end{equation*}
-\end{ex}
+\end{exer}
 \begin{solve}
     考虑
     \begin{equation*}
@@ -1264,7 +1264,7 @@
     同时这也说明$||\{\alpha_k\}||_q<\infty\Rightarrow \{\alpha_k\}\in\ell^q$.
 \end{solve}
 
-\begin{ex}{\rm (2.3.9)}%done
+\begin{exer}{\rm (2.3.9)}%done
     如果序列$\{\alpha_k\}$使得对于$\forall x=\{\xi_k\}\in\ell^1$，
     保证$\sum_{k=1}^\infty \alpha_k\xi_k$收敛，求证：$\{\alpha_k\}\in\ell^\infty$.
 
@@ -1276,7 +1276,7 @@
     \begin{equation*}
         ||f||=\fun{sup}{k\geqslant 1}|\alpha_k|
     \end{equation*}
-\end{ex}
+\end{exer}
 \begin{solve}
     思路和上一题基本相同。设
     \begin{equation*}
@@ -1311,13 +1311,13 @@
 \end{solve}
 
 \subsection{开映射定理}
-\begin{ex}{\rm (2.3.1)}%done
+\begin{exer}{\rm (2.3.1)}%done
     $X$是Banach空间，$X_0$是其闭子空间，定义映射：
     \begin{equation*}
         \varphi:X\rightarrow X\backslash X_0,x\mapsto [x]
     \end{equation*}
     $[x]$表示含$x$的商类。求证$\varphi$是开映射。
-\end{ex}
+\end{exer}
 \begin{solve}
     \begin{equation*}
         ||[x]||=\fun{inf}{y\in [x]}||y||\leqslant ||x||
@@ -1327,14 +1327,14 @@
     由{\rm OMT}可知$\varphi$是开映射。
 \end{solve}
 
-\begin{ex}{\rm (2.3.2)}%done
+\begin{exer}{\rm (2.3.2)}%done
     设$X,Y$是Banach空间，方程$Ux=y$对于$\forall y\in Y$有解，
     其中$U\in\mathcal{L}(X,Y)$，并且存在$m>0$使得
     \begin{equation*}
         ||Ux||\geqslant m||x||,\ \forall x\in X
     \end{equation*}
     求证：$U$有连续逆$U^{-1}$，并且$||U^{-1}||\leqslant \frac{1}{m}$.
-\end{ex}
+\end{exer}
 \begin{solve}
     方程$Ux=y$对于$\forall y\in Y$有解，说明$U$是满射；
     设$Ux_1=Ux_2=y$，则
@@ -1348,13 +1348,13 @@
     \end{equation*}
 \end{solve}
 
-\begin{ex}{\rm (2.3.3)}%done
+\begin{exer}{\rm (2.3.3)}%done
     设$H$是Hilbert空间，$A\in\mathcal{L}(H)$，并且$\exists m>0$使得
     \begin{equation*}
         |\ag{Ax,x}|\geqslant m||x||^2,\ \forall x\in H
     \end{equation*}
     求证：存在$A^{-1}\in\mathcal{H}$.
-\end{ex}
+\end{exer}
 \begin{solve}
     由题意可知
     \begin{align*}
@@ -1385,13 +1385,13 @@
     所以$2^\circ\Rightarrow H={\rm Ran}(A)$.这个证明满射的思路在Lax-Milgram定理的证明中也用到了。
 \end{solve}
 
-\begin{ex}{\rm (2.3.5)}%done
+\begin{exer}{\rm (2.3.5)}%done
     用等价范数定理证明：$(C[0,1],||\cdot||_1)$
     不是Banach空间，其中
     \begin{equation*}
         ||f||_1=\int_0^1 |f(t)|\d t,\forall f\in C[0,1]
     \end{equation*}
-\end{ex}
+\end{exer}
 \begin{solve}
     （反证）假设$(C[0,1],||\cdot||_1)$是{\rm Banach}空间，则
     \begin{equation*}
@@ -1412,11 +1412,11 @@
     当$n$充分大时与$(*)$式矛盾。
 \end{solve}
 
-\begin{ex}{\rm (2.3.11)}
+\begin{exer}{\rm (2.3.11)}
     设$X,Y$是Banach空间，$A\in\mathcal{L}(X,Y)$是满射，求证：
     如果在$Y$中$y_n\rightarrow y_0$，则存在$C>0$和$x_n\rightarrow x_0$使得$Ax_n=y_n$，
     且$||x_n||\leqslant C||y_n||$.
-\end{ex}
+\end{exer}
 \begin{solve}
     记$N=\{x\in X:Ax=0\}$，则$N$是$X$的闭线性子空间，且商空间$X/N$是{\rm Banach}空间。定义映射：
     \begin{equation*}
@@ -1447,7 +1447,7 @@
 \end{solve}
 
 \subsection{闭图像定理}
-\begin{ex}{\rm (2.3.4)}
+\begin{exer}{\rm (2.3.4)}
     设$X,Y$是赋范线性空间，$D$是$X$
     的线性子空间，并且$A:D\rightarrow Y$是线性映射，求证：
     \begin{enumerate}[(1).]
@@ -1456,7 +1456,7 @@
         \item $A$单且闭$\Rightarrow A^{-1}$闭；
         \item $X$完备，$A$单且闭，${\rm Ran}(A)$在$Y$中稠密，并且$A^{-1}$连续，那么${\rm Ran}(A)=Y$.
     \end{enumerate}
-\end{ex}
+\end{exer}
 \begin{solve}
     \begin{enumerate}[(1).]
         \item 设$\{x_n\}\subset D$收敛到$x$，$Ax_n\rightarrow y$，则
@@ -1478,7 +1478,7 @@
     \end{enumerate}
 \end{solve}
 
-\begin{ex}{\rm (2.3.12)}
+\begin{exer}{\rm (2.3.12)}
     设$X,Y$是Banach空间，$T$是闭线性算子，$D(T)\subset X$，
     $R(T)\subset Y$，$N(T)\defeq \{x\in X|Tx=0\}$.求证：
     \begin{enumerate}[(1).]
@@ -1498,7 +1498,7 @@
                 d(x,N(T))\leqslant \alpha||Tx||,\ \forall x\in D(T)
             \end{equation*}
     \end{enumerate}
-\end{ex}
+\end{exer}
 \begin{solve}
     \begin{enumerate}[(1).]
         \item 显然$N(T)$是线性子空间；设$N(T)\ni x_n\rightarrow x_0$，$\{Tx_n=0\}$是收敛列，
@@ -1549,7 +1549,7 @@
 %------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 \subsection{Hahn-Banach定理}
-\begin{ex}{\rm (2.4.3)}%done
+\begin{exer}{\rm (2.4.3)}%done
     设$X$是复线性空间，$p$是$X$上的半范数，
     任取$x_0\in X$满足$p(x_0)\neq 0$，求证：
     存在$X$上的线性泛函$f$满足：
@@ -1557,7 +1557,7 @@
         \item $f(x_0)=1$.
         \item $|f(x)|\leqslant p(x)/p(x_0),\forall x\in X$.
     \end{enumerate}
-\end{ex}
+\end{exer}
 \begin{solve}
     $\tilde{p}(x)\defeq p(x)/p(x_0)$仍然是一个半范数，
     取$X_0={\rm span}\{x_0\}=\{ \alpha x_0:\alpha\in\C \}$，定义
@@ -1577,13 +1577,13 @@
     进而$f(x_0)=f_0(x_0)=1$.
 \end{solve}
 
-\begin{ex}{\rm (2.4.5)}%done
+\begin{exer}{\rm (2.4.5)}%done
     $X$是赋范线性空间，$X_0$是其闭子空间，求证：
     \begin{equation*}
         \rho(x,X_0)={\rm sup}\{ |f(x)|:f\in X^*,||f||=1,f(X_0)=0 \}
     \end{equation*}
     其中$\rho(x,X_0)\defeq \fun{inf}{y\in X_0}||x-y||$.
-\end{ex}
+\end{exer}
 \begin{solve}
     当$x\in X_0$时等式两边均为零，成立，下设$x\notin X_0$，
     记$F=\{ f\in X^*:
@@ -1616,13 +1616,13 @@
     题目得证。
 \end{solve}
 
-\begin{ex}{\rm (2.4.7)}%done
+\begin{exer}{\rm (2.4.7)}%done
     $X$是赋范线性空间，给定$X$中$n$个线性无关的元素
     $x_1,\cdots,x_n$，求证：存在$f_1,\cdots,f_n\in X^*$使得
     \begin{equation*}
         \ag{f_i,x_j}=\delta_{ij},\ \forall i,j\in\{1,2,\cdots,n\}
     \end{equation*}
-\end{ex}
+\end{exer}
 \begin{solve}
     考虑$X_0={\rm span}\{x_j\}_{j=1}^n$及其上的$n$个线性泛函：
     \begin{equation*}
@@ -1638,14 +1638,14 @@
     \end{equation*}
 \end{solve}
 
-\begin{ex}{\rm (1.5.1)}%done
+\begin{exer}{\rm (1.5.1)}%done
     $X$是赋范线性空间，$E$是以$0$为内点的真凸子集，
     $P$是$E$产生的{\rm Minkowski}泛函，求证：
     \begin{enumerate}[(1).]
         \item $x\in \mathring{E}\Leftrightarrow P(x)<1$.
         \item $\overline{\mathring{E}}=\overline{E}$.
     \end{enumerate}
-\end{ex}
+\end{exer}
 \begin{solve}
 \begin{enumerate}[(1).]
         \item 一方面，
@@ -1675,13 +1675,13 @@
 \end{enumerate}
 \end{solve}
 
-\begin{ex}{\rm (2.4.9)}%done
+\begin{exer}{\rm (2.4.9)}%done
     $X$是复线性空间，$E$是$X$上的非空均衡集，
     $f$是$X$上的线性泛函，求证：
     \begin{equation*}
         |f(x)|\leqslant \fun{sup}{y\in E}{\rm Re}f(y),\ \forall x\in E
     \end{equation*}
-\end{ex}
+\end{exer}
 \begin{solve}
     $\forall x\in E$，
     \begin{equation*}
@@ -1690,7 +1690,7 @@
     \end{equation*}
 \end{solve}
 
-\begin{ex}{\rm (2.4.11)}%done
+\begin{exer}{\rm (2.4.11)}%done
     $E,F$是实赋范线性空间$X$中的两个互不相交的非空凸集，
     且$E$是开的和均衡的，
     求证：$\exists f\in X^*$使得：
@@ -1699,7 +1699,7 @@
     \end{equation*}
     笔者注：“均衡的”应该改成“对称的”，
         因为前面说了$X$是实的。
-\end{ex}
+\end{exer}
 \begin{solve}
     由凸集分离定理（定理2.7.7），存在非零$f\in X^*$，使得
     \begin{equation*}
@@ -1726,7 +1726,7 @@
     于是$f$恒为零，这与$f$非零矛盾。
 \end{solve}
 
-\begin{ex}{\rm (2.4.13)}%done
+\begin{exer}{\rm (2.4.13)}%done
     $X$是赋范线性空间，设$M$是
     $X$上的闭凸集，求证：$\forall x\in X\backslash M$，
     一定存在$f_1\in X^*{\rm\ with\ }||f_1||=1$，且
@@ -1734,7 +1734,7 @@
         \fun{sup}{y\in M}f_1(y)\leqslant f_1(x)-d(x)
     \end{equation*}
     其中$d(x)=\fun{inf}{z\in M}||x-z||$.
-\end{ex}
+\end{exer}
 \begin{solve}
     注意到开凸集$B(x,d(x))\cap M=\varnothing$，
     由凸集分离定理可得存在非零$f\in X^*$使得
@@ -1751,12 +1751,12 @@
 \end{solve}
 
 \subsection{对偶空间、自反空间、弱收敛}
-\begin{ex}{\rm (2.5.1)}%done
+\begin{exer}{\rm (2.5.1)}%done
     证明：
     \begin{equation*}
         (\ell^p)^*=\ell^q,\ 1\leqslant p<\infty,\frac{1}{p}+\frac{1}{q}=1
     \end{equation*}
-\end{ex}
+\end{exer}
 \begin{solve}
     对于$\forall x=\{ \xi_k \}_{k=1}^\infty\in \ell^p,y=\{ \eta_k \}_{k=1}^\infty\in \ell^q$，
     由Holder不等式：
@@ -1815,13 +1815,13 @@
     所以题目得证。
 \end{solve}
 
-\begin{ex}{\rm (2.5.2)}%done
+\begin{exer}{\rm (2.5.2)}%done
     设$C$是收敛数列全体，赋以范数：
     \begin{equation*}
         ||\cdot||:\{\xi_k\}\in C\mapsto \fun{sup}{k\geqslant 1}|\xi_k|
     \end{equation*}
     求证$C^*=\ell^1$.
-\end{ex}
+\end{exer}
 \begin{solve}
     记
     \begin{equation*}
@@ -1886,9 +1886,9 @@
     得证。
 \end{solve}
 
-\begin{ex}{\rm (2.5.4)}%done
+\begin{exer}{\rm (2.5.4)}%done
     证明：有限维赋范空间一定自反。
-\end{ex}
+\end{exer}
 \begin{solve}
     设 $\{x_k\}_{k=1}^n$是$X$的一组基，则由习题2.4.7可知
     \begin{equation*}
@@ -1912,9 +1912,9 @@
     这意味着从$x$到$x^{**}$的自然映射是满的，所以$X$是自反的.
 \end{solve}
 
-\begin{ex}{\rm (2.5.5)}%done
+\begin{exer}{\rm (2.5.5)}%done
     证明：Banach空间自反当且仅当它的共轭空间（对偶空间）是自反的。
-\end{ex}
+\end{exer}
 \begin{solve}
     设$X$是Banach空间，从$X$到$X^{**}$的自然映射是$T$.
 
@@ -1937,23 +1937,23 @@
     从而$X$自反。
 \end{solve}
 
-\begin{ex}{\rm (2.5.6)}%done
+\begin{exer}{\rm (2.5.6)}%done
     设$X$是赋范线性空间，$T$是从$X$到$X^{**}$的自然映射，求证：
     $R(T)$闭的充要条件是$X$完备。
-\end{ex}
+\end{exer}
 \begin{solve}
     $X^{**}$是完备的，
     $R(T)\cong X$作为$X^{**}$的子空间，
     闭$\Leftrightarrow $完备。
 \end{solve}
 
-\begin{ex}{\rm (2.5.8)}%done
+\begin{exer}{\rm (2.5.8)}%done
     在$\ell^2$中定义算子：
     \begin{equation*}
         T:(x_1,x_2,\cdots,x_n,\cdot)\mapsto (x_1,\frac{x_2}{2},\cdots,\frac{x_n}{n},\cdots)
     \end{equation*}
     证明$T\in\mathcal{L}(\ell^2)$，并求$T^*$.
-\end{ex}
+\end{exer}
 \begin{solve}
     对$x=(x_1,x_2,\cdots,x_n,\cdots)\in \ell^2$,有
     \begin{equation*}
@@ -1978,7 +1978,7 @@
     也就是$T^*=T$.
 \end{solve}
 
-\begin{ex}{\rm (2.5.9)}%done
+\begin{exer}{\rm (2.5.9)}%done
     $H$是Hilbert空间，$A\in\mathcal{L}(H)$满足
     \begin{equation*}
         \ag{Ax,y}=\ag{x,Ay},\ \forall x,y\in H
@@ -1989,7 +1989,7 @@
         \item $R(A)$在$H$中稠密$\Rightarrow $方程$Ax=y$对于$\forall y\in R(A)$
             存在唯一解。
     \end{enumerate}
-\end{ex}
+\end{exer}
 \begin{solve}
     \begin{enumerate}[(1).]
         \item 对于$f\in H^*$，由Riesz表示定理，存在$y_f$使得$f=\ag{\cdot,y_f}$，
@@ -2023,13 +2023,13 @@
     \end{enumerate}
 \end{solve}
 
-\begin{ex}{\rm (2.5.13)}%done
+\begin{exer}{\rm (2.5.13)}%done
     设$\{x_n\}\subset C[a,b],x\in C[a,b]$，且
     $x_n\wto x$，求证：
     \begin{equation*}
         \fun{lim}{n\rightarrow\infty} x_n(t)=x(t),\ \forall t\in [a,b]
     \end{equation*}
-\end{ex}
+\end{exer}
 \begin{solve}
     对于$t\in C[a,b]$，取赋值映射$f_t:x\mapsto x(t)$，
     \begin{equation*}
@@ -2047,12 +2047,12 @@
     \end{equation*}
 \end{solve}
 
-\begin{ex}{\rm (2.5.14)}%done
+\begin{exer}{\rm (2.5.14)}%done
     已知在赋范线性空间中$x_n\wto x_0$，求证：
     \begin{equation*}
         \fun{liminf}{n\rightarrow\infty}||x_n||\geqslant ||x_0||
     \end{equation*}
-\end{ex}
+\end{exer}
 \begin{solve}
     左式非负，所以$x_0=0$时成立。下设$x_0\neq 0$，
     则存在$f\in X^*{\rm\ s.t.\ }||f||=1{\rm\ s.t.\ }f(x_0)=||x_0||$，从而
@@ -2064,14 +2064,14 @@
     \end{equation*}
 \end{solve}
 
-\begin{ex}{\rm (2.5.15)}%done
+\begin{exer}{\rm (2.5.15)}%done
     $H$是Hilbert空间，$\{e_n\}$是$H$的正交规范基，
     求证：在$H$中$x_n\wto x_0$的充要条件为
     \begin{enumerate}[$1^\circ$]
         \item $||x_n||$有界。
         \item $\ag{x_n,e_k}\rightarrow \ag{x_0,e_k},\forall k$.
     \end{enumerate}
-\end{ex}
+\end{exer}
 \begin{solve}
     充分性：设$f\in H^*$，由Riesz表示定理，
     存在
@@ -2107,13 +2107,13 @@
     由{\rm UBP}可得$x_n^{**}$一致有界，进而$1^\circ$得证。
 \end{solve}
 
-\begin{ex}{\rm (2.5.17)}%done
+\begin{exer}{\rm (2.5.17)}%done
     $H$是Hilbert空间，在$H$中$x_n\wto x_0$，且
     $y_n\rightarrow y_0$，求证：
     \begin{equation*}
         \ag{x_n,y_n}\rightarrow \ag{x_0,y_0}
     \end{equation*}
-\end{ex}
+\end{exer}
 \begin{solve}
     \begin{align*}
         |\ag{x_n,y_n}-\ag{x_0,y_0}|
@@ -2125,10 +2125,10 @@
     $\ag{\cdot,y_n}\in H^*$，所以$x_n\wto x_0\Rightarrow $第一项$\rightarrow 0$.
 \end{solve}
 
-\begin{ex}{\rm (2.5.18)}%done
+\begin{exer}{\rm (2.5.18)}%done
     $H$是Hilbert空间，$\{e_n\}$是$H$的正交规范基，求证：在
     $H$上$e_n\wto 0$，但$e_n\nrightarrow 0$.
-\end{ex}
+\end{exer}
 \begin{solve}
     也就是证明$\forall x\in H,\ag{x,e_n}\rightarrow 0$，实际上
     \begin{equation*}
@@ -2140,9 +2140,9 @@
     $||e_n||=1>0$，所以$e_n\nrightarrow 0$.
 \end{solve}
 
-\begin{ex}{\rm (2.5.20)}%done
+\begin{exer}{\rm (2.5.20)}%done
     求证：在自反的赋范线性空间中，集合的弱列紧性与有界性是等价的。
-\end{ex}
+\end{exer}
 \begin{solve}
     弱列紧$\Rightarrow $有界：
     假设$M\subset X$弱列紧且无界，
@@ -2163,10 +2163,10 @@
 
 
 \section{第三章}
-\begin{ex}{\rm (2.6.1)}
+\begin{exer}{\rm (2.6.1)}
     $X$是Banach空间，求证：$\mathcal{L}(X)$中可逆（存在有界逆）
     算子集是开的。
-\end{ex}
+\end{exer}
 \begin{solve}
     设$A\in\mathcal{L}(X)$可逆，
     对于$\forall B\in\mathcal{L}(X)$且$||A-B||\leqslant 1/||A^{-1}||$，
@@ -2175,7 +2175,7 @@
     这说明$A$是内点，从而$\mathcal{L}(X)$中可逆算子集是开集。
 \end{solve}
 
-\begin{ex}{\rm (2.6.4)}
+\begin{exer}{\rm (2.6.4)}
     在$\ell^2$空间上，考察左推移算子：
     \begin{equation*}
         A:(\xi_1,\xi_2,\cdots)\mapsto (\xi_2,\xi_3,\cdots)
@@ -2185,7 +2185,7 @@
     \begin{equation*}
         \sigma(A)=\sigma_p(A)\cup\sigma_c(A)
     \end{equation*}
-\end{ex}
+\end{exer}
 \begin{solve}
     记$\D=\{ \lambda:|\lambda|<1 \}$，
     \begin{align*}
@@ -2243,7 +2243,7 @@
     所以都相等。
 \end{solve}
 
-\begin{ex}{\rm (3.1.2)}
+\begin{exer}{\rm (3.1.2)}
     $X$是Banach空间，$A\in\mathcal{L}(X)$满足：
     \begin{equation*}
         ||Ax||\geqslant \alpha||x||,\ \forall x\in X
@@ -2251,7 +2251,7 @@
     其中$\alpha>0$为常数，求证：
     $A\in\mathcal{T}(X)$，即$A$是紧算子的充要条件是$X$
     是有穷维的。
-\end{ex}
+\end{exer}
 \begin{solve}
     充分性：$X$有限维，所以有界集都列紧，
     $A$将有界集映为有界集，进而是列紧集，所以$A$紧。
@@ -2263,13 +2263,13 @@
     这说明$X$上有界集都列紧，因此$X$有限维。
 \end{solve}
 
-\begin{ex}{\rm (3.1.4)}
+\begin{exer}{\rm (3.1.4)}
     $H$是Hilbert空间，$A:H\rightarrow H$是紧算子，又设
     $x_n\wto x_0,y_n\wto y_0$，求证：
     \begin{equation*}
         \ag{x_n,Ay_n}\rightarrow \ag{x_0,Ay_0}
     \end{equation*}
-\end{ex}
+\end{exer}
 \begin{solve}
     注意到
     \begin{equation*}
@@ -2284,13 +2284,13 @@
     所以$|\ag{x_n,Ay_n}-\ag{x_0,Ay_0}|\rightarrow 0$.
 \end{solve}
 
-\begin{ex}{\rm (3.1.6)}
+\begin{exer}{\rm (3.1.6)}
     设$\omega_n\in\K$，$\omega_n\rightarrow 0$，求证：
     \begin{equation*}
         T:\ell^p\rightarrow \ell^p,\{\xi_n\}\mapsto \{\omega_n\xi_n\}
     \end{equation*}
     是$\ell^p(p\geqslant 1)$上的紧算子。
-\end{ex}
+\end{exer}
 \begin{solve}
     $w_n$收敛则有界，从而$T$有界。定义：
     \begin{equation*}
@@ -2308,14 +2308,14 @@
     紧算子全体是闭集，$T$也是紧算子。
 \end{solve}
 
-\begin{ex}{\rm (3.1.8)}
+\begin{exer}{\rm (3.1.8)}
     $\Omega\subset\R^n$是一个可测集，$K\in L^2(\Omega\times\Omega)$，
     求证：
     \begin{equation*}
         A:L^2(\Omega)\rightarrow L^2(\Omega),u(x)\mapsto \int_{\Omega} K(x,y)u(y)\d y
     \end{equation*}
     是$L^2(\Omega)$上的紧算子。
-\end{ex}
+\end{exer}
 \begin{solve}
     由C-S不等式，$L^2(\Omega)$上范数记为$||\cdot||$，
     \begin{equation*}
@@ -2372,16 +2372,16 @@
     因此$A$是紧算子。
 \end{solve}
 
-\begin{ex}{\rm (3.2.5)}
+\begin{exer}{\rm (3.2.5)}
     $A$是$X$上的紧算子，$T=I-A$，求证：$\forall k\in\N$，
     $N(T^k)$是有穷维的，$R(T^k)$是闭的。
-\end{ex}
+\end{exer}
 \begin{solve}
     注意到$T^k=(T-A)^k=I-A_k$，其中$A_k$是$A$的$k$次多项式，
     因此$A_k$是紧算子，由定理3.2.2(Riesz‑Fredholm)前两条可知得证。
 \end{solve}
 
-\begin{ex}{\rm (3.2.6)}
+\begin{exer}{\rm (3.2.6)}
     $X$是Banach空间，
     $M$是其闭线性子空间，若有界线性算子$P:X\rightarrow M$满足
     $P^2=P$，则称为由$X$到$M$上的投影算子，求证：
@@ -2394,7 +2394,7 @@
                 N(T)\oplus X/N(T)=X=R(T)\oplus X/R(T)
             \end{equation*}
     \end{enumerate}
-\end{ex}
+\end{exer}
 \begin{solve}
     \begin{enumerate}[(1).]
         \item 取$\{e_k\}_{k=1}^n$为$M$的正交基，由习题2.4.7可知，存在$f_1,\cdots,f_n\in X^*$使得
@@ -2434,7 +2434,7 @@
     \end{enumerate}
 \end{solve}
 
-\begin{ex}{\rm (3.3.1)}
+\begin{exer}{\rm (3.3.1)}
     给定数列$\{a_n\}_{n=1}^\infty$，在空间$\ell^1$
     上定义算子$A$如下：
     \begin{equation*}
@@ -2446,7 +2446,7 @@
         \item $A^{-1}$有界的充要条件是$\fun{inf}{n\geqslant 1}|a_n|>0$.
         \item $A$是紧算子的充要条件是$\fun{lim}{n\rightarrow\infty}a_n=0$.
     \end{enumerate}
-\end{ex}
+\end{exer}
 \begin{solve}
     \begin{enumerate}[(1).]
         \item 充分性：$||Ax||\leqslant M||x||\Rightarrow A\in\mathcal{L}(\ell^1)$；
@@ -2496,7 +2496,7 @@
     \end{enumerate}
 \end{solve}
 
-\begin{ex}{\rm (3.3.2)}
+\begin{exer}{\rm (3.3.2)}
     在$C[0,1]$中，考虑映射
     \begin{equation*}
         T:C[0,1]\rightarrow C[0,1],x(t)\mapsto \int_0^t x(s)\d s
@@ -2505,7 +2505,7 @@
         \item 证明$T$是紧算子；
         \item 求$\sigma(T)$和$T$的一个非平凡闭不变子空间。
     \end{enumerate}
-\end{ex}
+\end{exer}
 \begin{solve}
     \begin{enumerate}[(1).]
         \item 对于任何有界集$B$，我们来证明$T(B)$一致有界且等度连续，从而列紧。
@@ -2577,14 +2577,14 @@
 %    \end{enumerate}
 
 \subsection{部分往年期末题}
-    \begin{ex}(19.6)
+    \begin{exer}(19.6)
         定义
         \begin{equation*}
             T:\ell^2\rightarrow \ell^2,
             (x_1,x_2,\cdots)\mapsto (x_2,\frac{x_3}{2},\cdots,\frac{x_{n+1}}{n},\cdots)
         \end{equation*}
         求$T$的谱和特征值：$\sigma(T),\sigma_p(T)$.
-    \end{ex}
+    \end{exer}
     \begin{solve}
         首先显然$||T||\leqslant 1$，取$||Te_2||=||e_2||=1$可知$||T||=1$，
         因此$\sigma(T)\leqslant \overline{B(0,1)}$，
@@ -2607,14 +2607,14 @@
         因为$Te_1=0$，所以$\sigma_p(T)=\{0\}$.
     \end{solve}
 
-    \begin{ex}(20.7)
+    \begin{exer}(20.7)
         定义：
         \begin{equation*}
             T:\ell^2\rightarrow \ell^2,
             (x_1,x_2,\cdots)\mapsto (0,\lambda_1x_1,\lambda_2x_2,\cdots)
         \end{equation*}
         其中$0\neq \lambda_n\in\C$且$\lambda_n\rightarrow 0$，求$\sigma_p,\sigma_c,\sigma_r$.
-    \end{ex}
+    \end{exer}
     \begin{solve}
         类似可证$T$是紧算子，以及$\lambda\neq 0$时$\lambda I-T$是单射：
         \begin{equation*}
@@ -2629,7 +2629,7 @@
         $\sigma_r(T)=\{0\}$.
     \end{solve}
 
-    \begin{ex}(22.6)
+    \begin{exer}(22.6)
         定义：
         \begin{equation*}
             T:L^2[0,1]\rightarrow L^2[0,1],
@@ -2645,7 +2645,7 @@
             \item 求$T$的各种谱。
             \item 判断$T$是否是对称算子。
         \end{enumerate}
-    \end{ex}
+    \end{exer}
     \begin{solve}
         \begin{enumerate}[(1).]
             \item 任取$L^2[0,1]$上的有界集$F$，不妨
@@ -2693,9 +2693,9 @@
         \end{enumerate}
     \end{solve}
 
-    \begin{ex}(19.7)
+    \begin{exer}(19.7)
         证明一个Hilbert空间是有限维的当且仅当它的任意一组规范正交基都是它的线性基。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         回顾一下概念：规范正交基是指：
         \begin{equation*}
@@ -2723,12 +2723,12 @@
         这就与$x_n\rightarrow a$矛盾。
     \end{solve}
 
-    \begin{ex}(18.6)
+    \begin{exer}(18.6)
         $X$是赋范空间，证明：$\forall x\in X$，
         \begin{equation*}
             ||x||=\fun{sup}{}\{ |f(x)|:f\in X^*,||f||=1 \}
         \end{equation*}
-    \end{ex}
+    \end{exer}
     \begin{solve}
         $x=0$时等式显然成立，下设$x\neq 0$.
         对于$\forall f\in X^*{\rm\ with\ }||f||=1$，
@@ -2745,13 +2745,13 @@
         故相等。
     \end{solve}
 
-    \begin{ex}(18.7)
+    \begin{exer}(18.7)
         $X$是Banach空间，$A,B$分别是$X$上的有界算子、紧算子，证明：
         \begin{equation*}
             \sigma(A)\backslash( \sigma_p(A)\cup \sigma_p(A+B) )
             =\sigma(A+B)\backslash(\sigma_p(A)\cup \sigma_p(A+B))
         \end{equation*}
-    \end{ex}
+    \end{exer}
     \begin{solve}
         对两边取补集，就是
         \begin{equation*}
@@ -2783,12 +2783,12 @@
         所以另一个方向也成立。（可以理解为两个有界算子$C,D$满足$C-D$紧。）
     \end{solve}
 
-    \begin{ex}(18.9)
+    \begin{exer}(18.9)
         $X$是Banach空间，$T$是$X$上的线性算子，证明：$T$有界当且仅当
         \begin{equation*}
             x_n\wto x\Rightarrow Tx_n\wto Tx
         \end{equation*}
-    \end{ex}
+    \end{exer}
     \begin{solve}
         充分性：只需证明$T$是闭算子，若$x_n\rightarrow x,Tx_n\rightarrow y$，则
         由于收敛$\Rightarrow $弱收敛，
@@ -2808,12 +2808,12 @@
         这个题好像不需要Banach的条件。
     \end{solve}
 
-    \begin{ex}
+    \begin{exer}
         (18.10)设$X$是Banach空间，$f$是$X$上的非零线性泛函，证明$N(f)$
         要么是$X$的闭子空间，要么是$X$的稠密真子空间。
 
         这道题其实就是习题2.1.7的思路继续延伸了一点。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         $f$有界$\Leftrightarrow N(f)$是$X$的闭子空间；
         若$f$无界，对于任意$n$，存在$x_n$使得
@@ -2839,17 +2839,17 @@
         \end{equation*}
     \end{solve}
 
-    \begin{ex}
+    \begin{exer}
         (19.4)证明弱*收敛序列一定有界。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         共鸣定理直接得证。
     \end{solve}
 
-    \begin{ex}(19.5)
+    \begin{exer}(19.5)
         $H$是Hilbert空间，$P$是$H$上的有界算子，且$P^2=P=P^*$，
         证明$P$的值域是闭集，且$P$是正交投影算子。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         任取${\rm Ran}(P)$中柯西列$P(x_i)$，不妨设$P(x_i)\rightarrow a$，
         则$P^2(x_i)\rightarrow P(a)=a\Rightarrow 
@@ -2877,10 +2877,10 @@
         $P(x)=P(y)=y$，因此$P$是$X$到${\rm Ran}(P)$的正交投影算子，
     \end{solve}
 
-    \begin{ex}(19.8)
+    \begin{exer}(19.8)
         $X,Y$是Banach空间，$X$有限维，$T$是从$X$到$Y$的线性算子，证明
         存在$x\in X,||x||=1$使得$||Tx||=||T||$.
-    \end{ex}
+    \end{exer}
     \begin{solve}
         $T$是有界算子（命题2.1.1），
         则$\forall n$，存在$x_n{\rm\ with\ }||x_n||=1$满足
@@ -2893,10 +2893,10 @@
         $||Tx||=||T||$.
     \end{solve}
 
-    \begin{ex}(19.9)
+    \begin{exer}(19.9)
         $X,Y$是赋范空间，且$X\neq 0$，证明$Y$是Banach空间当且仅当
         $L(X,Y)$是Banach空间。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         必要性在定理2.1.3，只说明充分性：
         设$\{y_n\}$是$Y$中柯西列，
@@ -2919,18 +2919,18 @@
         从而$y_n\rightarrow y$，这就证明了$Y$是{\rm Banach}空间。
     \end{solve}
 
-    \begin{ex}(20.3)
+    \begin{exer}(20.3)
         $X$是赋范空间，$V$是$X$的子空间，证明$V$在$X$中稠密等价于$V^\perp=0$，这里
         \begin{equation*}
             V^\perp=\{ f\in X^*:f(V)=0 \}
         \end{equation*}
-    \end{ex}
+    \end{exer}
     \begin{solve}
         必要性由$f\in X^*$的连续性可得；
         充分性由定理2.7.4可得。
     \end{solve}
 
-    \begin{ex}(20.5)
+    \begin{exer}(20.5)
         $X$是Banach空间，$V_n$是一列闭子空间，满足
         \begin{equation*}
             X=\bigcup_{n=1}^\infty V_n
@@ -2939,15 +2939,15 @@
         \begin{equation*}
             V_{n_0}=X
         \end{equation*}
-    \end{ex}
+    \end{exer}
     \begin{solve}
         由BCT1，$X$不是可数个无处稠密集之并，所以存在某个$V_{n_0}$
         不是无处稠密集，即有$\overline{V}=V$内点，但真闭子空间无内点，所以只能$V_{n_0}=X$.
     \end{solve}
 
-    \begin{ex}(20.6)
+    \begin{exer}(20.6)
         $X$是Hilbert空间，$||x_n||\rightarrow ||x||$且$x_n\wto x$，则$x_n\rightarrow x$.
-    \end{ex}
+    \end{exer}
     \begin{solve}
         考虑
         \begin{equation*}
@@ -2961,10 +2961,10 @@
         \end{equation*}
     \end{solve}
 
-    \begin{ex}(20.8)
+    \begin{exer}(20.8)
         $A_n$是Hilbert空间$X$上的一列有界线性算子，且对于$\forall x$都有
         $||A_n x||\rightarrow 0$，证明：对于任意紧算子$K$都有$||A_nK||\rightarrow 0$.
-    \end{ex}
+    \end{exer}
     \begin{solve}
         记单位球面为$S$，考虑
         \begin{equation*}
@@ -2992,12 +2992,12 @@
         另一种解法：
     \end{solve}
 
-    \begin{ex}(21.5)
+    \begin{exer}(21.5)
         $X$是可分赋范空间，证明：存在$\{f_n\}\in X^*$使得对于任意$x\in X$，都有
         \begin{equation*}
             ||x||=\fun{sup}{n}|f_n(x)|
         \end{equation*}
-    \end{ex}
+    \end{exer}
     \begin{solve}
         设$X$的稠密可数子集是${x_n}_{n=1}^\infty$，
         有HBT可得存在$f_n\in X^*{\rm\ with\ }||f_n||=1{\rm\ s.t.\ }f(x_n)=||x_n||$，一方面：
@@ -3014,11 +3014,11 @@
         \end{equation*}
     \end{solve}
 
-    \begin{ex}(21.7)
+    \begin{exer}(21.7)
         设$X,Y$是实Hilbert空间，$S_x$是$X$中单位球面，$T\in L(X,Y)$，
         且不存在$x\in S_x$使得$||Tx||=||T||$，求证：存在$\{x_n\}\subset S_x$，使得
         $x_n\wto 0$且$||Tx_n||\rightarrow ||T||$
-    \end{ex}
+    \end{exer}
     \begin{solve}
         由于
         \begin{equation*}
@@ -3058,15 +3058,15 @@
         矛盾，所以$x=0$.
     \end{solve}
 
-    \begin{ex}(22.3)
+    \begin{exer}(22.3)
         证明二则一律。
-    \end{ex}
+    \end{exer}
     \begin{solve}
         在定理3.2.2，但是为什么会考这个呢...
     \end{solve}
 \subsection{其它}
 
-\begin{ex}
+\begin{exer}
     $C[0,1]$上有两个范数$||\cdot||_1$和$||\cdot ||_2$，其中
     \begin{equation*}
         ||f||_1=\fun{sup}{x\in [0,1]}|f(x)|
@@ -3076,7 +3076,7 @@
         \fun{lim}{n\rightarrow\infty}x_n(t)\rightarrow x(t),\ \forall t\in [0,1]
     \end{equation*}
     而且$( C[0,1],||\cdot||_2 )$完备，证明两个范数等价。
-\end{ex}
+\end{exer}
 \begin{solve}
     取范数
     \begin{equation*}
@@ -3087,9 +3087,9 @@
     可知三个范数都等价。
 \end{solve}
 
-\begin{ex}
+\begin{exer}
     $0<p<1$时，$L^p(\R)$上不存在有界线性泛函。
-\end{ex}
+\end{exer}
 \begin{solve}
     设$f:L^p(\R)\rightarrow \R$有界，$||f||=M$，考虑拆分区间$[a,b]$：
     \begin{equation*}
@@ -3108,10 +3108,10 @@
     \end{equation*}
 \end{solve}
 
-\begin{ex}
+\begin{exer}
     $X$是Banach空间，$T:X\rightarrow X^*$满足${\rm Dom}(T)=X$，$T(x)(x)\geqslant 0,\forall x$，
     证明$T$有界。
-\end{ex}
+\end{exer}
 \begin{solve}
     定义域全空间，求证有界，证明$T$是闭算子即可。
     假设$x_n\rightarrow 0,Tx_n\rightarrow L$，那么对于$\forall \lambda>0$，
@@ -3133,9 +3133,9 @@
     从而$L=Tx$，因此$T$是闭算子，由闭图像定理知$T$有界（则连续）。
 \end{solve}
 
-\begin{ex}
+\begin{exer}
     $M$是$L^2[0,1]$的闭子空间，且$M\subset C[0,1]$，证明${\rm dim}M<+\infty$.
-\end{ex}
+\end{exer}
 \begin{solve}
     $(M,||\cdot||_\infty)$和$(M,||\cdot||_2)$都是完备的，
     考虑
@@ -3168,13 +3168,13 @@
     \end{equation*}
 \end{solve}
 
-\begin{ex}
+\begin{exer}
     设
     \begin{equation*}
         \frac{\d}{\d t}:C^1[a,b]\rightarrow C[a,b],f\mapsto \frac{\d f}{\d t}
     \end{equation*}
     证明它是闭算子而非有界算子，说明闭图像定理为何不适用。
-\end{ex}
+\end{exer}
 \begin{solve}
     取
     \begin{equation*}
@@ -3201,9 +3201,9 @@
     $f_n$一致收敛于$f(t)=|t|$，在$t=0$处不可导。具体过程就不详细写了，都是数分的东西。
 \end{solve}
 
-\begin{ex}
+\begin{exer}
     证明$\ell^\infty$不可分，$C_0$可分（考虑全体趋于$0$的有理数列即可）。
-\end{ex}
+\end{exer}
 \begin{solve}
     假设$\ell^\infty$存在可数稠密子集$D$，那么对于$\forall x\in \ell^\infty$，$\forall \varepsilon>0$，
     存在$y\in D$使得$||x-y||<\varepsilon$.现在考虑
@@ -3244,9 +3244,9 @@
     这说明$\{f_n\}$不弱*列紧。
 \end{solve}
 
-\begin{ex}
+\begin{exer}
     $(X,d)$是度量空间，若$A\subset X$不可数且$(A,d)$是离散空间，则$(X,d)$不可分。
-\end{ex}
+\end{exer}
 \begin{solve}
     这道题思路和上一题中证明存在$S\rightarrow D$的单射如出一辙，可以发现上一题构造的集合$S$就是一个离散空间。
 

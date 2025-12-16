@@ -23,8 +23,20 @@ jobs:
           args: -f -interaction=nonstopmode -file-line-error
           cache: true
 
-      - name: Create GitHub Release and upload PDFs
+      - name: Create GitHub Release and upload PDF
         uses: softprops/action-gh-release@v2
         with:
+          # 标题
+          name: Functional_Analysis_${{ github.ref_name }}
+
+          # release 页面正文说明
+          body: |
+            Functional Analysis notes PDF release.
+            Tag: ${{ github.ref_name }}
+
+          # 不要自动生成 release notes（避免混入 commit summary）
+          generate_release_notes: false
+
+          # 只上传 PDF 作为 asset
           files: |
             tex/Functional_Analysis/Functional_Analysis.pdf

@@ -102,6 +102,16 @@
 % 注意：这些需要 XeLaTeX
 \RequirePackage{fontspec}
 \RequirePackage{xeCJK}
+% --- CI font hotfix: avoid cm-unicode Type1 (cmuntt.pfb) ---
+\AfterEndPreamble{%
+  % 任选其一：TeX Gyre Cursor / Latin Modern Mono 都行
+  \IfFontExistsTF{TeX Gyre Cursor}{
+    \setmonofont{TeX Gyre Cursor}
+  }{
+    \setmonofont{Latin Modern Mono}
+  }%
+}
+% -----------------------------------------------------------
 
 % 把覆盖动作推迟到 preamble 结束后，避免被 cls 再次改回去
 \AtBeginDocument{%

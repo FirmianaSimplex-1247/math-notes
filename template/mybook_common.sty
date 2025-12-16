@@ -12,6 +12,10 @@
 \RequirePackage{framed}
 \RequirePackage{ocgx2}
 \RequirePackage[ruled,vlined]{algorithm2e}
+\RequirePackage{graphicx}
+
+% 所有笔记都在 tex/<Subject>/ 下编译，因此回到仓库根目录是 ../..
+\graphicspath{{../../figure/}}
 
 % 公式/图按 section 编号（通用需求）
 \numberwithin{equation}{section}

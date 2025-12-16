@@ -148,7 +148,7 @@ jobs:
           working_directory: ${{ matrix.working_directory }}
           root_file: ${{ matrix.root_file }}
           latexmk_use_xelatex: true
-          args: -pdf -interaction=nonstopmode -file-line-error -f
+          args: -pdfxe -interaction=nonstopmode -file-line-error -f
           cache: true
 
       - name: Upload PDF artifact (${{ matrix.subject }})

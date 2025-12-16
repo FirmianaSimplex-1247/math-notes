@@ -83,6 +83,26 @@
 
 \usepackage{xcolor}
 
+% 覆盖动作推迟到 preamble 结束后，避免被 cls 再次改回去
+\AfterEndPreamble{%
+  \IfFontExistsTF{TeX Gyre Pagella}{
+    \setmainfont{TeX Gyre Pagella}%
+  }{
+    \setmainfont{TeX Gyre Termes}%
+  }%
+  \IfFontExistsTF{TeX Gyre Heros}{\setsansfont{TeX Gyre Heros}}{}%
+  \IfFontExistsTF{CMU Typewriter Text}{\setmonofont{CMU Typewriter Text}}{}%
+}
+% ===============================================================
+
+% 中文字体兜底
+\usepackage{xeCJK}
+\IfFontExistsTF{FandolSong}{
+  \setCJKmainfont{FandolSong}
+  \setCJKsansfont{FandolHei}
+  \setCJKmonofont{FandolFang}
+}{}
+
 %开始！
 \begin{document}
 \input{content.tex}

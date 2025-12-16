@@ -13,12 +13,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+      
+      - name: Debug - list files
+        run: |
+          pwd
+          ls -la
+          ls -la tex
+          ls -la tex/Functional_Analysis
+      
       - name: Compile Functional Analysis (XeLaTeX)
         uses: xu-cheng/latex-action@v4
         with:
-          working_directory: tex/Functional_Analysis
-          root_file: "Functional_Analysis.tex"
+          root_file: tex/Functional_Analysis/Functional_Analysis.tex
           latexmk_use_xelatex: true
           args: -interaction=nonstopmode -file-line-error
 

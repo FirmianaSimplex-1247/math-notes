@@ -21,6 +21,16 @@ jobs:
           args: -f -interaction=nonstopmode -file-line-error
           cache: true
 
+      - name: Debug list outputs
+        if: always()
+        run: |
+          echo "=== PWD ==="
+          pwd
+          echo "=== tree (top 3 levels) ==="
+          find . -maxdepth 3 -type f | sed 's|^\./||'
+          echo "=== logs ==="
+          find . -type f -name "*.log" -o -name "*.fls" -o -name "*.fdb_latexmk" || true
+
       - name: Upload PDF artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -29,16 +39,18 @@ jobs:
           path: tex/Functional_Analysis/Functional_Analysis.pdf
           if-no-files-found: ignore
           
-      - name: Upload build logs
+      - name: Upload build logs (grab all)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: Functional-Analysis-Logs
           path: |
-            tex/Functional_Analysis/Functional_Analysis.log
-            tex/Functional_Analysis/Functional_Analysis.fls
-            tex/Functional_Analysis/Functional_Analysis.fdb_latexmk
-            tex/Functional_Analysis/Functional_Analysis.bcf
-            tex/Functional_Analysis/Functional_Analysis.out
-            tex/Functional_Analysis/Functional_Analysis.toc
-          if-no-files-found: ignore
+            **/*.log
+            **/*.fls
+            **/*.fdb_latexmk
+            **/*.bcf
+            **/*.blg
+            **/*.bbl
+            **/*.out
+            **/*.toc
+          if-no-files-found: warn

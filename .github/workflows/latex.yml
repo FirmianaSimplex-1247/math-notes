@@ -30,7 +30,10 @@ jobs:
           find . -maxdepth 3 -type f | sed 's|^\./||'
           echo "=== logs ==="
           find . -type f -name "*.log" -o -name "*.fls" -o -name "*.fdb_latexmk" || true
-
+      - name: Search Palatino in repo
+        run: |
+          grep -Rni "Palatino Linotype" .
+    
       - name: Upload PDF artifact
         if: always()
         uses: actions/upload-artifact@v4

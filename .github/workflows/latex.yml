@@ -1,0 +1,32 @@
+name: Build LaTeX (Functional Analysis)
+
+on:
+  push:
+    paths:
+      - 'tex/Functional_Analysis/**'
+      - '.github/workflows/latex.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up TeX Live
+        uses: teatimeguest/setup-texlive-action@v3
+        with:
+          packages: >
+            scheme-full
+
+      - name: Compile Functional Analysis
+        run: |
+          cd tex/Functional_Analysis
+          latexmk -xelatex -interaction=nonstopmode "Functional Analysis.tex"
+
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Functional-Analysis-PDF
+          path: tex/Functional_Analysis/Functional Analysis.pdf

@@ -7,128 +7,101 @@ on:
       - "template/**"
       - ".github/workflows/latex.yml"
   workflow_dispatch:
-    inputs:
-      subject:
-        description: "Optional: compile only one subject folder name (e.g., Functional_Analysis)"
-        required: false
-        default: ""
 
 jobs:
-  detect:
+  build:
     runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # 为了能做 git diff
 
-      - id: set-matrix
+      - name: Detect changed subjects
+        id: detect
         shell: bash
         run: |
-          set -euo pipefail
+          set -e
 
-          # 1) 手动触发：如果指定了 subject，就只编译这一门
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.subject }}" ]; then
-            subj="${{ inputs.subject }}"
-            root="tex/${subj}/${subj}.tex"
-            if [ ! -f "$root" ]; then
-              echo "::error::Cannot find root file: $root"
-              exit 1
-            fi
-            echo "matrix={\"include\":[{\"subject\":\"$subj\",\"root\":\"$root\"}]}" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
+          # 显式映射：学科 -> 主 tex 文件（不会串）
+          SUBJECTS=(
+            "Functional_Analysis:tex/Functional_Analysis/Functional_Analysis.tex"
+            "Stochastic_Process:tex/Stochastic_Process/Stochastic_Process.tex"
+          )
 
-          # 2) push：计算 diff 范围
           BEFORE="${{ github.event.before }}"
           AFTER="${{ github.sha }}"
 
-          # 首次 push / before 为空时兜底
-          if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
-            RANGE="$AFTER"
-          else
-            RANGE="$BEFORE..$AFTER"
+          # 新分支第一次 push 时 before 可能是全零
+          if [[ "$BEFORE" == "0000000000000000000000000000000000000000" ]]; then
+            BEFORE="$(git rev-list --max-parents=0 HEAD | tail -n 1)"
           fi
 
-          echo "Diff range: $RANGE"
-          CHANGED="$(git diff --name-only $RANGE || true)"
-          echo "$CHANGED"
+          echo "Diff range: $BEFORE..$AFTER"
+          CHANGED_FILES="$(git diff --name-only "$BEFORE" "$AFTER" || true)"
+          echo "$CHANGED_FILES"
 
-          # 3) 如果 template 变了：编译全部学科
-          if echo "$CHANGED" | grep -qE '^template/'; then
-            echo "Template changed -> compile ALL subjects"
-            SUBJECTS="$(ls -1 tex | tr '\n' ' ')"
-          else
-            # 否则只编译变更涉及到的 tex/<subject>/...
-            SUBJECTS="$(echo "$CHANGED" | awk -F/ '/^tex\//{print $2}' | sort -u | tr '\n' ' ')"
-          fi
+          TO_BUILD=()
+          for item in "${SUBJECTS[@]}"; do
+            name="${item%%:*}"
+            main="${item#*:}"
 
-          # 若没有任何学科变更，给空矩阵（build job 会跳过）
-          if [ -z "$SUBJECTS" ]; then
-            echo "No subject changes detected."
-            echo "matrix={\"include\":[]}" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # 4) 组装 matrix（每个 subject 对应一个 root）
-          JSON='{"include":['
-          first=1
-          for subj in $SUBJECTS; do
-            root="tex/${subj}/${subj}.tex"
-            if [ ! -f "$root" ]; then
-              echo "::warning::Skip ${subj}: cannot find ${root}"
-              continue
+            folder="tex/$name/"
+            if echo "$CHANGED_FILES" | grep -qE "^${folder}" \
+               || echo "$CHANGED_FILES" | grep -qE "^template/" ; then
+              TO_BUILD+=("$main")
             fi
-            if [ $first -eq 0 ]; then JSON+=","
-            else first=0
-            fi
-            JSON+="{\"subject\":\"${subj}\",\"root\":\"${root}\"}"
           done
-          JSON+="]}"
 
-          echo "matrix=$JSON" >> "$GITHUB_OUTPUT"
+          if [[ ${#TO_BUILD[@]} -eq 0 ]]; then
+            echo "build_any=false" >> $GITHUB_OUTPUT
+            echo "root_files=" >> $GITHUB_OUTPUT
+          else
+            echo "build_any=true" >> $GITHUB_OUTPUT
+            # 输出为多行，方便后面循环
+            {
+              echo "root_files<<EOF"
+              printf "%s\n" "${TO_BUILD[@]}"
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
+          fi
 
-  build:
-    needs: detect
-    if: ${{ fromJson(needs.detect.outputs.matrix).include[0] != null }}
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.detect.outputs.matrix) }}
+      - name: Install TeX Live + latexmk
+        if: steps.detect.outputs.build_any == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-full latexmk
 
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Compile ${{ matrix.subject }}
-        uses: xu-cheng/latex-action@v3
+      - name: Compile changed subjects
+        if: steps.detect.outputs.build_any == 'true'
+        shell: bash
         env:
-            TEXINPUTS: "${{ github.workspace }}/template//:"
-        with:
-          root_file: ${{ matrix.root }}
-          latexmk_use_xelatex: true
-          args: -f -interaction=nonstopmode -file-line-error
-          cache: true
+          # 把 template 加到 TeX 搜索路径里（关键！）
+          TEXINPUTS: "${{ github.workspace }}/template//:"
+        run: |
+          set -e
+          echo "${{ steps.detect.outputs.root_files }}" | while IFS= read -r main; do
+            [[ -z "$main" ]] && continue
+            echo "=== Building: $main ==="
+            latexmk -cd -xelatex -f -interaction=nonstopmode -file-line-error "$main"
+          done
 
-      - name: Upload PDF artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: PDF-${{ matrix.subject }}
-          path: ${{ format('tex/{0}/{0}.pdf', matrix.subject) }}
-          if-no-files-found: error
-
-      - name: Upload build logs
+      - name: Upload PDFs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Logs-${{ matrix.subject }}
+          name: PDFs
           path: |
-            tex/${{ matrix.subject }}/**/*.log
-            tex/${{ matrix.subject }}/**/*.fls
-            tex/${{ matrix.subject }}/**/*.fdb_latexmk
-            tex/${{ matrix.subject }}/**/*.bcf
-            tex/${{ matrix.subject }}/**/*.bbl
-            tex/${{ matrix.subject }}/**/*.blg
-            tex/${{ matrix.subject }}/**/*.out
-            tex/${{ matrix.subject }}/**/*.toc
+            tex/**/**/*.pdf
+          if-no-files-found: warn
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Logs
+          path: |
+            tex/**/**/*.log
+            tex/**/**/*.fls
+            tex/**/**/*.fdb_latexmk
           if-no-files-found: warn

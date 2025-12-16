@@ -1,0 +1,34 @@
+% 如果外层没有定义 \KBStandalone，则默认当作“独立书”
+\providecommand{\KBStandalone}{1}
+
+% 主字体
+\setmainfont{Palatino Linotype}
+
+\ifnum\KBStandalone=1
+  \chapterimage{empty.jpg} % 目录封面
+  \maketitle
+  \input{chapter/preface.tex} % 前言
+
+  \frontmatter
+  \thispagestyle{fancy}
+  \tableofcontents
+  \mainmatter
+\fi
+
+% 正文
+\mainmatter	
+	%第一章
+	\chapterimage{empty.jpg}
+	\input{chapter/chapter1.tex}
+
+	%第二章
+	\chapterimage{empty.jpg}
+	\input{chapter/chapter2.tex}
+
+	%第三章
+	\chapterimage{empty.jpg}
+	\input{chapter/chapter3.tex}
+
+	%作业
+	\chapterimage{empty.jpg}
+	\input{chapter/hw.tex}

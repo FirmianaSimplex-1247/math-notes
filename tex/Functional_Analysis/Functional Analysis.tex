@@ -81,51 +81,9 @@
 \def\wto{ \mathop{\rightarrow}\limits^{w} }
 \def\w*to{ \mathop{\rightarrow}\limits^{w^*} }
 
-\usepackage{ocgx2}
+\usepackage{xcolor}
 
 %开始！
 \begin{document}
-%主字体
-\setmainfont{Palatino Linotype}
-%目录的封面
-\chapterimage{empty.jpg}
-%绘制标题
-\maketitle
-%前言
-\input{chapter/preface.tex}
-%编译目录
-\frontmatter
-\thispagestyle{fancy}
-\tableofcontents
-%第一部分
-%\partsimage{empty.jpg}
-%\part{课程笔记}
-\mainmatter	
-	%第一章
-	\chapterimage{empty.jpg}
-	\input{chapter/chapter1.tex}
-
-	%第二章
-	\chapterimage{empty.jpg}
-	\input{chapter/chapter2.tex}
-
-	%第三章
-	\chapterimage{empty.jpg}
-	\input{chapter/chapter3.tex}
-
-	%第四章
-	%\chapterimage{chap4.jpg}
-	%\input{chapter/chapter4.tex}
-
-	%第五章
-	%\chapterimage{chap5.jpg}
-	%\input{chapter/chapter5.tex}
-	
-	%第六章
-	%\chapterimage{chap6.png}
-	%\input{chapter/chapter6.tex}
-
-	%作业
-	\chapterimage{empty.jpg}
-	\input{chapter/hw.tex}
+\input{content.tex}
 \end{document}

@@ -688,7 +688,9 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ifdefstring{\ELEGANT@mode}{fancy}{
+%风格的预设
   \tcbset{
+  %常规风格
     common/.style={
       fontupper=\citshape,
       lower separated=false,
@@ -712,55 +714,54 @@
         arc=0pt,
         outer arc=0pt},
       separator sign={.},},
-  %定义
+  %定义风格
     defstyle/.style={
       common,
       coltitle=black,
       colframe=main,  
       colback=main!5,
       colbacktitle=main, 
-      overlay unbroken and last={
-        \node[anchor=south east, outer sep=0pt] at (\linewidth-width,0) {
-          \textcolor{main}{$\clubsuit$}};}},
-      %定理
+      overlay unbroken and last={\node[anchor=south east, outer sep=0pt] at (\linewidth-width,0) {\textcolor{main}{$\clubsuit$}};}},
+  %定理风格
     thmstyle/.style={
       common,
       colframe=red2,  
       colback=red3,
       colbacktitle=red2, 
+      %overlay unbroken and last={\node[anchor=south east, outer sep=0pt] at (\linewidth-width,0) {\textcolor{red2}{$\heartsuit$}};}},
+      %overlay unbroken and last={\node[anchor=south east, outer sep=0pt] at (\linewidth-width,0) {\includegraphics[height=1em]{Poppin'party_logo.png}};}
+      %邦邦主题锐意制作中！
+    },  
+  %公理风格
+    axiostyle/.style={
+        common,
+        colframe=second,  
+        colback=second!5,
+        colbacktitle=second, 
+        overlay unbroken and last={
+            \node[anchor=south east, outer sep=0pt] at (\linewidth-width,0) {
+                \textcolor{red2}{$\heartsuit$}};}},
+  %公设风格
+    poststyle/.style={
+        common,
+          coltitle=black,
+        colframe=blue2,  
+        colback=blue3,
+        colbacktitle=blue2, 
+        overlay unbroken and last={
+            \node[anchor=south east, outer sep=0pt] at (\linewidth-width,0) {
+                \textcolor{red2}{$\heartsuit$}};}},
+  %引理风格
+    lamstyle/.style={
+      common,
+      coltitle=black,
+      colframe=pur2,  
+      colback=blue3,
+      colbacktitle=pur2, 
       overlay unbroken and last={
-        \node[anchor=south east, outer sep=0pt] at (\linewidth-width,0) {
-          \textcolor{red2}{$\heartsuit$}};}},
-            %公理
-      axiostyle/.style={
-          common,
-          colframe=second,  
-          colback=second!5,
-          colbacktitle=second, 
-          overlay unbroken and last={
-              \node[anchor=south east, outer sep=0pt] at (\linewidth-width,0) {
-                  \textcolor{red2}{$\heartsuit$}};}},
-                   %公设
-       poststyle/.style={
-           common,
-             coltitle=black,
-           colframe=blue2,  
-           colback=blue3,
-           colbacktitle=blue2, 
-           overlay unbroken and last={
-               \node[anchor=south east, outer sep=0pt] at (\linewidth-width,0) {
-                   \textcolor{red2}{$\heartsuit$}};}},
-       %引理
-       lamstyle/.style={
-    common,
-    coltitle=black,
-    colframe=pur2,  
-    colback=blue3,
-    colbacktitle=pur2, 
-    overlay unbroken and last={
-        \node[anchor=south east, outer sep=0pt] at (\linewidth-width,0) {
-            \textcolor{red2}{$\heartsuit$}};}},
-          %推论
+          \node[anchor=south east, outer sep=0pt] at (\linewidth-width,0) {
+              \textcolor{red2}{$\heartsuit$}};}},
+  %推论风格
    corostyle/.style={
        common,
        coltitle=black,
@@ -770,15 +771,19 @@
        overlay unbroken and last={
            \node[anchor=south east, outer sep=0pt] at (\linewidth-width,0) {
                \textcolor{red2}{$\heartsuit$}};}},
+  %命题风格
     propstyle/.style={
       common,
       colframe=third,  
       colback=third!5,
       colbacktitle=third, 
-      overlay unbroken and last={
-        \node[anchor=south east, outer sep=0pt] at (\linewidth-width,0) {
-          \textcolor{third}{$\spadesuit$}};}},}
-  % \newtcbtheorem[auto counter,number within=chapter]{definition}{\definitionname}{defstyle}{def}
+      %overlay unbroken and last={\node[anchor=south east, outer sep=0pt] at (\linewidth-width,0) {\textcolor{third}{$\spadesuit$}};}
+      %overlay unbroken and last={\node[anchor=south east, outer sep=0pt] at (\linewidth-width,0) {\includegraphics[height=1em]{Roselia_logo.png}};}
+      %邦邦主题锐意制作中！
+    },
+  }%风格预设结束
+%分别给各个环境声明TcolorBox
+  %定义
   \DeclareTColorBox[auto counter,number within=section]{definition}{ g o t\label g }{
     common,defstyle,
     IfValueTF={#1}
@@ -789,7 +794,8 @@
           {title=\definitionname~\thetcbcounter}
       },
     IfBooleanTF={#3}{label=#4}{label={def:#4}}}
-  % \newtcbtheorem[auto counter,number within=chapter]{theorem}{\theoremname}{thmstyle}{thm}
+  \newcommand\tcb@cnt@definitionautorefname{定义}%现在可以用\autoref了！
+  %定理
   \DeclareTColorBox[auto counter,number within=section]{theorem}{ g o t\label g }{
     common,thmstyle,
     IfValueTF={#1}
@@ -800,6 +806,8 @@
           {title=\theoremname~\thetcbcounter}
       },
     IfBooleanTF={#3}{label=#4}{label={thm:#4}}}
+  \newcommand\tcb@cnt@theoremautorefname{定理}%现在可以用\autoref了！
+
   % \newtcbtheorem[auto counter,number within=chapter]{postulate}{\postulatename}{thmstyle}{pos}
   \DeclareTColorBox[auto counter,number within=\ELEGANT@thmcnt]{postulate}{ g o t\label g }{
     common,poststyle,
@@ -833,6 +841,7 @@
           {title=\corollaryname~\thetcbcounter}
       },
     IfBooleanTF={#3}{label=#4}{label={cor:#4}}}
+  \newcommand\tcb@cnt@corollaryautorefname{推论}%现在可以用\autoref了！
   % \newtcbtheorem[auto counter,number within=chapter]{lemma}{\lemmaname}{thmstyle}{lem}
   \DeclareTColorBox[auto counter,number within=section]{lemma}{ g o t\label g }{
     common,lamstyle,
@@ -844,6 +853,7 @@
           {title=\lemmaname~\thetcbcounter}
       },
     IfBooleanTF={#3}{label=#4}{label={lem:#4}}}
+  \newcommand\tcb@cnt@lemmaautorefname{引理}%现在可以用\autoref了！
   % \newtcbtheorem[auto counter,number within=chapter]{proposition}{\propositionname}{propstyle}{pro}
   \DeclareTColorBox[auto counter,number within=section]{proposition}{ g o t\label g }{
     common,propstyle,
@@ -855,6 +865,7 @@
           {title=\propositionname~\thetcbcounter}
       },
     IfBooleanTF={#3}{label=#4}{label={pro:#4}}}
+  \newcommand\tcb@cnt@propositionautorefname{命题}%现在可以用\autoref了！
 }{\relax}
 
 
@@ -929,7 +940,7 @@
 \newenvironment{proof}{
   \par\noindent\textbf{\color{second}\proofname\;}
   \color{black!90}\cfs}{
-  % \hfill$\Box$\quad
+  \hfill$\square$%表示证明结束的那个小方块
   \par}
 
 \newenvironment{solution}{\par\noindent\textbf{\color{main}\solutionname} \citshape}{\par}
@@ -1064,7 +1075,7 @@
 \renewcommand{\theexam}{\thesection.\arabic{exam}}
 
 % 例环境
-\newtcolorbox{wwexample}[3][]{%
+\newtcolorbox{wwexample}[3]{%
     arc=0mm,
     breakable,drop fuzzy shadow=black!20!white,
     enhanced,
@@ -1075,7 +1086,8 @@
     % enlarge top by=\baselineskip/2+1mm,
     % enlarge top at break by=0mm,pad at break=2mm,
     fontupper=\normalsize,
-    step and label={exam}{#3},%标签
+    step=exam,
+    label=#2,%标签
     overlay unbroken = {%
         %垂直线段%更改有效
         %\draw[color=gray!5,line width=3pt] ([xshift=2pt] frame.north west)--([xshift=2pt] frame.south west);
@@ -1092,7 +1104,7 @@
         inner sep=1.5mm,fill=Emerald,
         anchor=west,
         font=\normalsize] at ([xshift=0cm,yshift=-3.mm]frame.north west)%
-        {\bf  \color{black}例 \theexam. ~#2};%标题
+        {\bf  \color{black}例 \theexam. ~#1};%标题
     },
     % fin overlay
     overlay first  = {%
@@ -1102,7 +1114,7 @@
         inner sep=1.5mm,fill=Emerald,
         anchor=west,
         font=\normalsize] at ([xshift=0cm,yshift=-3.mm]frame.north west)%
-        {\bf \color{black} 例 \theexam. ~#2};
+        {\bf \color{black} 例 \theexam. ~#1};
     },
     % overlay
     %边缘改变%跨页时生效
@@ -1110,12 +1122,117 @@
     },
     overlay last={\draw[color=lightergray,line width=3pt] ([xshift=3pt] frame.north west)--([xshift=2pt] frame.south west);
         %底部装饰矩形%跨页时生效
-        \fill[fill=Emerald] (.9\textwidth,0.2cm) rectangle(\textwidth,-0.0cm); }
-    #1}
+        \fill[fill=Emerald] (.9\textwidth,0.2cm) rectangle(\textwidth,-0.0cm); },
+    #3}
 %
-\NewDocumentEnvironment{example}{O{} O{} O{}}{\smallskip\begin{wwexample}{#1}{#2}%
-        #3}{\end{wwexample} }
+\NewDocumentEnvironment{example}{O{} O{} O{}}{\smallskip\begin{wwexample}{#1}{#2}{#3}}{\end{wwexample} }
+\newcommand\examautorefname{例}%现在可以用\autoref了！
 %例结束-----------------------------------------------------------------
+
+%（个人自用）题目
+\definecolor{shadecolor}{RGB}{241,241,255}
+\definecolor{titlecolor}{RGB}{85,221,238}%冰川双子代表色
+%\definecolor{titlecolor}{RGB}{201,201,215}
+%计数器
+\newcounter{exnum}[chapter]
+\setcounter{exnum}{0}
+\renewcommand{\theexnum}{\thechapter.\arabic{exnum}}
+%环境开始
+\newtcolorbox{wwex}[3][]{%
+    arc=0mm,
+    breakable,drop fuzzy shadow=black!20!white,
+    enhanced,
+    colback=shadecolor,
+    boxrule=0.3pt,%边框线粗细
+    colframe=gray,%边框线颜色
+    before upper={\setlength{\parindent}{2em}},
+    top=8mm, %分隔垂直-开始文本
+    % enlarge top by=\baselineskip/2+1mm,
+    % enlarge top at break by=0mm,pad at break=2mm,
+    fontupper=\normalsize,
+    step and label={exnum}{#3},
+    overlay unbroken = {
+      \node[
+        rectangle,%画一个矩形
+        %opacity=.8,%透明度，感觉没什么必要
+        text=black,%文本颜色是黑色
+        drop shadow={opacity=.3, shadow xshift=0.1cm},%画一个透明度0.3、水平方向偏移+0.1cm的阴影
+        inner sep=1.5mm,%内边距1.5mm
+        fill=titlecolor,%矩形填充的颜色
+        anchor=west,%基准为西（左边）
+        font=\normalsize%字体
+      ] at ([xshift=0cm,yshift=-3.mm]frame.north west)%矩形画在垂直方向向下3mm的位置，
+      {\bf \color{black} 题目 \theexnum. ~#2};
+    },
+    overlay first = {
+      \node[rectangle, %opacity=.3,
+      text=black, drop shadow={opacity=.3, shadow xshift=0.1cm},
+      inner sep=1.5mm,fill=titlecolor,
+      anchor=west,
+      font=\normalsize] at ([xshift=0cm,yshift=-3.mm]frame.north west)%
+      {\bf \color{black} 题目 \theexnum. ~#2};
+    },
+    %overlay middle={\draw[line width=1pt,color=black] (frame.north west) -- (frame.north east);},
+    %overlay last={\draw[color=lightergray,line width=3pt] ([xshift=3pt] frame.north west)--([xshift=2pt] frame.south west);},
+    #1
+}
+%定义实际使用的ex环境
+\NewDocumentEnvironment{ex}{O{} O{} O{}}{\smallskip\begin{wwex}{#1}{#2}%
+        #3}{\end{wwex} }
+\newcommand\exnumautorefname{题目}%现在可以用\autoref了！
+%环境结束
+
+%（个人自用）补充
+\definecolor{addshadecolor}{RGB}{255,255,255}
+%\definecolor{titlecolor}{RGB}{85,221,238}
+\definecolor{addtitlecolor}{RGB}{201,201,215}
+%不设计数器
+%环境开始
+\newtcolorbox{wwadd}[3][]{%
+    arc=0mm,
+    breakable,
+    drop fuzzy shadow=black!20!white,
+    enhanced,
+    colback=addshadecolor,%底色
+    boxrule=0.3pt,%边框线粗细
+    colframe=gray,%边框线颜色
+    before upper={\setlength{\parindent}{2em}},
+    top=8mm, %分隔垂直-开始文本
+    % enlarge top by=\baselineskip/2+1mm,
+    % enlarge top at break by=0mm,pad at break=2mm,
+    fontupper=\normalsize,
+    %step and label={exnum}{#3},
+    overlay unbroken = {
+      \node[
+        rectangle,%画一个矩形
+        %opacity=.8,%透明度，感觉没什么必要
+        text=black,%文本颜色是黑色
+        drop shadow={opacity=.3, shadow xshift=0.1cm},%画一个透明度0.3、水平方向偏移+0.1cm的阴影
+        inner sep=1.5mm,%内边距1.5mm
+        fill=addtitlecolor,%矩形填充的颜色
+        anchor=west,%基准为西（左边）
+        font=\normalsize%字体
+      ] at ([xshift=0cm,yshift=-3.mm]frame.north west)%矩形画在垂直方向向下3mm的位置，
+      {\bf \color{black} 补充 . ~#2};
+    },
+    overlay first = {
+      \node[rectangle, %opacity=.3,
+      text=black, drop shadow={opacity=.3, shadow xshift=0.1cm},
+      inner sep=1.5mm,fill=titlecolor,
+      anchor=west,
+      font=\normalsize] at ([xshift=0cm,yshift=-3.mm]frame.north west)%
+      {\bf \color{black} 补充 . ~#2};
+    },
+    %overlay middle={\draw[line width=1pt,color=black] (frame.north west) -- (frame.north east);},
+    %overlay last={\draw[color=lightergray,line width=3pt] ([xshift=3pt] frame.north west)--([xshift=2pt] frame.south west);},
+    #1
+}
+%定义实际使用的add环境
+\NewDocumentEnvironment{add}{O{} O{} O{}}{\smallskip\begin{wwadd}{#1}{#2}%
+        #3}{\end{wwadd} }
+%环境结束
+
+
 \newcounter{assumption}
 \setcounter{assumption}{1}
 \renewcommand{\theassumption}{\arabic{assumption}}
@@ -1932,7 +2049,6 @@ shadow=true,shadowsize=2pt,shadowcolor=gray!50,
     colframe=burgundy,colback=burgundy!2!white,
     rightrule=0pt,leftrule=0pt,bottomrule=2pt,
     colbacktitle=burgundy,theorem style=standard,breakable,arc=0pt}{tha}
-
 
 \newtcbtheorem[use counter from=mytheo]{myprop}{命題}%
 {fonttitle=\rmfamily\sffamily\bfseries\upshape,

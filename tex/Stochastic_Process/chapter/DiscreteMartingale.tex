@@ -1,0 +1,2077 @@
+\chapter{离散时间鞅}
+\section{条件数学期望}
+    \begin{definition}\label{def2.1}
+        概率空间$(\Omega,\mathcal{F},\P)$上，
+        $\mathcal{G}\subset\mathcal{F}$是一个$\sigma$-域，
+        随机变量$X$在给定$\mathcal{G}$时的条件（数学）期望(Conditional Expectation)，是指满足以下两个条件的随机变量$Y$：
+        \begin{enumerate}[$1^\circ$]
+            \item $Y$是$\mathcal{G}$-可测的，即$Y^{-1}(B)\in\mathcal{G},\forall B\in\mathcal{R}$.
+            \item $\forall A\in\mathcal{G}$，成立关系式：
+                \begin{equation*}
+                    \int_A Y\d \P=\int_A X\d \P
+                \end{equation*}
+        \end{enumerate}
+        我们往往把条件期望$Y$记作$\E [ X|\mathcal{G} ]$.
+
+        顺带一提，条件概率$\P(A|\mathcal{G})\defeq \E[ I_A|\mathcal{G} ]$.
+    \end{definition}
+
+    \begin{proposition}
+        在几乎处处相等意义下，条件期望存在且唯一。
+    \end{proposition}
+    \begin{proof}
+        唯一性：如果随机变量$Y'$也满足\autoref{def2.1}的两个条件，对于$\forall \varepsilon>0$，
+        取集合$A=\{ \omega:Y(\omega)-Y'(\omega)\geqslant \varepsilon \}$，由于$Y,Y'$都是$\mathcal{G}$-可测的，
+        所以$A\in\mathcal{G}$，因此
+        \begin{equation*}
+            \varepsilon\cdot \P(A)\leqslant \int_A (Y-Y')\d \P =\int_A Y\d\P-\int_A Y'\d\P
+            =\int_A X\d\P-\int_A X\d\P=0
+        \end{equation*}
+        所以$\P(A)=0$，同理$\P( \{ \omega:Y'(\omega)-Y(\omega)\geqslant \varepsilon \} )=0$，因此$Y=Y'{\rm\ a.s.}$
+
+        存在性：
+        如果两个有限测度$\mu,\nu$满足关系：$\mu(A)=0\Rightarrow \nu(A)=0$，则记作$\nu<<\mu$.
+        Radon-Nikodym定理表明，测度空间$(\Omega,\mathcal{F})$上，如果$\nu<<\mu$，则存在
+        一个$\mathcal{F}$-可测的可积函数$f$满足
+        \begin{equation*}
+            \forall A\in\mathcal{F},\nu(A)=\int_A f(\omega)\d\mu
+        \end{equation*}
+        一般记作$f=\frac{\d \nu}{\d \mu}$，$f$称为Radon-Nikodym导数。言归正传，
+        概率空间$(\Omega,\mathcal{G},\P)$上，
+        对于非负的随机变量$X\geqslant 0$，令$\mu=\P$，
+        \begin{equation*}
+            \nu: \mathcal{G}\rightarrow \R, A\mapsto \int_A X\d\P
+        \end{equation*}
+        则$\mu,\nu$都是$(\Omega,\mathcal{G})$上的有限测度并且$\nu<<\mu$，
+        于是存在$\mathcal{G}$-可测的随机变量$Y$满足：
+        \begin{equation*}
+            \int_A X\d\P=\nu(A)=\int_A Y\d\P
+        \end{equation*}
+        这正是我们定义的条件期望。
+    \end{proof}
+
+    \begin{example}
+        给定事件$A,B\in\mathcal{F}$，取$\sigma$-域$\mathcal{G}=\{ \varnothing,\Omega,A,A^c \}$和随机变量$X=I_B$，
+        则
+        \begin{equation*}
+            \E [X|\mathcal{G}]=\P(B|A)\cdot I_A+\P(B|A^c)\cdot I_{A^c}
+        \end{equation*}
+    \end{example}
+    \begin{proof}
+        令$Y=\P(B|A)\cdot I_A+\P(B|A^c)\cdot I_{A^c}$，验证其满足\autoref{def2.1}的两个条件即可。
+        \begin{enumerate}[$1^\circ$]
+            \item 显然$I_A$和$I_{A^c}$是$\mathcal{G}$-可测的，所以$Y$也是$\mathcal{G}$-可测的。
+            \item 对$\mathcal{G}$中的元素逐个验证即可，例如
+                \begin{align*}
+                    \int_\Omega Y\d\P&=\P(B|A)\P(A)+\P(B|A^c)\P(A^c)=\P(B)=\int_\Omega I_B\d\P=\int_\Omega X\d\P\\
+                    \int_A Y\d\P&=\int_\Omega \P(B|A)I_A\d\P=\P(B|A)\P(A)
+                    =\P(A\cap B)
+                    =\int_A I_B\d\P=\int_A X\d\P
+                \end{align*}
+                其余不再赘述。
+        \end{enumerate}
+    \end{proof}
+
+    下面的几个定理介绍了条件期望的性质，注意这些性质都是从定义出发直接得到的，所以在证明的过程中我们反复使用了\autoref{def2.1}.
+    \begin{theorem}\label{thm2.2}
+        a.s.意义下：
+        \begin{enumerate}[(1).]
+            \item $\E [ aX_1+bX_2|\mathcal{G} ]=a\E [X_1|\mathcal{G}]+b \E[X_2|\mathcal{G}]$，其中$a,b$是常数。
+            \item 若$X\geqslant 0$，则$\E [X|\mathcal{G}]\geqslant 0$.特别地，$X_1\geqslant X_2\Rightarrow \E[X_1|\mathcal{G}]\geqslant \E[X_2|\mathcal{G}]$.
+            \item 如果随机变量列$X_n\geqslant 0$且$X_n\nearrow X$ a.s.，
+                $X$可积，那么$\E[X_n|\mathcal{G}]\ra{\rm a.s.} \E[ X|\mathcal{G}]$；
+                如果随机变量列$X_n\rightarrow X$ a.s.且存在可积的$Y$使得
+                $|X_n|\leqslant Y$，那么$\E[X_n|\mathcal{G}]\ra{\rm a.s.} \E[X|\mathcal{G}]$.
+                这是条件期望版本下的单调/控制收敛定理。
+        \end{enumerate}
+    \end{theorem}
+    \begin{proof}
+        \begin{enumerate}[(1).]
+            \item 利用积分的线性即可得证。
+            \item $\forall \varepsilon>0$，
+                设集合$A=\{ \omega:\E[ X|\mathcal{G} ]\leqslant -\varepsilon \}$，
+                因为随机变量$\E[ X|\mathcal{G} ]$是$\mathcal{G}$-可测的，
+                所以集合$A\in\mathcal{G}$，因此
+                \begin{equation*}
+                    0\leqslant \int_A X\d\P=\int_A \E[X|\mathcal{G}]\d\P\leqslant -\varepsilon\P(A)
+                \end{equation*}
+                因此$\P(A)=0$，即$\E [X|\mathcal{G}]\geqslant 0{\rm\ a.s.}$
+            \item 取随机变量$Z_n=\E[X_n|\mathcal{G}]$，由(2)知$Z_n$单调递增，
+                设$Z_n\nearrow Z$，希望证明$Z=\E[X|\mathcal{G}]$，
+                也就是验证\autoref{def2.1}中的两个条件即可：
+                \begin{enumerate}[$1^\circ$]
+                    \item $Z_n=\E[X_n|\mathcal{G}]$都是$\mathcal{G}$-可测的，所以它们的极限也是$\mathcal{G}$-可测的。
+                    \item $\forall A\in\mathcal{G}$，
+                        \begin{equation*}
+                            \int_A Z\d\P=\fun{lim}{n\rightarrow\infty}\int_A Z_n\d\P
+                            =\fun{lim}{n\rightarrow\infty}\int_A X_n\d\P
+                            \mathop{=}\limits^{\text{DCT/MCT of r.v.}}  \int_A X\d\P
+                        \end{equation*}
+                \end{enumerate}
+        \end{enumerate}
+    \end{proof}
+
+    \begin{theorem}\label{thm2.3}
+        \begin{enumerate}[(1).]
+            \item $\E[ \E [X|\mathcal{G}] ]=\E [X]$.
+            \item 随机变量$X$和$\mathcal{G}$独立，即$X$与$\forall I_A,A\in\mathcal{G}$是独立的，那么$\E[X|\mathcal{G}]=\E[X]$，是一个常数。
+            \item 如果随机变量$Y$是$\mathcal{G}$-可测的，那么$\E[YX|\mathcal{G}]=Y\cdot \E[X|\mathcal{G}]$.
+            \item 如果$\sigma$-域$\mathcal{G}_1\subset\mathcal{G}$，则$\E[ \E[X|\mathcal{G}]|\mathcal{G}_1 ]=\E[X|\mathcal{G}_1]$.
+        \end{enumerate}
+    \end{theorem}
+    \begin{proof}
+        \begin{enumerate}[(1).]
+            \item 全集$\Omega\in\mathcal{G}$，所以
+                \begin{equation*}
+                    \E[ \E [X|\mathcal{G}] ]=\int_\Omega \E[X|\mathcal{G}]\d\P=\int_\Omega X\d\P=\E[X] 
+                \end{equation*}
+            \item 令$Y=\E[X]$，来验证\autoref{def2.1}中的两个条件：
+                \begin{enumerate}[$1^\circ$]
+                    \item 显然，$Y$作为一个常数是全集$\Omega$的示性函数的倍数，肯定是$\mathcal{G}$-可测的。
+                    \item $\forall A\in\mathcal{G}$，因为$X$和$I_A$独立，所以$\E[X]\cdot\E[I_A]=\E[X\cdot I_A]$，那么
+                        \begin{equation*}
+                            \int_A Y\d\P=\P(A)\E[X]
+                            =\E[X]\cdot\E[I_A]=\E[X\cdot I_A]=
+                            \int_\Omega X\cdot I_A\d\P=\int_A X\d\P
+                        \end{equation*}
+                \end{enumerate}
+            \item 令$Z=Y\cdot\E[X|\mathcal{G}]$，来验证\autoref{def2.1}中的两个条件：
+                \begin{enumerate}[$1^\circ$]
+                    \item $Y$和$\E[X|\mathcal{G}]$是$\mathcal{G}$-可测的，自然其乘积$Z=Y\cdot\E[X|\mathcal{G}]$也是$\mathcal{G}$-可测的。
+                    \item 还是经典的四步走：示性函数、简单函数、非负函数、一般函数。
+                        \begin{enumerate}[(i).]
+                            \item 考虑$Y=I_B,\forall B\in\mathcal{G}$，则对于$\forall A\in\mathcal{G}$，
+                                \begin{equation*}
+                                    \int_A Z\d\P=\int_A I_B\cdot \E[X|\mathcal{G}]\d\P=\int_{A\cap B} \E[X|\mathcal{G}]\d\P
+                                    =\int_{A\cap B} X\d\P
+                                    =\int_A X\cdot I_B\d\P=
+                                    \int_A XY\d\P
+                                \end{equation*}
+                            \item 考虑$Y=\sum_{k=1}^n a_kI_{B_k}$，其中$B_k\in\mathcal{G}$，利用\autoref{thm2.2}的(1)即可得证。
+                            \item 考虑$Y\geqslant 0$，取一列简单函数$Y_n\nearrow Y$，利用\autoref{thm2.2}的(3)可知
+                                \begin{equation*}
+                                    \E[YX|\mathcal{G}]=\fun{lim}{n\rightarrow\infty}\E[Y_nX|\mathcal{G}]
+                                    =\fun{lim}{n\rightarrow\infty}Y_n\E[X|\mathcal{G}]=Y\E[X|\mathcal{G}]
+                                \end{equation*}
+                            \item 对于一般的随机变量$Y$，拆分成正负部即可。
+                        \end{enumerate}
+                \end{enumerate}
+            \item 令$Z=\E[X|\mathcal{G}]$和$Y=\E[X|\mathcal{G}_1]$，希望证明$Y=\E[Z|\mathcal{G}_1]$，
+                \begin{enumerate}[$1^\circ$]
+                    \item 根据定义，$Y=\E[X|\mathcal{G}_1]$是$\mathcal{G}_1$-可测的。
+                    \item $\forall A\in\mathcal{G}_1\subset\mathcal{G}$，
+                        \begin{align*}
+                            \int_A Z\d\P&=\int_A \E[X|\mathcal{G}]\d\P=\int_A X\d\P\\
+                            \int_A Y\d\P&=\int_A \E[X|\mathcal{G}_1]\d\P=\int_A X\d\P
+                        \end{align*}
+                        所以二者相等。
+                \end{enumerate}
+        \end{enumerate}
+    \end{proof}
+
+    \begin{theorem}[Jensen's Inquality的条件期望版本]\label{thm2.4}
+        $\varphi$是凸函数，$X$和$\varphi(X)$可积，则
+        \begin{equation*}
+            \varphi( \E[X|\mathcal{G}] )\leqslant \E[ \varphi(X)|\mathcal{G} ]
+        \end{equation*}
+    \end{theorem}
+    \begin{proof}
+        凸函数的性质是切线在曲线下方，所以$\forall x,y\in\R$，
+        \begin{equation*}
+            \varphi'(y)(x-y)+\varphi(y)\leqslant \varphi(x)
+        \end{equation*}
+        把$x$替换成随机变量$X$，$y$替换成$\E[X|\mathcal{G}]$，即有
+        \begin{equation*}
+            \varphi'(\E[X|\mathcal{G}])(X-\E[X|\mathcal{G}])+\varphi(\E[X|\mathcal{G}])\leqslant \varphi(X)
+        \end{equation*}
+        两边关于$\mathcal{G}$同时取条件期望，不等号仍然成立（\autoref{thm2.2}(2)）。右边变成了$\E[\varphi(X)|\mathcal{G}]$，这是我们所需要的形式，那左边如何？
+        \begin{equation*}
+            \E[ \varphi'(\E[X|\mathcal{G}])(X-\E[X|\mathcal{G}])+\varphi(\E[X|\mathcal{G}])|\mathcal{G} ]
+            =\E[ \varphi'(\E[X|\mathcal{G}])(X-\E[X|\mathcal{G}])|\mathcal{G} ]
+            +\E[\varphi(\E[X|\mathcal{G}])|\mathcal{G}]
+        \end{equation*}
+        注意$\E[X|\mathcal{G}]$是$\mathcal{G}$-可测的，套一个函数$\varphi'$仍然是$\mathcal{G}$-可测的，所以根据\autoref{thm2.3}(3)可以把它提出去，因此
+        \begin{equation*}
+            {\rm LHS}=\varphi'(\E[X|\mathcal{G}])\E[ (X-\E[X|\mathcal{G}])|\mathcal{G} ]+\E[\varphi(\E[X|\mathcal{G}])|\mathcal{G}]
+        \end{equation*}
+        一个很显然的推论是
+        \begin{equation*}
+            \E[\E[X|\mathcal{G}]|\mathcal{G}]
+            =\E[X|\mathcal{G}]\E[ 1|\mathcal{G} ]
+            =\E[X|\mathcal{G}]\E[1]
+            =\E[X|\mathcal{G}]
+        \end{equation*}
+        因此$\E[ (X-\E[X|\mathcal{G}])|\mathcal{G} ]=0$，${\rm LHS}=\E[\varphi(\E[X|\mathcal{G}])|\mathcal{G}]$，
+        注意$\varphi(\E[X|\mathcal{G}])$也是$\mathcal{G}$-可测的，${\rm LHS}=\varphi(\E[X|\mathcal{G}])$，至此定理得证。
+    \end{proof}
+
+    \begin{corollary}
+        取凸函数$\varphi(x)=|x|^p$，则有
+        $| \E[X|\mathcal{G}] |^p\leqslant \E[ |x|^p|\mathcal{G} ]$.
+    \end{corollary}
+
+    \begin{proposition}
+        随机变量$X$满足$\E[X^2]<\infty$，考虑所有的$\mathcal{G}$-可测的随机变量$Y$，
+        使得$ \E[(X-Y)^2] $达到最小值的就是条件期望$\E[ X|\mathcal{G} ]$，即
+        \begin{equation*}
+            \E[X|\mathcal{G}]=\fun{argmin}{{\rm r.v.}Y\in\mathcal{G}}
+            \E[ (X-Y)^2 ]
+        \end{equation*}
+        其中${\rm r.v.}Y\in\mathcal{G}$代表随机变量$Y$是$\mathcal{G}$-可测的。
+
+        这个结论表明，条件期望极小化均方误差(minimize the mean square error)，
+        是对随机变量的“最好估计”。
+    \end{proposition}
+    \begin{proof}
+        $\forall {\rm r.v.}Y\in\mathcal{G}$，
+        \begin{align*}
+            \E[ (X-Y)^2 ]
+            &=\E[ (X-\E[ X|\mathcal{G} ]+\E[ X|\mathcal{G} ]-Y)^2 ]\\
+            &=\E[ (X-\E[ X|\mathcal{G} ])^2]+\E[(\E[ X|\mathcal{G} ]-Y)^2]+2\E[(X-\E[ X|\mathcal{G} ])(\E[ X|\mathcal{G} ]-Y) ]
+        \end{align*}
+        关注最后一项，利用\autoref{thm2.3}(1)，可知
+        \begin{equation*}
+            \E[(X-\E[ X|\mathcal{G} ])(\E[ X|\mathcal{G} ]-Y) ]
+            =\E[ \E[(X-\E[ X|\mathcal{G} ])(\E[ X|\mathcal{G} ]-Y) |\mathcal{G}] ]
+        \end{equation*}
+        注意到$(\E[ X|\mathcal{G} ]-Y)$是$\mathcal{G}$-可测的，
+        利用\autoref{thm2.3}(3)可以把它提出来，
+        \begin{equation*}
+            \E[(X-\E[ X|\mathcal{G} ])(\E[ X|\mathcal{G} ]-Y) ]
+            =\E[ (\E[ X|\mathcal{G} ]-Y)\cdot \E[(X-\E[ X|\mathcal{G} ]) |\mathcal{G}] ]
+        \end{equation*}
+        而$\E[(X-\E[ X|\mathcal{G} ]) |\mathcal{G}] =\E[ X|\mathcal{G} ]-\E[ X|\mathcal{G} ]=0$，所以
+        \begin{equation*}
+            \E[ (X-Y)^2 ]=\E[ (X-\E[ X|\mathcal{G} ])^2]+\E[(\E[ X|\mathcal{G} ]-Y)^2]
+            \geqslant \E[ (X-\E[ X|\mathcal{G} ])^2]
+        \end{equation*}
+        等号成立当且仅当$Y=\E[ X|\mathcal{G} ]{\rm\ a.s.}$
+    \end{proof}
+
+\section{介绍离散时间鞅}
+
+\subsection{基本定义与性质}
+    鞅是一种特殊的随机过程，我们先来定义什么是随机过程。
+    \begin{definition}
+        概率空间$(\Omega,\mathcal{F},\P)$上的一族随机变量$\{ X_t,t\in I \}$称为随机过程，其中
+        指标集$I$一般是$[0,+\infty)$或者$\{0,1,\cdots\}$.
+
+        随机过程$\{ X_t,t\in I \}$的有限维分布是指给定有限个时间点$0\leqslant t_1<t_2<\cdots<t_n$时随机向量$(X_{t_1},\cdots,X_{t_n})$的联合分布。
+
+        称两个随机过程同分布，是指其有相同的有限维分布。
+    \end{definition}
+    从直观上理解，随机过程里的指标集就是现实中的“时间轴”，每一个时刻都有一个相应的随机变量与之对应。
+
+    \begin{definition}
+        给定一列单调递增的$\sigma$-域$\mathcal{F}_0\subset\mathcal{F}_1\subset\cdots\subset\mathcal{F}_n\subset\cdots$，
+        称之为滤流(filteration)，
+        如果有一列随机变量$Z_0,Z_1,\cdots,Z_n,\cdots$满足：对于每个$n$，
+        \begin{enumerate}[$1^\circ$]
+            \item $Z_n$是$\mathcal{F}_n$-可测的。
+            \item $\E[ Z_{n+1}|\mathcal{F}_n ]=Z_n$.
+        \end{enumerate}
+        那么称随机过程$\{ Z_n,n\in\N \}$为关于$\{\mathcal{F}_n,n\in\N\}$的离散时间鞅，或者简称为鞅(martingale)。
+
+        将条件$2^\circ$改成$\E[ Z_{n+1}|\mathcal{F}_n ]\geqslant Z_n$或者
+        $\E[ Z_{n+1}|\mathcal{F}_n ]\leqslant Z_n$，则称为下鞅(submartingale)或者上鞅(supermartingale)。
+    \end{definition}
+    从直观上理解，一列单调递增的$\sigma$-域$\mathcal{F}_0\subset\mathcal{F}_1\subset\cdots\subset\mathcal{F}_n\subset\cdots$
+    就是一个“随时间演化的信息族”。条件$2^\circ$表明，如果掌握了所有$t\leqslant n$的信息，
+    $Z_{n+1}$的期望就是$Z_n$，也就是说时间点$t=n+1$发生的事情，
+    只取决于$t\leqslant n$已经观测到的所有信息。
+
+    \begin{example}[随机变量生成的$\sigma$-域][r.v. sigma field]
+        我们熟知，随机变量就是Borel可测函数，因此所有事件
+        \begin{equation*}
+            X^{-1}(B)=\{X\in B\},\forall B\in\mathcal{R}
+        \end{equation*}
+        就可以描述观测随机变量$X$可能得到的所有信息，或者说与随机变量$X$有关的所有事件，
+        这其实就是我们之前提到的随机变量$X$生成的$\sigma$-域，见\autoref{def:r.v.sigma}。类似地可以定义多个随机变量生成的$\sigma$-域：
+        \begin{equation*}
+            \sigma(X_1,\cdots,X_n)\defeq \sigma( \{ a_k\leqslant X_k\leqslant b_k \},a_k,b_k\in\R,1\leqslant k\leqslant n )
+        \end{equation*}
+        那么，对于随机过程$\{ Z_n,n\in\N \}$，令$\mathcal{F}_n=\sigma(X_1,\cdots,X_n)$，就得到了一个滤流$\{\mathcal{F}_n\}$。
+
+        一个简单的推论是：$f$是
+        $\sigma(X_1,\cdots,X_n)$-可测的当且仅当$f$是$X_1,\cdots,X_n$的Borel可测函数。根据条件期望的定义，$\E[X|\sigma(X_1,\cdots,X_n)]$
+        是$\sigma(X_1,\cdots,X_n)$-可测的，这就说明$\E[X|\sigma(X_1,\cdots,X_n)]$可以写成$X_1,\cdots,X_n$的Borel可测函数！
+        给定$\sigma(X_1,\cdots,X_n)$就相当于获取了和$X_1,\cdots,X_n$相关的所有信息，所以最后的结果也只会与$X_1,\cdots,X_n$有关，这非常符合条件期望的直观印象。
+        我们在初等概率论中定义的条件期望$\E[X|Y]$，其实是$\E[X|\sigma(Y)]$.
+    \end{example}
+    
+    \begin{proposition}
+        如果$\{ Z_n,n\in\N \}$是关于$\{\mathcal{F}_n,n\in\N\}$的鞅，则
+        \begin{equation*}
+            \E[Z_{n+2}|\mathcal{F}_n]=\E[ \E[Z_{n+2}|\mathcal{F}_{n+1}]|\mathcal{F}_n ]
+            =\E[Z_{n+1}|\mathcal{F}_n]=Z_n
+        \end{equation*}
+        进而$\forall m\geqslant n$，都有$\E[Z_m|\mathcal{F}_n]=Z_n$，
+        因此$\E[Z_m]=\E[ \E[Z_m|\mathcal{F}_n] ]=\E[Z_n]$.
+    \end{proposition}
+    \begin{remark}
+        对于下鞅，结论就改为：$\E[Z_m]\geqslant \E[Z_n]$，$\forall m\geqslant n$.
+        从这里可以看出上/下鞅的命名方式稍微有点反直觉，上鞅的期望是下降的、下鞅的期望是上升的。
+    \end{remark}
+
+    有关凸函数的推论：
+    \begin{corollary}\label{thm3.6}
+        \begin{enumerate}[(1).]
+            \item $\{X_n\}$是一个鞅，$\varphi$是凸函数，且$\forall \varphi(X_n)$可积，
+            $\{ \varphi(X_n) \}$是一个下鞅。
+            \item $\{X_n\}$是一个下鞅，$\varphi$是单调递增的凸函数，且$\forall \varphi(X_n)$可积，
+            $\{ \varphi(X_n) \}$仍是一个下鞅。
+        \end{enumerate}
+    \end{corollary}
+
+\subsection{例子}
+    下面我们给出一些鞅的例子。为了叙述方便，如果没有特殊说明，默认鞅都是关于滤流$\{\mathcal{F}_n\}$的。
+    \begin{example}[][Example of Martingale 1]
+        $X_0,\cdots,X_n,\cdots$是独立可积的r.v.，且$\forall n,\E[X_n]=0$，
+        令$S_n=X_0+\cdots+X_n$，$\mathcal{F}_n=\sigma(X_1,\cdots,X_n)$，
+        则$\{S_n,n\in\N\}$是鞅。
+    \end{example}
+    \begin{proof}
+        显然$S_n$是$\mathcal{F}_n$-可测的，
+        \begin{equation*}
+            \E[S_{n+1}|\mathcal{F}_n]
+            =\E[ S_n+X_{n+1}|\mathcal{F}_n ]
+            =S_n+\E[X_{n+1}|\mathcal{F}_n]
+        \end{equation*}
+        因为$X_{n+1}$和$\mathcal{F}_n$是独立的，所以$\E[X_{n+1}|\mathcal{F}_n]=\E[X_{n+1}]=0$，
+        所以$\E[S_{n+1}|\mathcal{F}_n]=S_n$，因此$\{S_n,n\in\N\}$是鞅。
+    \end{proof}
+
+    \begin{example}[][Example of Martingale 2]
+        给定一个滤流$\{ \mathcal{F}_n,n\in\N\}$和可积的r.v.$Y$，
+        令$Z_n=\E[Y|\mathcal{F}_n]$，则$\{Z_n,n\in\N\}$是鞅。
+    \end{example}
+    \begin{proof}
+        由条件期望的定义，$Z_n$是$\mathcal{F}_n$-可测的，
+        \begin{equation*}
+            \E[Z_{n+1}|\mathcal{F}_n]
+            =\E[ \E[Y|\mathcal{F}_{n+1}]|\mathcal{F}_n ]
+            =\E[Y|\mathcal{F}_{n}]=Z_n
+        \end{equation*}
+    \end{proof}
+    \begin{remark}
+        这个鞅还有个重要性质：一致可积。见\autoref{Integrability of Conditional Expectation}.
+    \end{remark}
+
+    \begin{example}[][Example of Martingale 3]
+        $Y_1,\cdots,Y_n,\cdots$是独立可积的r.v.，记$a_i=\E[Y_i]$，且$\forall a_i\neq 0$，
+        令$Z_n=\frac{Y_1\cdots Y_n}{a_1\cdots a_n}$，$\mathcal{F}_n=\sigma(Y_1,\cdots,Y_n)$，则
+        $\{ Z_n,n\in\N_+ \}$是鞅。
+    \end{example}
+    \begin{proof}
+        显然$Z_n$是$\mathcal{F}_n$-可测的，
+        \begin{equation*}
+            \E[Z_{n+1}|\mathcal{F}_n]
+            =\E\left[\frac{Y_1\cdots Y_{n+1}}{a_1\cdots a_{n+1}}|\mathcal{F}_n  \right]
+            =\frac{Y_1\cdots Y_{n}}{a_1\cdots a_{n+1}}\E[Y_{n+1}|\mathcal{F}_n]
+            =\frac{Y_1\cdots Y_{n}}{a_1\cdots a_{n+1}}\E[Y_{n+1}]
+            =\frac{Y_1\cdots Y_{n}}{a_1\cdots a_{n}}=Z_n
+        \end{equation*}
+    \end{proof}
+
+    \begin{example}[][Example of Martingale 4]
+        r.v.列$X_1,\cdots,X_n,\cdots$满足$\P(X_i=\pm 1)=\frac{1}{2}$，
+        $\mathcal{F}_n=\sigma(X_1,\cdots,X_n)$，
+        $S_n=X_1+\cdots+X_n$，$Y_n=S_n^2-n$，则$\{Y_n,n\in\N_+\}$是鞅。
+    \end{example}
+    \begin{proof}
+        显然$Y_n$是$\mathcal{F}_n$-可测的，
+        \begin{align*}
+            \E[Y_{n+1}|\mathcal{F}_n]
+            &=\E[ S_{n+1}^2-(n+1)|\mathcal{F}_n ]\\
+            &=\E[ S_n^2+X_{n+1}^2+2S_nX_{n+1}|\mathcal{F}_n ]\\
+            &=S_n^2+\E[X_{n+1}^2]+2S_n\E[X_{n+1}|\mathcal{F}_n]-(n+1)\\
+            &=S_n^2+1-(n+1)=S_n^2-n=Y_n
+        \end{align*}
+    \end{proof}
+
+    \begin{example}[][Example of Martingale 5]
+        独立同分布r.v.列$X_1,\cdots,X_n,\cdots$服从二项分布$b(p)$，
+        令$S_n=X_1+\cdots+X_n$，$Z_n=\left( \frac{1-p}{p} \right)^{S_n}$，
+        则$\{Z_n,n\in\N_+\}$是鞅。
+    \end{example}
+    \begin{proof}
+        显然$Z_n$是$\mathcal{F}_n$-可测的，
+        \begin{equation*}
+            \E[ Z_{n+1}|\mathcal{F}_n ]
+            =\E\left[ Z_n\cdot \left(\frac{1-p}{p}\right)^{X_{n+1}}|\mathcal{F}_n \right]
+            =Z_n\E\left[ \left(\frac{1-p}{p}\right)^{X_{n+1}} \right]
+            =Z_n \left( \frac{1-p}{p}\cdot p+\frac{p}{1-p} \cdot(1-p) \right)
+            =Z_n
+        \end{equation*}
+    \end{proof}
+
+\section{停时}
+    \begin{definition}
+        $\{\mathcal{F}_n,n\in\N\}$是滤流，
+        r.v.$T$只取非负整数值和$+\infty$，如果$\forall n\geqslant 0,\{ T\leqslant n \}\in\mathcal{F}_n$，
+        则称$T$为（关于$\{\mathcal{F}_n,n\in\N\}$）的停时(stopping times)。
+    \end{definition}
+    \begin{example}
+        独立同分布r.v.列$X_1,\cdots,X_n,\cdots$服从二项分布$b(p)$，
+        令$S_n=X_1+\cdots+X_n$，$\mathcal{F}_n=\sigma(X_1,\cdots,X_n)$，取
+        \begin{equation*}
+            T=\fun{min}{}\{ k\geqslant 1:S_k=100 \}
+        \end{equation*}
+        即首次$S_n$首次达到$100$时的时间，那么$T$是一个停时，因为
+        \begin{equation*}
+            \{ T\leqslant n \}=\bigcup_{k=1}^n \{ S_k=100 \}
+        \end{equation*}
+        右边的$\{S_k=100\}$是$\mathcal{F}_k$-可测的，$k=1,\cdots,n$，因此都是$\mathcal{F}_n$-可测的，
+        从而$\{ T\leqslant n \}$是$\mathcal{F}_n$-可测的，于是$T$是一个停时。
+    \end{example}
+
+    \begin{corollary}
+        如果$T$是停时，则
+        \begin{enumerate}[(1).]
+            \item $\{T>n\}=\{ T\leqslant n \}^c$是$\mathcal{F}_n$-可测的。
+            \item $\{ T=n \}=\{ T\leqslant n \}\cap \{ T>n-1 \}$是$\mathcal{F}_n$-可测的。
+        \end{enumerate}
+    \end{corollary}
+
+    \begin{definition}
+        $T$是一个停时，$\{Z_n,n\in\N\}$是一个随机过程，记$n\wedge T={\rm min}\{ T,n \}$，
+        定义$Y_n\defeq Z_{n\wedge T}$，则$\{ Y_n,n\in\N \}$成为一个新的随机过程，称为
+        随机过程$\{Z_n\}$关于停时$T$的停止过程(stopped process).
+    \end{definition}
+    这个停止过程其实就是：$\{Y_1,Y_2,\cdots,Y_{T-1},Y_T,Y_T,Y_T,\cdots\}$，只不过$T$不是固定的整数，而是一个停时r.v.
+
+    \begin{theorem}\label{thm3.3}
+        $\{Z_n,n\in\N\}$是关于$\{ \F_n,n\in\N \}$的（上/下）鞅，$T$是停时，则停止过程
+        $\{Y_n=Z_{n\wedge T},n\in\N\}$也是关于$\{ \F_n,n\in\N \}$的（上/下）鞅。
+    \end{theorem}
+    \begin{proof}
+        验证鞅的定义：
+        \begin{enumerate}[$1^\circ$]
+            \item $Y_n$是$\F_n$-可测的，因为：
+                \begin{equation*}
+                    Y_n=Z_{n\wedge T}=Z_nI_{\{T>n\}}+Z_TI_{\{T\leqslant n\}}
+                \end{equation*}
+                很明显$Z_n$和$I_{T>n}$是$\F_n$-可测的，但后面的$Z_T$并不明显，因为$T$不是固定的整数，但我们可以稍作变换：
+                \begin{equation*}
+                    Z_TI_{\{T\leqslant n\}}=\sum_{k=0}^n Z_TI_{\{T=k\}}
+                    =\sum_{k=0}^n Z_kI_{\{T=k\}}
+                \end{equation*}
+                这样就能看出$Z_TI_{\{T\leqslant n\}}$是$\F_n$-可测的了，所以$Y_n$是$\F_n$-可测的。
+            \item 希望证明：$\E[ Z_{T\wedge (n+1)}|\F_n ]=Z_{T\wedge n}$.
+                依然是拆分$Z_{T\wedge (n+1)}$，考虑
+                \begin{align*}
+                    Z_{T\wedge (n+1)}&=Z_{n+1}I_{\{ T\geqslant n+1 \}}+Z_TI_{\{ T<n+1 \}}\\
+                    &=Z_{n+1}I_{\{ T\geqslant n+1 \}}+Z_TI_{\{ T\leqslant n \}}\\
+                    &=Z_{n+1}I_{\{ T\geqslant n+1 \}}+\sum_{k=0}^n Z_kI_{\{T=k\}}
+                \end{align*}
+                注意到$\{T\geqslant n+1\}=\{T\leqslant n\}^c$是$\F_n$-可测的，后面的每一个$Z_kI_{\{T=k\}}$是$\F_k\subset \F_n$-可测的，因此
+                \begin{align*}
+                    \E[Z_{T\wedge (n+1)}|\F_n]&=\E[Z_{n+1}I_{\{ T\geqslant n+1 \}}|\F_n]+\sum_{k=0}^n\E[Z_kI_{\{T=k\}}|\F_n]\\
+                    &=\E[Z_{n+1}|\F_n]I_{\{ T\geqslant n+1 \}}+\sum_{k=0}^n Z_kI_{\{T=k\}}\\
+                    &=Z_nI_{\{ T\geqslant n+1 \}}+\sum_{k=0}^n Z_kI_{\{T=k\}}\\
+                    &=Z_{T\wedge n}
+                \end{align*}
+                上、下鞅同理。
+        \end{enumerate}
+
+        $2^\circ$的另一种证明方式：注意到
+            \begin{equation*}
+                Z_{T\wedge (n+1)}=Z_{T\wedge n}+I_{\{T\geqslant n+1\}}(Z_{n+1}-Z_n)\tag{$\star$}
+            \end{equation*}
+        因为：
+            \begin{equation*}
+                RHS=\left\{ \begin{array}{ll}
+                    Z_T&,T\leqslant n\\
+                    Z_n+(Z_{n+1}-Z_n)=Z_n&,T\geqslant n+1 
+                \end{array} \right.
+                =Z_{T\wedge (n+1)}=LHS
+            \end{equation*}
+        那么直接就得到
+            \begin{align*}
+                \E[Z_{T\wedge (n+1)}|\F_n]
+                &=\E[ Z_{T\wedge n}+I_{\{T\geqslant n+1\}}(Z_{n+1}-Z_n)|\F_n ]\\
+                &=Z_{T\wedge n}+I_{\{T\geqslant n+1\}}\E[Z_{n+1}-Z_n|\F_n]\\
+                &=Z_{T\wedge n}
+            \end{align*}
+        这是老师上课讲的方法，两种方法都是选择拆分$Z_{(n+1)\wedge T}$.
+    \end{proof}
+
+    \begin{definition}[停时前$\sigma$-域]\label{sigma-fields from Stopping times}
+        $M$是关于滤流$\{\F_n\}$的停时，定义：
+        \begin{equation*}
+            \F_M\defeq \{ A\in \F:A\cap \{ M\leqslant n \}\in \F_n,\forall n \}
+        \end{equation*}
+        称为$M$前$\sigma$-域。
+    \end{definition}
+    \begin{corollary}
+        $X_M$是$\F_M$-可测的。
+    \end{corollary}
+    \begin{proof}
+        $\forall A=\{ X_M\leqslant a \}$，
+        \begin{equation*}
+            A\cap \{ M\leqslant n \}=\bigcup_{k=0}^n A\cap \{ M=k \}
+            =\bigcup_{k=0}^n \{ X_k\leqslant a \}\cap \{ M=k \}\in \F_n
+        \end{equation*}
+    \end{proof}
+    \begin{definition}
+        对于$A\in \F_M$，令
+        \begin{equation*}
+            M^A\defeq \left\{ \begin{array}{ll}
+                M&,{\rm on\ }A\\
+                +\infty&,{\rm on\ }A^c
+            \end{array} \right.
+        \end{equation*}
+        容易验证$M^A$也是一个停时，称为$M$在$A$上的限制。
+    \end{definition}
+    我们后续会用到这个概念，相关：\autoref{Durrett(Exercise 4.4.3)}
+
+\section{鞅的分解定理}
+    \begin{definition}
+        $\{\F_n\}$是滤流，随机过程$\{ H_n \}$称为关于$\{ \F_n \}$可预测的(predictable w.r.t. $\{\F_n\}$)，如果
+        $\forall n,H_n$是$\F_{n-1}$-可测的。
+    \end{definition}
+
+    \begin{theorem}[Doob分解定理]\label{thm3.7}
+        任何一个下鞅$\{X_n,n\in\N\}$都可以被唯一地分解成$X_n=M_n+A_n$，其中
+        $\{ M_n,n\in\N \}$是鞅，$\{ A_n,n\in\N \}$是可预测的、单调递增的，且$A_0=0$.
+    \end{theorem}
+    \begin{proof}
+        从结论往前倒推：
+        \begin{align*}
+            \E[X_n|\F_{n-1}]&=\E[M_n|\F_{n-1}]+\E[A_n|\F_{n-1}]\\
+            &=M_{n-1}+A_n\\
+            &=X_{n-1}-A_{n-1}+A_n\\
+            A_n-A_{n-1}&=\E[X_n|\F_{n-1}]-X_{n-1}\\
+            A_n&=\sum_{k=1}^n A_k-A_{k-1}=\sum_{k=1}^n (\E[X_k|\F_{k-1}]-X_{k-1}),n\geqslant 1,A_0=0\\
+            M_n&=X_n-A_n=X_n- \sum_{k=1}^n (\E[X_k|\F_{k-1}]-X_{k-1})
+        \end{align*}
+        此即为$A_n,M_n$的构造方法，根据构造过程可以看出是唯一的，
+        然后验证$\{M_n\}$是鞅以及$A_n$满足题目条件即可，比较简单，这里省略。
+    \end{proof}
+    课程后续似乎没有再用过这个分解定理，所以记一下具体的构造方式就好了。
+
+\section{鞅的收敛性}
+    回顾各种收敛性：
+    \begin{enumerate}
+        \item 几乎必然收敛：$X_n\ra{\rm a.s.} X$，即
+            \begin{equation*}
+                \P( \left\{\omega:\fun{lim}{n\rightarrow \infty} X_n(\omega)=X(\omega)\right\} )=1
+            \end{equation*}
+            也叫“依概率1收敛”。
+        \item 依$L^p$收敛：$X_n\ra{L^p} X$，即
+            \begin{equation*}
+                \fun{lim}{n\rightarrow\infty} \E[ |X_n-X|^p ]=0
+            \end{equation*}
+        也简记为$X_n\ra{p} X$.
+        \item 依概率测度收敛：$X_n\ra{\P} X$，即
+            \begin{equation*}
+                \forall \varepsilon>0,
+                \fun{lim}{n\rightarrow\infty}
+                \P( \{ |X_n-X|>\varepsilon \} )=0
+            \end{equation*}
+        \item 依分布收敛：$X_n\ra{\rm F}X$，即
+            \begin{equation*}
+                \forall x,
+                \fun{lim}{n\rightarrow\infty}\P(X_n\leqslant x)
+                =\P(X\leqslant x)
+            \end{equation*}
+            还有的地方记作$X_n\ra{\rm D}X$.
+    \end{enumerate}
+    \begin{definition}
+        对于随机过程$\{X_n\}$，如果存在一个滤流$\{ \F_n \}$满足
+        $\forall n,X_n$是$\mathcal{F}_n$-可测的，则称$\{X_n\}$为$\{\F_n\}$-适应过程($\{\F_n\}$-adapted process).
+    \end{definition}
+    我们先约定一些记号：对于实值的$\{\F_n\}$-适应过程$\{X_n\}$和区间$[a,b]$，记
+    \begin{align*}
+        \tau_1=\fun{min}{}\{ n,X_n\leqslant a \}&,\tau_2=\fun{min}{}\{ n\geqslant \tau_1:X_n\geqslant b \}\\
+        \tau_3=\fun{min}{}\{ n\geqslant \tau_2,X_n\leqslant a \}&,\tau_4=\fun{min}{}\{ n\geqslant \tau_3:X_n\geqslant b \}\\
+        &\vdots\\
+        \tau_{2k+1}=\fun{min}{}\{ n\geqslant \tau_{2k},X_n\leqslant a \}&,\tau_{2k+2}=\fun{min}{}\{ n\geqslant \tau_{2k+1}:X_n\geqslant b \}\\
+        &\vdots
+    \end{align*}
+    这些$\tau$记录了$X_n$每次上下交替跳出区间$[a,b]$的时间。然后我们令
+    \begin{equation*}
+        U_N^X(a,b)\defeq \fun{max}{} \{ k:\tau_{2k}\leqslant N \}
+    \end{equation*}
+    为$N$次之前$\{ X_n \}$在区间$[a,b]$的上穿次数。
+\subsection{鞅收敛定理}
+\begin{theorem}\label{thm3.4}
+    $\{X_n,n\in\N_+\}$是一个上鞅，则有以下估计：给定$N,j\in\N_+$，$N>j$，
+    \begin{enumerate}[(1).]
+        \item \begin{equation*}
+            \P (U_N^X(a,b)>j)\leqslant \frac{1}{b-a}\int_{ \{ U_N^X(a,b)=j \} }(X_n-a)^- \d\P
+        \end{equation*}
+        \item \begin{equation*}
+            \E[ U_N^X(a,b) ]\leqslant \frac{1}{b-a}\int\E [(X_n-a)^-]
+        \end{equation*}
+    \end{enumerate}
+    其中$(X_n-a)^-$代表$X_n-a$的负部。
+\end{theorem}
+\begin{proof}
+    不妨$a=0$，注意我们本题的研究范围是$N$次之前，所以不妨规定随机过程$X=\{X_n\}$停止在$N$，即$X_{N}=X_{N+1}=\cdots$，令
+    \begin{equation*}
+        S=\tau_{2j+1}\wedge (N+1),\ T=\tau_{2j+2}\wedge (N+1)
+    \end{equation*}
+    $S$是第$j+1$次下穿的时间，但是因为可能在$N+1$次之前没能下穿$j+1$次，所以又与$N+1$取最小值；$T$则是第$j+1$次上穿的事件与$N+1$取最小值。
+    注意事件$\{ U_N^X(a,b)>j \}$代表着至少上穿了$j+1$次，那么
+    \begin{equation*}
+        \{S\leqslant N\}=\{ \tau_{2j+1}\leqslant N \}\tag*{($\star 1$)}
+    \end{equation*}
+    所以在$\{S\leqslant N\}$上$X_S=X_{\tau_{2j+1}}$，同时
+    \begin{equation*}
+        \{T\leqslant N\}=\{ \tau_{2j+2}\leqslant N \}=\{ U_N^X(a,b)>j \}=\{ S<N,X_T\geqslant b \}\tag*{($\star 2$)}
+    \end{equation*}
+    前两个等号比较好理解，但是最后一个等号并不明显：\footnote{还是用人话解释一下吧：$S<N$就是$\tau_{2j+1}<N$，即在$N$次之前就下穿了$j+1$次，$U_N^X$的计数是从下穿开始记录的，
+    所以下穿$j+1$次的$j$次间隔中已经上穿了$j$次，还差一次，这就要求
+    $\tau_{2j+2}\leqslant N$，而$X_T\geqslant b$等价于$X_{N+1}\geqslant b$或者$\tau_{2j+2}\leqslant N$，而我们前面规定了$X_{N}=X_{N+1}$，
+    $X_N\geqslant b$意味着$\tau_{2j+2}\leqslant N$，所以$\tau_{2j+2}\leqslant N$和$X_T\geqslant b$等价，这就得到了($\star 2$)式。}
+    \begin{equation*}
+        X_T\geqslant b \Leftrightarrow 
+        \left\{ \begin{array}{l}
+            X_{N+1}\geqslant b\\
+            {\rm or\ }\tau_{2j+2}\leqslant N
+        \end{array} \right.
+        \Leftrightarrow 
+        \left\{ \begin{array}{l}
+            X_{N}\geqslant b\\
+            {\rm or\ }\tau_{2j+2}\leqslant N
+        \end{array} \right.
+    \end{equation*}
+    \begin{equation*}
+        U_N^X(a,b)>j\Leftrightarrow 
+        \left\{ \begin{array}{l}
+            \tau_{2j+1}<N\\
+            \tau_{2j+2}\leqslant N
+        \end{array} \right.
+        \Leftrightarrow 
+        \left\{ \begin{array}{l}
+            S<N\\
+            \tau_{2j+2}\leqslant N
+        \end{array} \right.
+        \Rightarrow \left\{ \begin{array}{l}
+            S<N\\
+            X_T\geqslant b
+        \end{array} \right.
+    \end{equation*}
+    \begin{equation*}
+        \left\{ \begin{array}{l}
+            S<N\\
+            X_{N}\geqslant b
+        \end{array} \right. \Rightarrow 
+        \left\{ \begin{array}{l}
+            S<N\\
+            \tau_{2j+2}\leqslant N
+        \end{array} \right.\Leftrightarrow U_N^X(a,b)>j
+    \end{equation*}
+    从而
+    \begin{equation*}
+        U_N^X(a,b)>j\Rightarrow \left\{ \begin{array}{l}
+            S<N\\
+            X_T\geqslant b
+        \end{array} \right.
+        \Leftrightarrow
+        \left\{ \begin{array}{l}
+            S<N\\
+            X_N\geqslant b {\rm\ or\ }\tau_{2j+2}\leqslant N
+        \end{array} \right.
+        \Rightarrow \left\{ \begin{array}{l}
+            S<N\\
+            \tau_{2j+2}\leqslant N
+        \end{array} \right.\Leftrightarrow U_N^X(a,b)>j
+    \end{equation*}
+    此外还有：
+    \begin{equation*}
+        \{ S<N,X_T<b \}
+        =\{ S<N,T=N+1 \}\subset \{ U_N^X(a,b)=j \}\tag*{($\star 3$)}
+    \end{equation*}
+    因此：
+    \begin{align*}
+        b\cdot \P( U_N^X(a,b)>j )&=\int_{ \{U_N^X(a,b)>j\} }b\d\P
+        =\int_{ \{ \{ S<N,X_T\geqslant b \} \} }b\d\P\\
+        &\leqslant \int_{ \{ \{ S<N,X_T\geqslant b \} \} }X_T\d\P\\
+        &=\int_{ \{ \{ S<N\} \} }X_T\d\P-\int_{ \{ \{ S<N,X_T< b \} \} }X_T\d\P\\
+        &=\int_{ \{ \{ S<N\} \} }X_T\d\P-\int_{ \{ \{ S<N,T=N+1 \} \} }X_T\d\P\\
+        &=\int_{ \{ \{ S<N\} \} }X_T\d\P-\int_{ \{ \{ S<N,T=N+1 \} \} }X_{N+1}\d\P\\
+        &=\int_{ \{ \{ S<N\} \} }X_T\d\P-\int_{ \{ \{ S<N,T=N+1 \} \} }X_N\d\P \tag*{($\star 4$)}
+    \end{align*}
+    ($\star 4$)式是一个阶段性成果！我们先放着。下面我们证明：
+    \begin{equation*}
+        \int_{\{S<N\}}X_T\d\P\leqslant \int_{\{S<N\}}X_S\d\P\tag*{($\star 5$)}
+    \end{equation*}
+    因为$\{ S<N \}=\bigcup_{n=0}^{N-1} \{S=n\}$，只需证明：
+    \begin{equation*}
+        \E[ X_TI_{\{S=n\}} ]=\E[ X_SI_{ \{S=n\} } ],\ \forall n\leqslant N-1 \tag*{($\star 6$)}
+    \end{equation*}
+    令$Y_n=X_{T\wedge n}-X_{S\wedge n}$，那么容易验证：
+    \begin{equation*}
+        Y_n-Y_{n-1}=I_{ \{ T\geqslant n>S \} }(X_n-X_{n-1})
+    \end{equation*}
+    从而
+    \begin{align*}
+        \E[Y_n|\F_{n-1}]&=\E[Y_{n-1}+I_{ \{T\geqslant n>S\} }(X_n-X_{n-1})|\F_{n-1}]\\
+        &=Y_{n-1}+I_{ \{T\geqslant n>S\} }\E[ X_n-X_{n-1}|\F_{n-1} ]\leqslant Y_{n-1}
+    \end{align*}
+    这里用到了$X$是上鞅。于是$\forall n\leqslant N-1$，
+    $\E[ Y_{N+1}I_{ \{S=n\} } ]\leqslant \E[ Y_nI_{ \{S=n\} } ]$，此时$Y_n$只能为$0$，从而
+    \begin{equation*}
+        \E[ Y_{N+1}I_{ \{S=n\} } ]=\int_{ \{ S=n \} }(X_T-X_S)\d\P\leqslant 0
+    \end{equation*}
+    因此($\star 5$)式得证。由($\star 4$)($\star 5$)可得
+    \begin{align*}
+        b\cdot \P( U_N^X(a,b)>j )&\leqslant\int_{ \{ \{ S<N\} \} }X_T\d\P-\int_{ \{ \{ S<N,T=N+1 \} \} }X_N\d\P\\
+        &\leqslant 0-\int_{ \{S<N,X_T<b\} }X_{N+1}\d\P\\
+        &=-\int_{ \{S<N,X_T<b\} }X_{N}\d\P\\
+        &\leqslant \int_{ \{ S<N,T=N+1 \} }X_N^-\d\P\\
+        &\leqslant \int_{ \{ U_N^X(0,b)=j \} }X_N^-\d\P
+    \end{align*}
+    至此定理的(1)得证，关于(2)：
+    \begin{equation*}
+        \E[U_N^X(a,b)]=\sum_{j=0}^\infty \P( U_N^X(a,b)>j )
+        \leqslant \frac{1}{b}\sum_{j=0}^\infty \int_{ \{ U_N^X(a,b)=j \} }
+        X_N^-\d\P=\frac{1}{b}\int X_N^-\d\P=\frac{1}{b}\E[X_N^-]
+    \end{equation*}
+\end{proof}
+
+有了上述估计，就可以得到下面鞅的收敛性定理。
+\begin{theorem}[鞅收敛定理，Martingale Convergence Theorem]\label{Martingale Convergence Theorem}
+    $\{X_n\}$是一个上鞅，且$\fun{sup}{n}\E[X_n^-]<+\infty$，则极限
+    $X(\omega)=\fun{lim}{n\rightarrow\infty} X_n(\omega)$ a.s.存在。
+\end{theorem}
+\begin{proof}
+    令$U^X(a,b)\defeq \fun{lim}{N\rightarrow\infty}U_N^X(a,b)$，如果发散则定义为$+\infty$，由于$U_N^X$关于$n$是个单调递增序列，
+    所以可以使用MCT：
+    \begin{equation*}
+        \E[ U^X(a,b) ]=\fun{lim}{N\rightarrow\infty}\leqslant \fun{sup}{N}\frac{1}{b-a}\E[(X_N-a)^-]<\infty
+    \end{equation*}
+    因此$W_{a,b}=\{ U^X(a,b)=+\infty \}$是个零测集，
+    \begin{equation*}
+        V_{a,b}=\{ \fun{liminf}{n\rightarrow\infty}X_n(\omega)<a,\fun{limsup}{n\rightarrow\infty}X_n(\omega)>b \}\subset W_{a,b}
+    \end{equation*}
+    也是个零测集，而
+    \begin{equation*}
+        \{ X_n\text{不收敛} \}=\{ \fun{liminf}{n\rightarrow\infty}X_n(\omega)<\fun{limsup}{n\rightarrow\infty}X_n(\omega) \}
+        =\bigcup_{a<b,a,b\in\Q}V_{a,b}
+    \end{equation*}
+    所以$X_n$ a.s.收敛。
+\end{proof}
+\subsection{推论与应用}
+下鞅的版本：
+\begin{corollary}
+    如果$\{X_n\}$是一个下鞅，且$\fun{sup}{n}\E[X_n^+]<+\infty$，则$X_n$ a.s.收敛。
+\end{corollary}
+\begin{proof}
+    考虑$Y_n=-X_n$，$Y_n$的负部即为$X_n$的正部，所以$Y_n$ a.s.收敛，进而$X_n$ a.s.收敛。
+\end{proof}
+
+$L^1$度量一致有界的鞅的极限是$L^1$可积的：
+\begin{corollary}
+    $\{X_n\}$是鞅，且$\fun{sup}{n} \E[ |X_n| ]<\infty$，则$X_n$ a.s.收敛到$X$，且$X$可积。
+\end{corollary}
+
+下面这道题展示了如何利用停时构造收敛鞅。
+\begin{example}
+    $\{X_n\}$是鞅，存在$M>0$使得$|X_{n+1}-X_n|\leqslant M<\infty$，令
+    \begin{align*}
+        C&=\{ \omega:\fun{lim}{n\rightarrow\infty} X_n(\omega)\text{存在} \}\\
+        D&=\{ \omega:\fun{limsup}{n\rightarrow\infty} X_n(\omega)=+\infty,\fun{liminf}{n\rightarrow\infty} X_n(\omega)=-\infty \}
+    \end{align*}
+    证明：$\P(C\cup D)=1$.
+\end{example}
+\begin{proof}
+    不妨假设$X_0=0$，否则考虑$\{X_n-X_0\}$.对于$\forall k\in\N_+$，令$N_k=\fun{inf}{}\{ n:X_n\leqslant -k \}$，为首次落在$(-\infty,-k]$的时刻，
+    则$\{ X_{n\wedge N_k} \}$成为一个新的鞅：
+    \begin{equation*}
+        \mathop{(X_1,X_2,\cdots,X_{N_k-1})}\limits_{\leqslant -k},X_{N_k},X_{N_k},\cdots
+    \end{equation*}
+    题目条件表明相邻的两项之差不超过$M$，所以$X_{N_k}\geqslant -k-M$，进而$X_{n\wedge N_k}\geqslant -k-M$，有下界就表明
+    $\fun{sup}{n}\E[ X_{n\wedge N_k}^- ]<+\infty$，所以由鞅收敛\autoref{Martingale Convergence Theorem}可知$X_{n\wedge N_k}$ a.s.收敛，注意
+    在事件$\{ N_k=+\infty \}$上$X_{n\wedge N_k}=X_n$，故$X_n$在事件$\{ N_k=+\infty \}$上a.s.收敛，而
+    \begin{equation*}
+        \{ \fun{liminf}{n\rightarrow\infty}X_n(\omega)>-\infty \}=\bigcup_k \{ N_k=+\infty \}
+    \end{equation*}
+    所以$X_n$在事件$\{ \fun{liminf}{n\rightarrow\infty}X_n(\omega)>-\infty \}$上a.s.收敛，同理考虑$-X_n$，可得
+    $X_n$在事件$\{ \fun{limsup}{n\rightarrow\infty}X_n(\omega)<+\infty \}$上a.s.收敛，于是$X_n$在事件$D$的补集上a.s.收敛，
+    这说明$\P(C\cup D)=1$.
+\end{proof}
+相关：\nameref{HW1 from ZTS}中有相关应用。
+
+\section{鞅的$L^p$收敛性}
+    \begin{lemma}\label{lem3.8}
+        $\{X_n\}$是一个下鞅，$N$是停时，且存在$k\in\N_+$使得$N\leqslant k$ a.s.，
+        则$\E[X_0]\leqslant \E[X_N]\leqslant \E[X_k]$.
+    \end{lemma}
+    \begin{proof}
+        乍一看这个结论似乎很显然，但是要注意，$N$是随机变量，并不是一个固定的数字。
+
+        由\autoref{thm3.3}，$\{X_{m\wedge N},m\in\N\}$也是一个下鞅，所以
+        \begin{equation*}
+            \E[X_{0\wedge N}] \leqslant \E[X_{k\wedge N}]
+        \end{equation*}
+        也就是
+        \begin{equation*}
+            \E[X_0]\leqslant \E[X_N]
+        \end{equation*}
+
+        对于另一边，
+        拆分$\Omega=\bigsqcup_{m=0}^k \{ \omega:N(\omega)=m \}$ a.s.，所以
+        \begin{align*}
+            \E[X_N]
+            &=\E\left[ \sum_{m=0}^k X_NI_{\{N=m\}} \right]\\
+            &=\sum_{m=0}^k \E[X_mI_{\{N=m\}}]\\
+            &\leqslant \sum_{m=0}^k \E[\ \E[X_k|\F_m]I_{\{N=m\}}\ ] \tag{$\star$}\\
+            &=\sum_{m=0}^k\E[\ \E[X_kI_{\{N=m\}}|\F_m]\ ]\\
+            &\leqslant \sum_{m=0}^k \E[X_kI_{\{N=m\}}]\\
+            &=\E[X_k]
+        \end{align*}
+        $(\star)$是比较关键的一步，因为$\E[X_n]\leqslant \E[X_k]$并不能直接推出
+        $\E[ X_nI_A ]\leqslant \E[X_kI_A]$.
+    \end{proof}
+
+    \begin{theorem}[Doob's Inquality]\label{Doob's Inquality}
+        $X=\{ X_m,m\in\N \}$是下鞅，$A=\{ \fun{max}{0\leqslant m\leqslant n} X_m^+\geqslant \lambda \},\lambda>0$，则
+        \begin{equation*}
+            \lambda \P(A)\leqslant \E[X_n\cdot I_A]\leqslant \E[X_n^+ I_A]\leqslant \E[X_n^+]
+        \end{equation*}
+    \end{theorem}
+    \begin{proof}
+        后两个不等号是显然的。
+        取停时$N=\fun{inf}{}\{m:X_m\geqslant\lambda\}\wedge n$，
+        注意到事件$A$
+        代表着在$n$时刻之前$X_m$超过了$\lambda$，
+        所以$X_N\geqslant\lambda$，因此
+        \begin{equation*}
+            \lambda\P(A)=\E[\lambda I_A]\leqslant \E[X_NI_A]
+        \end{equation*}
+        由\autoref{lem3.8}可知$\E[X_N]\leqslant \E[X_n]$，
+        注意到$A^c=\{  X_m^+<\lambda,0\leqslant m\leqslant n\}$，在事件$A^c$上$N=n$，所以$\E[X_NI_{A^c}]=\E[X_nI_{A^c}]$，
+        因此
+        \begin{equation*}
+            \E[X_NI_A]=\E[X_N]-\E[X_NI_{A^c}]=\E[X_N]-\E[X_nI_{A^c}]\leqslant \E[X_n]-\E[X_nI_{A^c}]=\E[X_nI_A]
+        \end{equation*}
+    \end{proof}
+    于是我们给出了$\P(A)$的上界估计。
+
+    \begin{theorem}[$L^p$ Maximum Inquality]\label{Lp Maximum Inquality}
+        $X=\{ X_m \}$是下鞅，记$\overline{X}_n=\fun{max}{0\leqslant m\leqslant n}X_m^+$，则
+        \begin{equation*}
+            \E[\overline{X}_n^p]\leqslant \left( \frac{p}{p-1} \right)^p\E[ (X_n^+)^p ]
+        \end{equation*}
+    \end{theorem}
+    \begin{proof}
+        注意到$\forall M>0$，$\{ \overline{X}_n\wedge M\geqslant \lambda \}$要么是$\{ \overline{X}_n\geqslant \lambda \}$，要么是$\varnothing$.
+        \begin{align*}
+            \E[ (\overline{X}_n\wedge M)^p ]&=\E\left[ \int_0^{\overline{X}_n\wedge M}p\lambda^{p-1}\d\lambda \right]\\
+            &=\E[ \int_0^{+\infty} I_{ \{\overline{X}_n\wedge M\} }p\lambda^{p-1}\d\lambda ]\\
+            &=\int_0^{+\infty} p\lambda^{p-1}\E[ I_{ \{ \overline{X}_n\wedge M\geqslant\lambda \} } ]\d\lambda \tag*{By Fubini Thm}\\
+            &=\int_0^{+\infty} p\lambda^{p-1}\P(\overline{X}_n\wedge M)\d\lambda \\
+            &\leqslant\int_0^{+\infty} p\lambda^{p-1}\frac{1}{\lambda}\int X_n^+ I_{\overline{X}_n\wedge M\geqslant\lambda}\d\P\d\lambda \tag*{By \autoref{Doob's Inquality}}\\
+            &=\int X_n^+ \int_0^{\overline{X}_n\wedge M}p\lambda^{p-2}\d\lambda\d\P \tag*{By Fubini Thm}\\
+            &=\frac{p}{p-1}\int X_n^+(\overline{X}_n\wedge M)^{p-1}\d\P\\
+            &=\frac{p}{p-1}\E[ X_n^+(\overline{X}_n\wedge M)^{p-1} ]\\
+            &\leqslant \frac{p}{p-1}\E[ |X_n^+|^p ]^\frac{1}{p}\E[ |\overline{X}_n\wedge M|^p ]^\frac{p-1}{p}\tag*{By Holder Inquality}
+        \end{align*}
+        令$M\rightarrow\infty$，则得到
+        \begin{equation*}
+            \E[ \overline{X}_n^p ]\leqslant 
+            \frac{p}{p-1}\E[ |X_n^+|^p ]^\frac{1}{p}\E[ |\overline{X}_n|^p ]^\frac{p-1}{p}
+        \end{equation*}
+        整理即可得到结论。
+    \end{proof}
+    \begin{corollary}\label{Cor of Lp Maximum Inquality}
+        $\{ X_n,n\in\N \}$是鞅，$\fun{sup}{n}\E[ |X_n|^p ]<+\infty,p>1$，则
+        \begin{equation*}
+            \E[ \fun{max}{0\leqslant m\leqslant n}|X_m|^p]\leqslant 
+            \left( \frac{p}{p-1} \right)^p\E[ |X_n|^p ]
+        \end{equation*}
+    \end{corollary}
+    \begin{proof}
+        对$X_n,-X_n$都使用\autoref{Lp Maximum Inquality}，
+        \begin{equation*}
+            \E[ \fun{max}{0\leqslant m\leqslant n}(X_m^+)^p]\leqslant 
+            \left( \frac{p}{p-1} \right)^p\E[ (X_n^+)^p ]
+        \end{equation*}
+        \begin{equation*}
+            \E[ \fun{max}{0\leqslant m\leqslant n}(X_m^-)^p]\leqslant 
+            \left( \frac{p}{p-1} \right)^p\E[ (X_n^-)^p ]
+        \end{equation*}
+        注意到$|X_n|=X_n^+I_{ \{ X_n>0 \} }+X_n^-I_{ \{X_n<0\} }$，两式相加即可。
+    \end{proof}
+
+    \begin{theorem}[$L^p$收敛定理]\label{Theorem of Lp convergence}
+        $\{ X_n,n\in\N \}$是鞅，$\fun{sup}{n}\E[ |X_n|^p ]<+\infty,p>1$，则$X_n\ra{\rm a.s.}X $且$X_n\ra{L^p}X$.
+    \end{theorem}
+    \begin{proof}
+        根据Jensen不等式，$\E[ |X_n| ]\leqslant \E[ |X_n|^p ]^\frac{1}{p}<+\infty$，由鞅收敛定理即可得a.s.收敛。
+
+        由\autoref{Cor of Lp Maximum Inquality}，
+        \begin{equation*}
+            \E[ \fun{max}{0\leqslant m\leqslant n}|X_m|^p ]\leqslant \left( \frac{p}{p-1} \right)^p\E[|X_n|^p]
+        \end{equation*}
+        由$n$的任意性，可得
+        \begin{equation*}
+            \E[ \fun{sup}{n}|X_n|^p ]\leqslant \left( \frac{p}{p-1} \right)^p\fun{sup}{n}\E[|X_n|^p]<+\infty
+        \end{equation*}
+        这说明$ \fun{sup}{n}|X_n| $是$L^p$可积的，
+        由控制收敛定理可得$L^p$收敛。
+    \end{proof}
+
+\section{鞅的择停定理}
+
+\subsection{回顾：一致可积性}
+    \begin{definition}
+        称一族r.v.$\{X_i,i\in I\}$是一致可积的(Uniformly Integrable, U.I.)，如果
+        \begin{equation*}
+            \fun{lim}{M\rightarrow\infty}\fun{sup}{i\in I}\E[ |X_i|;|X_i|>M ]=0
+        \end{equation*}
+        这里
+        \begin{equation*}
+            \E[X;A]\defeq \E[XI_A]=\int_A X\d\P
+        \end{equation*}
+    \end{definition}
+
+    \begin{lemma}[积分的绝对连续性]\label{lem3.12}
+        如果r.v.$X$可积，则
+        \begin{equation*}
+            \fun{lim}{\P(A)\rightarrow 0}\int_{A}|X|\d\P=0
+        \end{equation*}
+    \end{lemma}
+    \begin{proof}
+        $X$是可积的，则$XI_{|X|>M}\ra{\P}0$，因为$|XI_{|X|>M}|\leqslant |X|$，由DCT可知
+        \begin{equation*}
+            \int |XI_{|X|>M}|\d\P\rightarrow 0
+        \end{equation*}
+        即$\forall \varepsilon$，$M$充分大时
+        \begin{equation*}
+            \int |XI_{|X|>n}|\d\P<\frac{1}{2}\varepsilon
+        \end{equation*}
+        取$\delta=\frac{\varepsilon}{2M}$，$\P(A)<\delta$时，
+        \begin{align*}
+            \int_A |X|\d\P&=\int_A |X|I_{ \{|X|\geqslant M\} }+\int_A |X|I_{ \{|X|<M\} }\d\P\\
+            &\leqslant \frac{\varepsilon}{2}+\int_A MI_{ \{ |X|<M \} }\d\P\\
+            &\leqslant \frac{\varepsilon}{2}+\P(A)\cdot M=\varepsilon
+        \end{align*}
+    \end{proof}
+
+    \begin{corollary}
+        一致有界的$\{X_i,i\in I\}$是一致可积的。
+    \end{corollary}
+    \begin{proof}
+        取充分大的$M$使得$\{ |X_i|\geqslant M \}=\varnothing,\forall i$即可。
+    \end{proof}
+
+    \begin{corollary}\label{Integrability of Conditional Expectation}
+        概率空间$(\Omega,\P,\F)$上的随机变量$X$可积，
+        考虑r.v.族$\{ \E[X|\mathcal{G}]:\mathcal{G}\subset\mathcal{F} \}$，
+        则是一致可积的。
+    \end{corollary}
+    \begin{proof}
+        设$M>0$，令事件$A=\{ |\E[X|\mathcal{G}]|>M \}=\{ \frac{|\E[X|\mathcal{G}]|}{M}>1 \}$，
+        \begin{equation*}
+            \P(A)
+            =\int_{A} 1\d\P
+            \leqslant \int_A \frac{|\E[X|\mathcal{G}]|}{M} \d\P
+            \leqslant \int \frac{|\E[X|\mathcal{G}]|}{M} \d\P
+            =\frac{\E[X]}{M} 
+        \end{equation*}
+        由\autoref{lem3.12}，$\forall\varepsilon>0$，$\exists\delta>0$，
+        只要取足够大的$M$使得$\P(A)\leqslant E[|X|]/M\leqslant \delta$，
+        就有
+        \begin{equation*}
+            \int_A |X|\d\P<\varepsilon
+        \end{equation*}
+        又根据条件期望的定义，$A\in \mathcal{G}$，进而
+        \begin{equation*}
+            \int_A \E[|X|\ |\mathcal{G}]\d\P=\int_A |X|\d\P
+        \end{equation*}
+        于是
+        \begin{equation*}
+            \varepsilon\geqslant \int_A |X|\d\P
+            =\int_A \E[|X|\ |\mathcal{G}]\d\P
+            \geqslant\int_A | \E[X|\mathcal{G}] |\d\P 
+        \end{equation*}
+        这就证明了一致可积性。
+    \end{proof}
+
+    \begin{theorem}\label{thm3.14}
+        $\forall \varphi\geqslant 0$，且$\frac{\varphi(x)}{x}\rightarrow \infty {\rm\ as\ }x\rightarrow\infty$，
+        如果$\fun{sup}{i}\E[ \varphi(X_i) ]<+\infty$，则$\{ X_i,i\in I \}$是一致可积的。
+    \end{theorem}
+    \begin{proof}
+        设$M>0$，令
+        \begin{equation*}
+            \varepsilon_M=\fun{sup}{}\left\{ \frac{x}{\varphi(x)}:x\geqslant M \right\}
+        \end{equation*}
+        则在$A=\{|X_i|>M\}$上，
+        \begin{equation*}
+            \frac{X_i}{\varphi(X_i)}\leqslant \varepsilon_M
+        \end{equation*}
+        因为$x\rightarrow\infty$时$\frac{x}{\varphi(x)}\rightarrow 0$，
+        所以$M\rightarrow\infty$时$\varepsilon_M\rightarrow 0$.
+        对于$\forall i\in I$，
+        \begin{equation*}
+            \E[ |X_i|I_A ]
+            =\int_A \frac{X_i}{\varphi(X_i)}\cdot \varphi(X_i)\d\P
+            \leqslant 
+            \varepsilon_M\int_A \varphi(X_i)\d\P
+            \leqslant 
+            \varepsilon_M \E[\varphi(X_i)]
+        \end{equation*}
+        则
+        \begin{equation*}
+            \fun{sup}{i} \E[ |X_i|I_A ]
+            \leqslant \varepsilon_M \fun{sup}{i}\E[\varphi(X_i)]\rightarrow 0
+        \end{equation*}
+        所以一致可积性得证。
+    \end{proof}
+    \begin{remark}
+        取$\varphi(x)=|x|^p,p>1$是一个很常见的应用。
+    \end{remark}
+
+    \begin{theorem}[Durrett Theorem 5.5.2]\label{thm3.15}
+        $\E[ |X_n| ]<+\infty,\forall n$，若$X_n\ra{\P} X$，以下命题等价：
+        \begin{enumerate}[(1)]
+            \item $\{ X_n,n\geqslant 0 \}$一致可积；
+            \item $X_n\ra{L^1} X$；
+            \item $\E[ |X_n| ]\rightarrow \E[|X|]<+\infty$.
+        \end{enumerate}
+    \end{theorem}
+    \begin{proof}
+        \if{0}{
+            $(1)\Rightarrow (2)$：
+        令
+        \begin{equation*}
+            \varphi_M(x)=M\cdot I_{ \{x\geqslant M\} }+x\cdot I_{ \{|x|\leqslant M\} }-MI_{ \{ x\leqslant -M \} }
+        \end{equation*}
+        那么$\varphi_M$满足如下性质：
+        \begin{enumerate}[$1^\circ$]
+            \item $\varphi_M$是一个连续函数，所以$\varphi_M(X_n)\ra{\P}\varphi_M(X)$.
+            \item $\varphi_M(x)-x=( |x|-M )^+\leqslant |x|I_{ \{ |x|>M \} }$
+        \end{enumerate}
+        由$2^\circ$，
+        \begin{align*}
+            \E[ |X_n-X| ]
+            &\leqslant 
+            \E[|X_n-\varphi_M(X_n)|]+\E[| \varphi_M(X_n)-\varphi_M(X) |]+\E[| \varphi_M(X)-X |]\\
+            &\leqslant 
+            \E[|X_n|\cdot I_{ \{|X_n|>M\} }]+\E[| \varphi_M(X_n)-\varphi_M(X) |]+\E[|X|\cdot I_{ \{|X|>M\} }]
+        \end{align*}
+        其中，
+        第一项因为一致可积性可以任意小，
+        第二项由
+        }\fi
+        这段证明用到的前文结论太多，暂时无力整理，等前三章补充完整了再说吧。
+    \end{proof}
+
+\subsection{一致可积鞅}
+    \begin{theorem}\label{thm3.16}
+        对于一个下鞅$\{X_n\}$，以下命题等价：
+        \begin{enumerate}[(1).]
+            \item $\{X_n,n\geqslant 0\}$一致可积；
+            \item $X_n\ra{L^1} X$且$X_n \ra{\rm a.s.}X$；
+            \item $X_n\ra{L^1} X$.
+        \end{enumerate}
+    \end{theorem}
+    \begin{proof}
+        我们利用\autoref{thm3.15}的结论证明该定理。
+
+        $(1)\Rightarrow (2)$：一致可积意味着$\fun{sup}{n}\E[|X_n|]<+\infty$，
+        利用鞅收敛定理可知$X_n\ra{\rm a.s.} X$，进而$X_n\ra{\P}X$，
+        于是由\autoref{thm3.15}$(1)\Rightarrow (2)$知$X_n\ra{L^1}X$.
+
+        $(2)\Rightarrow (3)$：显然。
+
+        $(3)\Rightarrow (1)$：$X_n\ra{L^1}X$意味着$X_n\ra{\P}X$，
+        于是由\autoref{thm3.15}$(2)\Rightarrow (1)$则得证。
+    \end{proof}
+
+    \begin{corollary}
+        $\{ X_n \}$是U.I.鞅，$X_n\rightarrow X$，则$X_n=\E[X|\F_n],\forall n$.
+    \end{corollary}
+    \begin{proof}
+        先回顾一个测度论里的结论：
+        \begin{lemma}
+            $X_n\in L^1$，$X_n\ra{1} X$，则$\forall A\subset \Omega$，
+            \begin{equation*}
+                \E[X_n I_A]\rightarrow \E[XI_A]
+            \end{equation*}
+            \begin{proof}
+                \begin{equation*}
+                    \E[ X_nI_A-XI_A ]
+                    \leqslant \E[ |X_n-X|I_A ]
+                    \leqslant \E[ |X_n-X| ]=0
+                \end{equation*}
+            \end{proof}
+        \end{lemma}
+        设$X_n\ra{{\rm a.s.\ and\ }L^1} X$，
+        考虑$m\geqslant n$，$X_n=\E[ X_m|\F_n ]$，
+        因此若$A\in \F_n$，就有
+        \begin{equation*}
+            \E[X_mI_A]=\int_A \E[ X_m|\F_n ]\d\P=\E[X_n I_A]
+        \end{equation*}
+        由引理可知，$\E[X_nI_A]\rightarrow \E[XI_A]$，
+        所以$\forall n$有$\E[XI_A]=\E[X_nI_A]$，这意味着$X_n=\E[X|\F_n]$.
+    \end{proof}
+
+    \begin{corollary}
+        $\{ X_n \}$是U.I.下鞅，$X_n\rightarrow X$，则$X_n\leqslant \E[X|\F_n],\forall n$.
+    \end{corollary}
+    \begin{proof}
+        没办法直接验证条件期望了，但测度论中有一个结论：
+        \begin{lemma}
+            $(\Omega,\F,\P)$上，$\mathcal{G}\subset \F$，
+            两个$\mathcal{G}$-可测的随机变量$X,Y$满足
+            $\forall A\in \mathcal{G}$，$\E[XI_A]\leqslant \E[YI_A]$，则$X\leqslant Y$ a.s.
+        \end{lemma}
+        于是只需验证$\forall n,A\in \F_n$有$\E[X_nI_A]\leqslant \E[\E[X|\F_n]I_A]=\E[XI_A]$即可，
+        之后的证明过程和上一个推论同理。
+    \end{proof}
+
+    \begin{theorem}[条件期望随信息演化而收敛]\label{Theorem of CE with sigma-F seq convergence}
+        设$\F_n\nearrow \F_{\infty}$，则当$n\rightarrow\infty$时，
+        \begin{equation*}
+            \E[X|\F_n]\ra{\text{a.s. and $L^1$}} \E[ X|\F_{\infty} ]
+        \end{equation*}
+
+        $\F_n\nearrow \F_{\infty}$的意思是$\F_1\subset \F_2\subset\cdots$，并且存在
+        $\F_\infty\defeq \sigma\left( \bigcup_{n=1}^\infty \F_n \right)$.
+    \end{theorem}
+    \begin{proof}
+        注意到$Y_n=\E[X|\F_n]$是一致可积鞅，
+        设$Y_n\rightarrow Y_\infty$ a.s.和$L^1$，并且
+        \begin{equation*}
+            \E[X|\F_n]=Y_n=\E[ Y_\infty|\F_n ]
+        \end{equation*}
+        因此$\forall A\in \F_n$，
+        \begin{equation*}
+            \E[Y_nI_A]=\E[XI_A]=\E[Y_\infty I_A]
+        \end{equation*}
+        考虑到
+        $\bigcup_n \F_n$是一个$\pi$-系，
+        根据$\pi$-$\lambda$定理可知
+        对于任意的$A\in \F_\infty$上式都成立，又因为$Y_\infty$是$\F_\infty$-可测的\footnote{这也是测度论里的一个结论：
+        显然$Y_n$都是$\F_\infty$-可测的，
+        而可测函数类对于极限运算封闭，
+        见实分析笔记定理1.4.2，
+        后续记得补上。}，
+        所以$Y_\infty =\E[X|\F_\infty]$.
+    \end{proof}
+
+    \begin{corollary}[Levy 0-1律]
+        设$\F_n\nearrow \F_{\infty}$，事件$A\in \F$，则$\E[ I_A|\F_n ]\rightarrow I_A$ a.s.
+    \end{corollary}
+
+    \begin{theorem}[条件期望的控制收敛定理（对角线ver.）]\label{thm3.18}
+        设$\F_n\nearrow \F_{\infty}$，$Y_n\ra{\rm a.s.} Y$，$|Y_n|\leqslant Z,\forall n$，
+        $Z$可积，则$\E[ Y_n|\F_n ]\rightarrow \E[Y|\F_\infty]$.
+    \end{theorem}
+    \begin{proof}
+        令$W_n=\fun{sup}{}\{ |Y_n-Y_m|:\forall n,m\geqslant N \}$，
+        则$W_N\leqslant 2Z$，进而$\E[W_N]<+\infty$，由\autoref{Theorem of CE with sigma-F seq convergence}，
+        \begin{equation*}
+            \fun{limsup}{n\rightarrow\infty}\E[ |Y_n-Y|\ |\F_n ]\leqslant 
+            \fun{limsup}{n\rightarrow\infty}\E[ W_N\ |\F_n ]=\E[ W_N|\F_\infty ]           
+        \end{equation*}
+        因为$N\rightarrow\infty$时$\E[W_N|\F_\infty]\searrow 0$，以及$\E[Y|\F_n]\rightarrow \E[Y|\F_\infty]$，所以
+        $\E[Y_n|\F_n]\rightarrow \E[ Y|\F_n ]$.
+    \end{proof}
+
+    \begin{theorem}[Doob's Optional Stopping Theorem，择停定理]\label{thm3.19}
+        $\{ X_n,n\in\N \}$是一致可积下鞅，对于任意停时$N$，
+        $\{X_{n\wedge N}\}$是一致可积的。
+    \end{theorem}
+    \begin{proof}
+        下鞅$\Rightarrow \E[X_{N\wedge n}^+]\leqslant \E[X_n^+]$，因此
+        \begin{equation*}
+            \fun{sup}{n}\E[ X_{N\wedge n}^+ ]
+            \leqslant \fun{sup}{n}\E[X_n^+]
+            \leqslant \fun{sup}{n}\E[ |X_n| ]<+\infty
+        \end{equation*}
+        另一方面，
+        \begin{equation*}
+            \E[ X_{N\wedge n}^- ]=\E[X_{N\wedge n}^+]-\E[X_{N\wedge n}]
+            \leqslant \E[X_{N\wedge n}^+]-\E[X_0]
+        \end{equation*}
+        所以
+        \begin{equation*}
+            \fun{sup}{n}\E[X_{N\wedge n}^-]\leqslant \fun{sup}{n}\E[X_{N\wedge n}^+]-\E[X_0]<+\infty
+        \end{equation*}
+        从而$\fun{sup}{n}\E[ |X_{N\wedge n}| ]<+\infty$，由鞅收敛定理可知
+        $X_{N\wedge n}\ra{\rm a.s.}X_N$且$\E[|X_N|]<+\infty$，于是
+        \begin{align*}
+            \E[ |X_{N\wedge n}|I_{ \{ |X_{N\wedge n}|>k \} } ]
+            &=\E[ |X_{N\wedge n}|I_{ \{ |X_{N\wedge n}|>k,N\leqslant n \} } ]
+            +\E[ |X_{N\wedge n}|I_{ \{ |X_{N\wedge n}|>k,N>n \} } ]\\
+            &=\E[ |X_{N}|I_{ \{ |X_N|>k,N\leqslant n \} } ]
+            +\E[ |X_{n}|I_{ \{ |X_{n}|>k,N>n \} } ]\\
+            &\leqslant \E[ |X_N|I_{ \{ |X_N|>k \} } ]+\E[ |X_n|I_{ \{ |X_n|>k \} } ]
+        \end{align*}
+        $X_N$可积，$\{X_n\}$一致可积，所以这两项都趋于$0$，故
+        \begin{equation*}
+            \fun{lim}{k\rightarrow\infty}\E[ |X_{N\wedge n}|I_{ \{|X_{N\wedge n}|>k\} } ]=0
+        \end{equation*}
+    \end{proof}
+
+\subsection{择停定理的推论与应用}
+    \begin{theorem}\label{thm3.20}%Durrett(Theorem 4.8.2)
+        $\{X_n\}$是一个下鞅，
+        $N$是停时，如果
+        $X_N$可积且$\{ X_nI_{ \{N>n\} },n\in\N \}$一致可积，
+        则$\{X_{N\wedge n}\}$一致可积，从而$\E[X_0]\leqslant \E[X_N]$.
+    \end{theorem}
+    \begin{proof}
+        设$Y_n=X_{N\wedge n}$，则
+        \begin{align*}
+            \E[Y_n;|Y_n|>M]
+            &=\int_{ \{ |Y_n|>M \} }|Y_n|\d\P\\
+            &=\int_{ \{ |X_n|>M,N>n \} }|X_n|\d\P+\int_{ \{ |X_N|>M,N\leqslant n \} }|X_N|\d\P\\
+            &\leqslant \int_{ \{ |X_n|>M \} }|X_nI_{ \{N>n\} }|\d\P+\int_{ \{ |X_N|>M \} }|X_N|\d\P
+        \end{align*}
+        $M\rightarrow \infty$时这两项都趋于$0$，
+        前面是因为$\{ X_nI_{ \{N>n\} },n\in\N \}$一致可积的定义，
+        后面是因为积分的绝对连续性。
+
+        因为$\{X_n\}$是一个下鞅，$\{Y_n=X_{N\wedge n}\}$就是一致可积下鞅，因此
+        $Y_n\ra{ {\rm a.s.\ and\ }L^1 } Y_\infty$，
+        $\forall n$有$\E[Y_0]\leqslant \E[Y_n]\rightarrow \E[Y_\infty]$，
+        所以$\E[X_0]\leqslant \E[X_N]$.
+    \end{proof}
+
+    \begin{theorem}\label{thm3.21}%Durrett(Theorem 4.8.3)
+        $\{X_n\}$是一致可积下鞅，
+        $X_n\rightarrow X_\infty$，
+        则对于任意停时$N$有
+        \begin{equation*}
+            \E[X_0]\leqslant \E[X_N]\leqslant \E[X_\infty]
+        \end{equation*}        
+    \end{theorem}
+    \begin{proof}
+        $\{Y_n=X_{n\wedge N}\}$是一致可积下鞅，
+        设$Y_n\rightarrow Y_\infty$，
+        $\E[Y_0]\leqslant \E[Y_\infty]$可得$\E[X_0]\leqslant \E[X_N]$.
+
+        另一方面，考虑
+        \begin{align*}
+            \E[X_N]&=\sum_{n=0}^\infty \E[X_nI_{ \{N=n\} }]\\
+            &\leqslant \sum_{n=0}^\infty \E[\ \E[X_\infty|\F_n]I_{ \{N=n\} }\ ]\\
+            &=\sum_{n=0}^\infty \E[\ \E[X_\infty I_{ \{N=n\} }|\F_n]\ ]\\
+            &=\sum_{n=0}^\infty \E[X_\infty I_{ \{N=n\} }|\F_n]\\
+            &=\E[X_\infty]
+        \end{align*}
+        这和\autoref{lem3.8}的证明非常类似。
+    \end{proof}
+
+    \begin{corollary}\label{cor3.22}
+        $\{X_n\}$是一致可积下鞅，$M\leqslant N$是两个停时，
+        则$\E[X_0]\leqslant \E[X_M]\leqslant \E[X_N]$.
+    \end{corollary}
+    \begin{proof}
+        考虑$Y_n=X_{n\wedge N}$是一致可积下鞅，则
+        \begin{equation*}
+            \E[Y_0]\leqslant \E[Y_M]\leqslant \E[Y_\infty]
+        \end{equation*}
+        相对应的就是
+        \begin{equation*}
+            \E[X_0]\leqslant \E[X_M]\leqslant \E[X_N]
+        \end{equation*}
+    \end{proof}
+
+    \begin{corollary}\label{cor3.23}
+        $\{X_n\}$是一致可积鞅，$M\leqslant N$是两个停时，则
+        $\E[X_0]=\E[X_M]=\E[X_N]$.
+    \end{corollary}
+    \begin{proof}
+        同上。
+    \end{proof}
+
+    \begin{corollary}\label{cor3.24}
+        $\{X_n\}$是一致可积鞅， $M\leqslant N$是两个停时，则$X_M=\E[X_N|\F_M]$.
+    \end{corollary}
+    \begin{proof}
+        回顾\autoref{sigma-fields from Stopping times}.
+        $X_M$是$\F_M$-可测的，只需验证$\forall A\in \F_M$，
+        \begin{equation*}
+            \E[X_MI_A]=\E[X_NI_A]
+        \end{equation*}
+        $A\in \F_M\subset \F_N$，考虑$M^A\leqslant N^A$这两个停时，应用\autoref{cor3.23}，
+        就得到
+        \begin{equation*}
+            \E[X_{M^A}]=\E[X_{N^A}]
+        \end{equation*}
+        即
+        \begin{equation*}
+            \E[X_MI_A]+\E[X_\infty I_{A^c}]=\E[X_NI_A]+\E[X_\infty I_{A^c}]
+        \end{equation*}
+        这说明$\E[X_MI_A]=\E[X_NI_A]$，于是得证。
+    \end{proof}
+
+    \begin{theorem}\label{thm3.25}%Durrett(Theorem 4.8.5)
+        $\{X_n\}$是下鞅，存在常数$B>0$使得
+        $\E[ |X_{n+1}-X_n|\ |\F_n ]\leqslant B$ a.s.，如果$N$是停时，
+        $\E[N]<+\infty$，则$\{Y_n=X_{N\wedge n}\}$一致可积，进而$\E[X_0]\leqslant \E[X_N]$.
+    \end{theorem}
+    \begin{proof}
+        记
+        \begin{equation*}
+            Y=|X_0|+\sum_{m=0}^\infty |X_{m+1}-X_m|I_{ \{ N>m \} }
+        \end{equation*}
+        则$|X_{N\wedge n}|\leqslant Y$，下面只需证明$Y$可积即可。
+        \begin{align*}
+            \E[Y]&=\E[|X_0|]+\sum_{m=0}^\infty \E[ |X_{m+1}-X_m|I_{ \{ N>m \} } ]\\
+            &=\E[|X_0|]+\sum_{m=0}^\infty \E[\ \E[|X_{m+1}-X_m|I_{ \{ N>m \} }|\F_m]\ ]\\
+            &=\E[|X_0|]+\sum_{m=0}^\infty \E[\ \E[|X_{m+1}-X_m||\F_m]I_{ \{ N>m \} }\ ]\\
+            &\leqslant \E[|X_0|]+B\cdot \sum_{m=0}^\infty \E[I_{ \{ N>m \} }]\\
+            &=\E[|X_0|]+B\E[N]<+\infty
+        \end{align*}
+    \end{proof}
+
+\section{两个例子}
+    \begin{example}
+        赌徒破产：A和B玩抛硬币，规则是这样的：硬币均匀，抛出正反面的概率均为$\frac{1}{2}$，
+        每轮游戏抛一次硬币，抛出正面时B给A一块钱，抛出反面时A给B一块钱。游戏开始前
+        A有$a$元，B有$b$元，游戏会一直持续到一方没有钱为止，此时另一方获得胜利。
+        那么，A获胜的概率是多少？游戏的持续轮数$T$的期望是多少？
+    \end{example}
+    \begin{solve}
+        设$\{ X_n,n\in\N_+ \}$满足$\P(X_i=\pm 1)=\frac{1}{2}$，令
+        $S_n=X_1+\cdots+X_n$，则$S_n$表示经过$n$轮游戏后A获得/失去的钱数，
+        $S_0$定义为$0$，
+        那么，根据\autoref{Example of Martingale 1}可知$\{ S_n,n\in\N \}$是一个鞅。
+
+        游戏的持续轮数$T$的定义应当是$S_n$首次等于$b$或者$-a$的时刻：
+        \begin{equation*}
+            T\defeq \fun{min}{}\{ n:S_n=-a{\rm\ or\ }S_n=b \}
+        \end{equation*}
+        则$T$是一个停时。为了证明$\E[T]<+\infty$，首先要证明下面这个式子：
+        \begin{equation*}
+            \P(T>m(a+b))\leqslant \left( 1-\left(\frac{1}{2}\right)^{a+b} \right)^m,\ m\geqslant 1\tag*{$(\star )$}
+        \end{equation*}
+        先考虑$m=1$的情况，
+        \begin{equation*}
+            \P(T>a+b)=1-\P(T\leqslant a+b)
+            \leqslant 1-\P( X_1=X_2=\cdots=X_{a+b}=1 )=1-\left(\frac{1}{2}\right)^{a+b}
+        \end{equation*}
+        归纳：$m$时命题成立，则考虑$m+1$时
+        \begin{align*}
+            \P(T>(m+1)(a+b))&=\P( T>(m+1)(a+b)|T>m(a+b) )\P(T>m(a+b))\\
+            &\leqslant \left( 1-\P( S_{(m+1)(a+b)}-S_{m(a+b)}=a+b ) \right)\left( 1-\left(\frac{1}{2}\right)^{a+b} \right)^m\\
+            &=\left( 1-\left(\frac{1}{2}\right)^{a+b} \right)^{m+1}
+        \end{align*}
+        也成立，于是$(\star)$式得证，那么
+        \begin{align*}
+            \E[T]&=\E[ TI_{ \{T\leqslant a+b\} } ]+\E[TI_{ \{ T>a+b \}}]\\
+            &=\E[ TI_{ \{T\leqslant a+b\} } ]+\sum_{m=1}^\infty 
+            \E[TI_{ \{ m(a+b)<T\leqslant (m+1)(a+b) \}}]\\
+            &\leqslant a+b+\sum_{m=1}^\infty (m+1)(a+b)\P( m(a+b)<T\leqslant (m+1)(a+b) )\\
+            &\leqslant a+b+\sum_{m=1}^\infty (m+1)(a+b)\P(T>m(a+b))\\
+            &\leqslant a+b+\sum_{m=1}^\infty (m+1)(a+b)\left( 1-\left(\frac{1}{2}\right)^{a+b} \right)^m<+\infty
+        \end{align*}
+        注意到$S_{T\wedge n}\in[-a,b]$，有界$\Rightarrow $一致可积，应用\autoref{cor3.23}可得
+        \begin{equation*}
+            \E[S_T]=\E[S_{T\wedge n}]=\E[S_0]
+        \end{equation*}
+        其中$\E[S_0]=0$，$\E[S_{T}]=-a\P(S_T=-a)+bP(S_T=b)$，同时又因为
+        $\P(S_T=-a)+P(S_T=b)=1$，可解得
+        \begin{equation*}
+            \P(S_T=-a)=\frac{b}{a+b},\ \P(S_T=b)=\frac{a}{a+b}
+        \end{equation*}
+        A获胜的概率即为$\P(S_T=b)=\frac{a}{a+b}$.
+
+        为了计算$\E[T]$，考虑另一个鞅$\{ Y_n=S_n^2-n,n\in\N \}$（见\autoref{Example of Martingale 4}），
+        那么$\{ Y_{T\wedge n},n\in\N \}$也是鞅，应用\autoref{cor3.23}可得
+        \begin{equation*}
+            \E[S_{T\wedge n}^2-T\wedge n]=\E[Y_0]=0\Rightarrow \E[S_{T\wedge n}^2]=\E[T\wedge n]
+        \end{equation*}
+        令$n\rightarrow\infty$并应用DCT得$\E[S_T^2]=\E[T]=(-a)^2\P(S_T=-a)+b^2\P(S_T=b)=ab$.
+    \end{solve}
+
+    \begin{example}
+        随机游走：数轴上的原点是醉汉的家，醉汉所处的位置为$k$，位置$N$处有一条河，$0<k<N$.
+        醉汉走路的方向都是随机的，每一步向右走一个单位的概率为$p$，
+        每一步向左走一个单位的概率为$q=1-p$，试求醉汉在掉到河里之前成功走回家的概率。
+    \end{example}
+    \begin{solve}
+        设$\{ X_n,n\in\N_+ \}$，满足$\P(X_i=1)=p,\P(X_i=-1)=1-p$，
+        令$S_n=X_1+\cdots+X_n$，表示醉汉走了$n$步之后向右移动的距离，
+        \begin{equation*}
+            T\defeq \fun{min}{}\{ n\geqslant 0:S_T=0{\rm\ or\ }S_T=N \}
+        \end{equation*}
+        代表醉汉首次掉进河或者回家的时刻，$\P(S_T=0)$即为题目所求。
+
+        设$Z_n=\left(\frac{q}{p}\right)^{S_n}$，
+        则$\{ Z_n,n\in\N \}$是一个鞅（见\autoref{Example of Martingale 5}），
+        注意到
+        \begin{equation*}
+            |Z_{T\wedge n}|=\left(\frac{q}{p}\right)^{S_{T\wedge n}}\leqslant 
+            \fun{max}{0\leqslant l\leqslant N}=\left(\frac{q}{p}\right)^{l}=M
+        \end{equation*}
+        \begin{equation*}
+            \E[ Z_{T\wedge n} ]
+            =\E[ \left(\frac{q}{p}\right)^{S_{T\wedge n}} ]
+            =\E[Z_0]=\left(\frac{q}{p}\right)^{k}
+        \end{equation*}
+        令$n\rightarrow\infty$可得
+        \begin{equation*}
+            \E[ Z_T ]=\left(\frac{q}{p}\right)^{k}
+        \end{equation*}
+        同时
+        \begin{equation*}
+            \E[Z_T]=\P(S_T=0)+\left(\frac{q}{p}\right)^{N}\P(S_T=N)
+        \end{equation*}
+        以及$\P(S_T=0)+\P(S_T=N)=1$，可得
+        \begin{equation*}
+            \P(S_T=0)=\frac{ \left(\frac{q}{p}\right)^{k}-\left(\frac{q}{p}\right)^{N} }{1-\left(\frac{q}{p}\right)^{N}}
+        \end{equation*}
+    \end{solve}
+
+\section{习题}
+
+\subsection{第一次作业}\label{HW1 from ZTS}
+    \begin{ex}[Durrett(Exercise 4.2.3)][Durrett(Exercise 4.2.3)]
+        证明：如果$X_n,Y_n$是关于$\F_n$的下鞅，则$X_n \vee Y_n$也是下鞅。
+    \end{ex}
+    \begin{solve}
+        令$Z_n=X_n\vee Y_n=X_nI_{ X_n\geqslant Y_n }+Y_nI_{X_n<Y_n}$，
+        因为$X_n,Y_n$是$\F_n$-可测的，
+        \begin{equation*}
+            \{X_n\geqslant Y_n\}=\bigcup_{q\in \Q} \{ X_n\geqslant q \}\cup \{ q\geqslant Y_n \}\in \F_n
+        \end{equation*}
+        于是$Z_n$就是$\F_n$-可测的。而
+        \begin{align*}
+            \E[X_{n+1}\vee Y_{n+1}|\F_n]&\geqslant \E[X_{n+1}|\F_n]=X_n\\
+            \E[X_{n+1}\vee Y_{n+1}|\F_n]&\geqslant \E[Y_{n+1}|\F_n]=Y_n\\
+            \Rightarrow \E[X_{n+1}\vee Y_{n+1}|\F_n]&\geqslant X_n\vee Y_n
+        \end{align*}
+        所以$Z_n$也是下鞅。
+    \end{solve}
+
+    \begin{ex}[Durrett(Exercise 4.2.4)][Durrett(Exercise 4.2.4)]
+        $\{X_n,n\geqslant 0\}$是下鞅且$\fun{sup}{n}X_n<\infty$，令
+        $\xi_n=X_n-X_{n-1}$，若$\E[ \fun{sup}{n}\xi_n^+ ]<\infty$，证明：
+        $X_n$ a.s.收敛。
+    \end{ex}
+    \begin{solve}
+        定义$T_m=\fun{inf}{}\{ k\geqslant 0:X_k>m \}$，即$X_k$首次超过$m$的时刻，那么
+        $T_m$是一个停时。考虑$Y_n=X_{n\wedge T_m}$是一个新的下鞅，注意
+        $T_m$是“首次”超过$m$，也就是只有$X_{T_m}$超过了$m$，所以
+        \begin{equation*}
+            \{Y_n(\omega)^+\}=\{X_1(\omega)^+,X_2(\omega)^+,\cdots,X_{T_m(\omega)-1}(\omega)^+,X_{T_m(\omega)}(\omega)^+,X_{T_m(\omega)}(\omega)^+,\cdots\}
+        \end{equation*}
+        里最大的就是$X_{T_m(\omega)}(\omega)^+$，因此
+        \begin{equation*}
+            \fun{sup}{n} Y_n^+=\fun{sup}{n} X_{n\wedge T_m}^+\leqslant X_{T_m}^+
+            =(X_{T_m-1}+\xi_{T_m})^+
+            \leqslant X_{T_m-1}^+ +\xi_{T_m}^+
+            \leqslant m+\fun{sup}{n}\xi_n^+
+        \end{equation*}
+        于是
+        \begin{equation*}
+            \E[\fun{sup}{n} Y_n^+]\leqslant m+\E[ \fun{sup}{n}\xi_n^+ ]<+\infty
+        \end{equation*}
+        于是$Y_n$ a.s.收敛。注意在$\{T_m=+\infty\}$上$X_n=Y_n$，因此$X_n$在$\{T_m=+\infty\}$上a.s.收敛，
+        而
+        \begin{equation*}
+            \{T_m=+\infty\}=\{ \forall k\geqslant 0,X_k\leqslant m \}
+        \end{equation*}
+        考虑到$\fun{sup}{n}X_n<\infty$，存在某个$m$使得$\forall X_n\leqslant m$，这表明
+        $\{T_m=+\infty\}=\Omega$，于是$X_n$ a.s.收敛。
+    \end{solve}
+
+    \begin{ex}[Durrett(Exercise 4.2.6)][Durrett(Exercise 4.2.6)]
+        一系列非负独立同分布r.v.$Y_1,Y_2,\cdots$满足$\E[Y_m]=1,\P(Y_m=1)<1$，
+        根据\autoref{Example of Martingale 3}可知$X_n=\prod_{m\leqslant n}Y_m$是一个鞅，
+        证明：$X_n\rightarrow 0$ a.s.
+    \end{ex}
+    \begin{solve}
+        注意$Y_n$是独立同分布的，因为$\P(Y_m=1)<1$，考虑取$u>0$使得
+        $\P( |Y_1-1|>u )>0$，则对于$\forall n$都有$\P( |Y_n-1|>u )>0$，于是
+        $\forall \varepsilon>0$，
+        \begin{align*}
+            \P(|X_{n+1}-X_n|>\varepsilon u)&=\P(X_n|Y_{n+1}-1|>\varepsilon u)\\
+            &=\P(X_n|Y_{n+1}-1|>\varepsilon u|X_n\geqslant \varepsilon)\P(X_n\geqslant \varepsilon)\\
+            &\geqslant 
+            \P(|Y_{n+1}-1|>u|X_n\geqslant \varepsilon)\P(X_n\geqslant \varepsilon)\\
+            &=\P(|Y_{n+1}-1|>u)\P(X_n\geqslant \varepsilon)
+        \end{align*}
+        最后一个等号是因为$X_n$和$Y_{n+1}$独立。于是两边令$n\rightarrow\infty$，
+        可知$X_n$ a.s.收敛，所以左边$\rightarrow 0$，右边的
+        $\P(|Y_{n+1}-1|>u)>0$，于是只能$\P(X_n\geqslant \varepsilon)\rightarrow 0$，所以$X_n\rightarrow 0$ a.s.
+    \end{solve}
+
+    \begin{ex}[Durrett(Exercise 4.2.8)][Durrett(Exercise 4.2.8)]
+        正、可积的$X_n,Y_n$是关于$\F_n$的适应过程，若
+        \begin{equation*}
+            \E[X_{n+1}|\F_n]\leqslant (1+Y_n)X_n
+        \end{equation*}
+        且$\sum Y_n<+\infty$ a.s.证明$X_n$ a.s.收敛。
+    \end{ex}
+    \begin{solve}
+        观察题目给的条件，我们尝试把它变成$\E[Z_{n+1}|\F_n]\leqslant Z_n$的形式。
+        \begin{equation*}
+            \E\left[\frac{X_{n+1}}{(1+Y_0)(1+Y_1)\cdots (1+Y_n)}|\F_n\right]
+            \leqslant \frac{X_n}{(1+Y_0)(1+Y_1)\cdots (1+Y_{n-1})}
+        \end{equation*}
+        于是可令
+        \begin{equation*}
+            Z_n=\frac{X_n}{\prod_{i=0}^{n-1}(1+Y_i)},\ n\geqslant 1
+        \end{equation*}
+        则$Z_n$是一个下鞅，同时$Z_n>0$，因此$Z_n$ a.s.收敛。考虑
+        \begin{equation*}
+            \ln{\prod_{i=0}^{n-1}(1+Y_i)}=\sum_{i=0}^{n-1} \ln{(1+Y_i)}
+            \leqslant \sum_{i=0}^{n-1} Y_i<+\infty
+        \end{equation*} 
+        因此$Z_n$的分母$\prod_{i=0}^{n-1}(1+Y_i)$收敛，从而分子$X_n$收敛。
+    \end{solve}
+
+    \begin{ex}[Durrett(Exercise 4.2.9)][Durrett(Exercise 4.2.9)]
+        $X_n^1,X_n^2$是关于$\F_n$的上鞅，$N$是停时，且满足$X_N^1\geqslant X_N^2$，
+        令
+        \begin{align*}
+            Y_n&=X_{n}^1I_{\{ N>n \}}+X_n^2I_{ \{N\leqslant n\} }\\
+            Z_n&=X_{n}^1I_{\{ N\geqslant n \}}+X_n^2I_{ \{N<n\} }
+        \end{align*}
+        则$Y_n,Z_n$都是上鞅。
+    \end{ex}
+    \begin{solve}
+        $Y_n$的各部分是$\F_n$-可测的，所以$Y_n$是可测的。考虑拆分$Y_{n+1}$，然后将其中的示性函数转化为$\F_n$-可测的形式，
+        \begin{align*}
+            Y_{n+1}&=X_{n+1}^1I_{\{ N>n+1 \}}+X_{n+1}^2I_{ \{N\leqslant n+1\} }\\
+            &=X_{n+1}^1I_{\{N>n\}}-X_{n+1}^1I_{\{N=n+1\}}+X_{n+1}^2I_{\{N=n+1\}}
+            +X_{n+1}^2I_{ \{N\leqslant n\} }\\
+            &=X_{n+1}^1I_{\{N>n\}}+X_{n+1}^2I_{ \{N\leqslant n\} }+(X_N^2-X_N^1)I_{\{N=n+1\}}
+        \end{align*}
+        于是取条件期望：
+        \begin{align*}
+            \E[Y_{n+1}|\F_n]&=\E[X_{n+1}^1I_{\{N>n\}}|\F_n]+\E[X_{n+1}^2I_{ \{N\leqslant n\} }|\F_n]+\E[(X_N^2-X_N^1)I_{\{N=n+1\}}|\F_n]\\
+            &\leqslant \E[X_{n+1}^1|\F_n]I_{\{N>n\}}+\E[X_{n+1}^2|\F_n]I_{ \{N\leqslant n\} }\\
+            &\leqslant X_n^1I_{\{N>n\}}+X_{n}^2I_{ \{N\leqslant n\} }\\
+            &=Y_n
+        \end{align*}
+
+        关于$Z_n$的证明略有不同，
+        \begin{align*}
+            Z_{n+1}&=X_{n+1}^1I_{\{ N>n \}}+X_{n+1}^2I_{ \{N\leqslant n\} }\\
+            \E[Z_{n+1}|\F_n]&\leqslant X_n^1I_{\{ N>n \}}+X_{n}^2I_{ \{N\leqslant n\} }\\
+            &\leqslant X_n^1I_{\{ N>n \}}+X_{n}^2I_{ \{N\leqslant n\} }+(X_N^1-X_N^2)I_{ \{N=n\} }\\
+            &\leqslant X_{n}^1I_{\{ N\geqslant n \}}+X_n^2I_{ \{N<n\} }\\
+            &=Z_n
+        \end{align*}
+    \end{solve}
+
+    \begin{ex}[Durrett(Exercise 4.3.3)][Durrett(Exercise 4.3.3)]
+        正、可积的$X_n,Y_n$是关于$\F_n$的适应过程，若
+        \begin{equation*}
+            \E[X_{n+1}|\F_n]\leqslant X_n+Y_n
+        \end{equation*}
+        且$\sum Y_n<\infty$ a.s.证明$X_n$ a.s.收敛。提示：构造停时
+        \begin{equation*}
+            N=\fun{inf}{}\left\{k:\sum_{m=1}^k Y_m>M\right\}
+        \end{equation*}
+    \end{ex}
+    \begin{solve}
+        由题意可知
+        \begin{equation*}
+            \E\left[ X_{n+1}-\sum_{k=0}^n Y_k \right]\leqslant X_n-\sum_{k=0}^{n-1} Y_k
+        \end{equation*}
+        于是令
+        \begin{equation*}
+            Z_n=X_n-\sum_{k=0}^{n-1} Y_k,\ n\geqslant 1
+        \end{equation*}
+        是一个上鞅，取停时
+        \begin{equation*}
+            N=\fun{inf}{}\left\{k:\sum_{m=1}^k Y_m>M\right\}
+        \end{equation*}
+        于是$\{Z_{n\wedge N}\}$是一个新的上鞅，考虑
+        \begin{equation*}
+            Z_{n\wedge N}+M
+            =X_{n\wedge N}-\sum_{k=0}^{{n\wedge N}-1} Y_k+M
+        \end{equation*}
+        注意$N$是$\sum Y_n$首次超过$M$，而$n\wedge N-1<N$，所以
+        上式中的求和不会超过$M$，而$X_n$是正的，所以$Z_{n\wedge N}+M>0$，
+        这说明$Z_{n\wedge N}$ a.s.收敛。
+
+        在$\{N=+\infty\}$上，$Z_{n\wedge N}=Z_n$ a.s.收敛，考虑到$\sum Y_n<\infty$ a.s.，
+        因此必然存在某个$M$使得$\{N=+\infty\}=\Omega$ a.s.，于是$Z_n$在$\Omega$上a.s.收敛。
+    \end{solve}
+
+\subsection{第二次作业}\label{HW2 from ZTS}
+    首先要补充一个\autoref{lem3.8}的升级版结论，这是Durrett书上的Exercise 4.4.2.
+    \begin{lemma}\label{Durrett(Exercise 4.4.2)}
+        $X_n$是下鞅，$M\leqslant N$是停时，且$N\leqslant k$ a.s.，证明：$\E[X_M]\leqslant \E[X_N]$.
+    \end{lemma}
+    \begin{proof}
+        取$Y_n=X_{n\wedge N}$为下鞅，由\autoref{lem3.8}
+        可得$\E[Y_M]\leqslant \E[Y_k]$，即$\E[X_M]\leqslant \E[X_N]$.
+    \end{proof}
+
+    然后补充一个书上的定理4.4.7，是一个关于鞅的运算技巧，
+    \begin{theorem}[Durrett(Theorem 4.4.7)]\label{Durrett(Theorem 4.4.7)}
+        $X_n$是鞅，$\E X_n^2<+\infty$，若$m\leqslant n,Y\in \F_m,\E[Y^2]<+\infty$，则
+        \begin{equation*}
+            \E[ (X_n-X_m)Y ]=0
+        \end{equation*}
+    \end{theorem}
+    \begin{proof}
+        由Cauchy-Schwarz不等式可知，
+        \begin{equation*}
+            \E[ (X_n-X_m)Y ]\leqslant \E[ (X_n-X_m)^2 ]\cdot \E[Y^2]<+\infty
+        \end{equation*}
+        这确保了$(X_n-X_m)Y$的可积性。然后就是很简单的变换：
+        \begin{equation*}
+            \E[ (X_n-X_m)Y ]=
+            \E[\ \E[ (X_n-X_m)Y|\F_m ]\ ]=
+            \E[\ \E[ (X_n-X_m)|\F_m ]Y\ ]=0
+        \end{equation*}
+    \end{proof}
+
+    \begin{ex}[Durrett(Exercise 4.4.3)][Durrett(Exercise 4.4.3)]
+        假设$M\leqslant N$是停时，如果$A\in \F_M$，则
+        \begin{equation*}
+            L=MI_A+NI_{A^c}
+        \end{equation*}
+        也是停时。
+    \end{ex}
+    \begin{solve}
+        验证定义：
+        \begin{equation*}
+            \{ L\leqslant n \}
+            = ( \{ M\leqslant n \}\cap A )\cup ( \{ N\leqslant n \}\cap A^c )
+        \end{equation*}
+        注意$A\in \F_M\Rightarrow \{ M\leqslant n \}\cap A\in \F_n$，而右侧
+        \begin{equation*}
+            \{ N\leqslant n \}\cap A^c
+            =\{ N\leqslant n \}\cap  \{ M\leqslant n \} \cap A^c
+        \end{equation*}
+        其中$\{N\leqslant n\}\in \F_n$，$A^c\in \F_M\Rightarrow \{ M\leqslant n \} \cap A^c\in \F_n$，于是$\{ L\leqslant n \}\in \F_n$.
+        由$n$的任意性可知$L$是停时。
+    \end{solve}
+
+    \begin{ex}[Durrett(Exercise 4.4.4)][Durrett(Exercise 4.4.4)]
+        利用上一题中的构造，证明以下结论：
+        $X_n$是下鞅，$M\leqslant N$是停时，且$\P(N\leqslant k)=1$，则
+        $X_M\leqslant \E[X_N|\F_M]$.
+    \end{ex}
+    \begin{solve}
+        我们倒着分析这道题。从结论出发，设$Y=\E[X_N|\F_M]$，$X_M$和$Y$都是$\F_M$可测的，
+        所以只需证明：$\forall A\in \F_M$，
+        \begin{equation*}
+            \E[ X_MI_A ] \leqslant \E[ YI_A ]=\E[X_N I_A]
+        \end{equation*}
+        定义$L=N I_A+MI_{A^c}$，则上式两边加上$\E[X_MI_{A^c}]$得到
+        \begin{equation*}
+            \E[ X_M ]\leqslant \E[X_L] 
+        \end{equation*}
+        而$M\leqslant N\Rightarrow M\leqslant L$，由\autoref{Durrett(Exercise 4.4.2)}即可得证。
+    \end{solve}
+
+    \begin{ex}[Durrett(Exercise 4.4.6)][Durrett(Exercise 4.4.6)]
+        设独立的随机变量列$X_1,\cdots,X_n,\cdots$满足均值为$0$、方差${\rm var}(X_n)=\sigma_n^2$，现在设
+        $S_n=X_1+\cdots+X_n$，$s_n^2=\sigma_1^2+\cdots+\sigma_n^2$.        
+        容易证明$S_n^2-s_n^2$是一个鞅（类似于\autoref{Example of Martingale 4}），
+        现在加上条件：$|X_m|\leqslant K$，证明：
+        \begin{equation*}
+            \P\left( \fun{max}{1\leqslant m\leqslant n}|S_m|\leqslant x \right)
+            \leqslant \frac{(x+K)^2}{s_n^2}
+        \end{equation*}
+
+        提示：类似于\autoref{Doob's Inquality}的证明过程。
+    \end{ex}
+    \begin{solve}
+        设事件$A=\{ \fun{max}{1\leqslant m\leqslant n}|S_m|\leqslant x \}$，
+        因为$Y_n=S_n^2-s_n^2$是鞅，取停时$N=\fun{inf}{}\{m\geqslant 1:|S_m|>x\}$，
+        则$Z_n=Y_{n\wedge N}$也是鞅，从而
+        $\E[Z_n]=\E[Z_1]=0$，注意到$A=\{n\leqslant N\}$，所以
+        \begin{align*}
+            0=\E[Z_n]&=\E[Y_nI_A]+\E[Y_NI_{A^c}]\\
+            &\leqslant \E[(S_n^2-s_n^2)I_A]+\E[S_N^2I_{A^c}]\\
+            &\leqslant (x^2-s_n^2)\P(A)+\E[(S_{N-1}+X_N)^2I_{A^c}]\\
+            &\leqslant (x^2-s_n^2)\P(A)+\E[(x+K)^2I_{A^c}]\\
+            &=(x^2-s_n^2)\P(A)+(x+K)^2(1-\P(A))
+        \end{align*}
+        于是
+        \begin{equation*}
+            \P(A)\leqslant \frac{(x+K)^2}{(x+K)^2-x^2+s_n^2}\leqslant 
+            \frac{(x+K)^2}{s_n^2}
+        \end{equation*}
+    \end{solve}
+
+    \begin{ex}[Durrett(Exercise 4.4.7)][Durrett(Exercise 4.4.7)]
+        $X_n$是鞅，且$X_0=0,\E[X_n]^2<\infty$，证明：
+        \begin{equation*}
+            \P\left( \fun{max}{1\leqslant m\geqslant n}X_m\leqslant \lambda \right)
+            \leqslant \frac{\E[X_n^2]}{\E[X_n^2]+\lambda^2}
+        \end{equation*}
+    \end{ex}
+    \begin{solve}
+        由题设知$\E[X_n]=0$.
+        不妨设$\lambda>0$，取常数$c\geqslant 0$，注意到$(X_n+c)^2$是一个非负下鞅，
+        由\autoref{Doob's Inquality}，
+        \begin{equation*}
+            \P(\fun{max}{1\leqslant m\leqslant n} X_m \geqslant \lambda)
+            =\P(\fun{max}{1\leqslant m\leqslant n} (X_m+c)^2 \geqslant (\lambda+c)^2)
+            \leqslant \frac{1}{(\lambda+c)^2}\E[ (X_n+c)^2 ]
+            =\frac{\E[X_n^2]+c^2}{(\lambda+c)^2}
+        \end{equation*}
+        令$c=\frac{\E[X_n^2]}{\lambda}$，就得到结论$\frac{ \E[X_n^2] }{ \E[X_n^2]+\lambda^2 }$.
+    \end{solve}
+
+    \begin{ex}[Durrett(Exercise 4.4.10)][Durrett(Exercise 4.4.10)]
+        $\{X_n,n\geqslant 0\}$是鞅，对于$n\geqslant 1$设$\xi_n=X_n-X_{n-1}$，
+        如果$\E[X_0^2]<\infty$且
+        \begin{equation*}
+            \sum_{m=1}^\infty \E[\xi_m^2]<+\infty
+        \end{equation*}
+        证明：$X_n\rightarrow X$ a.s.，且$X_n\ra{2} X$.
+    \end{ex}
+    \begin{solve}
+        由\autoref{Theorem of Lp convergence}，只需证明
+        \begin{equation*}
+            \fun{sup}{n} \E[X_n^2]<+\infty
+        \end{equation*}
+        注意到
+        \begin{align*}
+            X_n^2&=\left(\sum_{m=1}^n \xi_m+X_0\right)^2\\
+            &=\sum_{m=1}^n \xi_m^2+X_0^2+2\sum_{m=1}^n X_0\xi_m
+            +2\sum_{m=1}^n \sum_{k=m+1}^n \xi_m\xi_k
+        \end{align*}
+        根据\autoref{Durrett(Theorem 4.4.7)}，
+        \begin{equation*}
+            X_0\in \F_{m-1}\Rightarrow \E[ X_0\xi_m ]=\E[ X_0(X_m-X_{m-1}) ]=0
+        \end{equation*}
+        \begin{equation*}
+            X_m-X_{m-1}\in \F_{k-1}\Rightarrow 
+            \E[\xi_m\xi_k]=\E[ (X_m-X_{m-1})(X_k-X_{k-1}) ]=0
+        \end{equation*}
+        从而
+        \begin{equation*}
+            \E[X_n^2]=\sum_{m=1}^n \E[\xi_n^2]+\E[X_0^2]<+\infty
+        \end{equation*}
+        \begin{equation*}
+            \fun{sup}{n}\E[X_n^2]\leqslant \sum_{m=1}^\infty \E[\xi_n^2]+\E[X_0^2]<+\infty
+        \end{equation*}
+    \end{solve}
+
+    \begin{ex}[Durrett(Exercise 4.6.6)][Durrett(Exercise 4.6.6)]
+        $X_n\in [0,1]$是关于$\F_n$的适应过程，设$\alpha,\beta>0$，$\alpha+\beta=1$，
+        \begin{equation*}
+            \P(X_{n+1}=\alpha+\beta X_n|\F_n)=X_n
+        \end{equation*}
+        \begin{equation*}
+            \P(X_{n+1}=\beta X_n|\F_n)=1-X_n
+        \end{equation*}
+        证明：
+        \begin{equation*}
+            \P(\fun{lim}{n\rightarrow\infty }X_n=0{\rm\ or\ }1)=1
+        \end{equation*}
+        且如果$X_0=\theta$，则$\P(\fun{lim}{n\rightarrow\infty }X_n=1)=\theta$.
+    \end{ex}
+    \begin{solve}
+        容易验证$X_n$是个鞅，而且一致有界，所以一致可积，进而
+        $X_n\ra{L^1{\rm\ and\ a.s.}}X$，现在考虑集合：
+        \begin{equation*}
+            B_n=\{ \omega:X_{n+1}(\omega)=\alpha+\beta X_n(\omega) \},\ 
+            B=\fun{limsup}{n\rightarrow\infty} B_n
+            =\{ \omega:X_{n+1}(\omega)=\alpha+\beta X_n(\omega)\text{对于无数个$n$成立} \}
+        \end{equation*}
+        由于$X_n$ a.s.收敛，考虑$\forall \varepsilon>0$，有充分大的$n$使得
+        $|X_{n+1}-X_n|<\varepsilon$，于是在$B$上：
+        \begin{equation*}
+            |X_{n+1}-X_n|=\alpha|1-X_n|<\varepsilon\text{对于无数个$n$成立}
+        \end{equation*}
+        这说明$\{X_n(\omega)\}$有收敛到$1$的子列，
+        那本身就收敛到$1$，即在$B$上$X=1$ a.s. 
+
+        另一方面，考虑
+        \begin{equation*}
+            B^c=\fun{liminf}{n\rightarrow\infty} B_n^c
+            =\{ \omega:X_{n+1}(\omega)=\beta X_n(\omega)\text{只对于有限个$n$不成立} \}
+        \end{equation*}
+        于是在$B^c$上，
+        \begin{equation*}
+            |X_{n+1}-X_n|=\alpha|X_n|<\varepsilon\text{只对于有限个$n$不成立}
+        \end{equation*}
+        这说明$X_n\rightarrow 0$，即在$B^c$上$X=0$ a.s. 
+
+        因为$\E[X]=\E[X_0]=\theta$，所以$\P(X=1)=\theta$.
+    \end{solve}
+
+    \begin{ex}[Durrett(Exercise 4.6.7)][Durrett(Exercise 4.6.7)]
+        证明：如果$\F_n\nearrow \F_\infty$，$Y_n\ra{L^1} Y$，则
+        \begin{equation*}
+            \E[Y_n|\F_n]\ra{L^1}\E[Y|\F_\infty]
+        \end{equation*}
+    \end{ex}
+    \begin{solve}
+        注意到：
+        \begin{align*}
+            \int |\E[Y_n|\F_n]-\E[Y|\F_\infty]|\d\P&=
+            \int |\E[Y_n|\F_n]-\E[Y|\F_n]+\E[Y|\F_n]-\E[Y|\F_\infty]|\d\P\\
+            &\leqslant 
+            \int |\E[Y_n-Y|\F_n]|\d\P+
+            \int |\E[Y|\F_n]-\E[Y|\F_\infty]|\d\P\\
+            &\leqslant 
+            \int \E[|Y_n-Y||\F_n]\d\P+
+            \int |\E[Y|\F_n]-\E[Y|\F_\infty]|\d\P\\
+            &=\E[|Y_n-Y|]+\int |\E[Y|\F_n]-\E[Y|\F_\infty]|\d\P
+        \end{align*}
+        $Y_n\ra{L^1} Y$所以前面这项$\rightarrow 0$，
+        后面这项由\autoref{Theorem of CE with sigma-F seq convergence}可知也$\rightarrow 0$.
+    \end{solve}
+
+\subsection{第三次作业}\label{HW3 from ZTS}
+    \begin{ex}[Durrett(Exercise 4.8.1)][Durrett(Exercise 4.8.1)]
+        $L\leqslant M$是停时，$Y_{M\wedge n}$是一致可积下鞅，则
+        $\E[Y_L]\leqslant \E[Y_M]$，且
+        $Y_L\leqslant \E[Y_M|\F_L]$.
+    \end{ex}
+    \begin{solve}
+        先令$Z_n=Y_{M\wedge n}$，那么$Z_n\rightarrow Z_\infty$，
+        则根据\autoref{cor3.22}可知$\E[Z_L]\leqslant \E[Z_\infty]$，
+        即$\E[Y_L]\leqslant \E[Y_M]$.
+
+        要证明$Y_L\leqslant \E[Y_M|\F_L]$，因为$Y_L$是$\F_L$-可测的，所以只需证明
+        $\forall A\in Y_L$都有$\E[ Y_LI_A ]\leqslant \E[ \E[Y_M|\F_L]I_A ]=\E[Y_MI_A]$，
+        也就是要证明
+        \begin{equation*}
+            \E[Z_LI_A]\leqslant \E[Z_\infty I_A]
+        \end{equation*}
+        两边加上$\E[Z_LI_{A^c}]$，
+        \begin{equation*}
+            \E[Z_L]\leqslant \E[Z_{ L^{A_c} }]
+        \end{equation*}
+        注意$L\leqslant L^{A^c}$，而且$Z_n$是一致可积下鞅，
+        再使用\autoref{cor3.22}即可得证。
+    \end{solve}
+
+    \begin{ex}[Durrett(Exercise 4.8.3)][Durrett(Exercise 4.8.3)]
+        $X_1,\cdots,X_n,\cdots$独立，均值为$0$，方差相同，
+        为${\rm var}(X_i)=\sigma^2$，
+        $S_n=X_1+\cdots+X_n$，
+        则$S_n^2-n\sigma^2$是鞅，令
+        $T={\rm min}\{n:|S_n|>a\}$，利用\autoref{thm3.20}
+        证明\footnote{说真的，题目让用\autoref{thm3.20}证明，我死活没搞明白怎么证明
+        $S_T^2-T\sigma^2$可积，最后发现答案根本没用那个定理，甚至是用的下一题的结论？
+        实在是...}：$\E[T]\geqslant a^2/\sigma^2$.
+    \end{ex}
+    \begin{solve}
+        不妨假设$\E[T]<+\infty$，然后用下一题的结论即可直接得证：
+        \begin{equation*}
+            \E[T]=\frac{1}{\sigma^2}\E[S_T^2]\geqslant \frac{a^2}{\sigma^2}
+        \end{equation*}
+    \end{solve}
+
+    \begin{ex}[Durrett(Exercise 4.8.4)][Durrett(Exercise 4.8.4)]
+        条件同上一题，设停时$T$满足$\E[T]<+\infty$，则$\E[S_T^2]=\sigma^2 \E[T]$.
+    \end{ex}
+    \begin{solve}
+        记$Y_n=S_n^2-n\sigma^2$，$Z_n=Y_{n\wedge T}$，
+        从而$Z_n$也是鞅并且$\E[Z_n]=\E[Z_0]=0$，因此我们有
+        \begin{equation*}
+            \E[S_{n\wedge T}^2]=\sigma^2\E[n\wedge T]
+        \end{equation*}
+        从而
+        \begin{equation*}
+            \fun{sup}{n}\E[S_{n\wedge T}^2]=\sigma^2\cdot \fun{sup}{n}\E[n\wedge T]
+            \leqslant \sigma^2\E[T]<+\infty
+        \end{equation*}
+        注意到$S_n$也是一个鞅，所以
+        由$L^p$收敛\autoref{Theorem of Lp convergence}可知
+        $S_{n\wedge T}\ra{L^2{\rm\ and\ a.s.}} S_T$，从而
+        \begin{equation*}
+            \E[S_T^2]=\fun{lim}{n\rightarrow \infty}\E[S_{n\wedge T}^2]
+            =\sigma^2\fun{lim}{n\rightarrow\infty} \E[n\wedge T]
+            =\sigma^2\E[T]
+        \end{equation*}
+    \end{solve}
+
+    \begin{ex}[Durrett(Exercise 4.8.5)][Durrett(Exercise 4.8.5)]
+        $X_1,\cdots,X_n,\cdots$独立，两点分布，且$p<\frac{1}{2}$，
+        规定$S_0=0$，设$S_n=X_1+\cdots+X_n+x$，
+        $x$是给定的整数。令$V_0={\rm min}\{n\geqslant 0:S_n=0\}$，
+        则$\E[V_0]=x/(q-p)$，我们尝试计算$V_0$的方差，
+        我们令$Y_i=X_i-(p-q)$，注意到$\E[Y_i]=0$，
+        \begin{equation*}
+            {\rm var}(Y_i)={\rm var}(X_i)=1-(p-q)^2
+        \end{equation*}
+        因此
+        \begin{equation*}
+            Z_n=(S_n-(p-q)n)^2-n(1-(p-q)^2)
+        \end{equation*}
+        是一个鞅。证明：
+        \begin{equation*}
+            \E[V_0^2]=x\cdot \frac{1-(p-q)^2}{(p-q)^3}
+        \end{equation*}
+    \end{ex}
+    \begin{solve}
+        根据上一题结论，
+        \begin{equation*}
+            \E[V_0]=\frac{\E[( S_{V_0}-(p-q)V_0 )^2]}{1-(p-q)^2}
+            =\frac{(p-q)^2\E[V_0^2]}{1-(p-q)^2}
+            =\frac{x}{q-p}
+        \end{equation*}
+        于是
+        \begin{equation*}
+            \E[V_0^2]=x\frac{1-(p-q)^2}{(q-p)^3}
+        \end{equation*}
+    \end{solve}
+
+    \begin{ex}[Durrett(Exercise 4.8.8)][Durrett(Exercise 4.8.8)]
+        随机变量列$X_1,\cdots,X_n,\cdots$独立，$\pm 1$两点分布，
+        设$S_n=X_1+\cdots+X_n$，设对于某些常数$\theta_0<0$，
+        \begin{equation*}
+            \E[ {\rm exp}\{\theta_0\cdot X_1\} ]=1
+        \end{equation*}
+        且$X_1$不是常数，
+        于是$Y_n={\rm exp}\{ \theta_0 S_n \}$是一个鞅，
+        令$\tau={\rm inf}\{ n:S_n\notin (a,b) \}$，
+        $Z_n=Y_{n\wedge \tau}$，证明：$\E[Y_\tau]=1$，且
+        \begin{equation*}
+            \P(S_\tau\leqslant a)\leqslant {\rm exp}\{ -\theta_0 a \}
+        \end{equation*}
+    \end{ex}
+    \begin{solve}
+        注意到$S_{\tau\wedge n}\geqslant a$，
+        所以$Z_n\leqslant {\rm exp}\{ \theta_0 a\}$，
+        从而是一致可积鞅，
+        于是$Z_n\rightarrow Z_\infty=Y_\tau$，
+        $\E[Y_\tau]=\E[Z_0]=1$，
+        \begin{equation*}
+            1=\E[Y_\tau]\geqslant \E[Y_\tau I_{ S_\tau\leqslant a }]
+            \geqslant {\rm e}^{a\theta_0}\P(X_\tau\leqslant a)
+        \end{equation*}
+        得证。
+    \end{solve}
+    
+    \begin{ex}[Durrett(Exercise 4.8.9)][Durrett(Exercise 4.8.9)]
+        条件同上一题，但$X_i$的取值范围改为整数值，
+        且$\P(X_i<-1)=0$，
+        $\P(X_i=-1)>0$，$\E[X_i]>0$，令
+        $T={\rm inf}\{ n:S_n=a \}$，其中$a<0$，
+        利用鞅$Y_n$来证明：$\P(T<\infty)={\rm exp}\{ -\theta_0 a \}$.
+    \end{ex}
+    \begin{solve}
+        易证$Y_{T\wedge n}$是一致可积鞅，
+        从而$\E[Y_T]=\E[Y_0]=1$，
+        \begin{equation*}
+            1=\E[Y_T]={\rm exp}\{a\theta_0\}\P(T<+\infty)
+            +\E[Y_\infty ;T=+\infty]
+        \end{equation*}
+        其中$Y_\infty=0$，因为根据大数定律，
+        $S_\infty=+\infty$，于是$\P(T<+\infty)={\rm exp}{-a\theta_0}$.
+    \end{solve}
+
+\section{向后鞅*}
+    其实课上没讲过向后鞅，但是布置了作业题...补充一点书上向后鞅的部分内容吧。
+    \begin{definition}
+        向后鞅是指指标集为$\{0,-1,-2,\cdots\}$的关于$\{\F_n\}$的适应过程$\{X_n,n\leqslant 0\}$，且满足：
+        \begin{equation*}
+            \E[X_{n+1}|\F_n]=X_n,\forall n\leqslant -1
+        \end{equation*}
+    \end{definition}
+    向后鞅的$\sigma$-域随着$n\rightarrow -\infty$是递减的。
+    \begin{theorem}
+        $X_n\rightarrow X_{-\infty}$ a.s.且$L^1$.
+    \end{theorem}
+    \begin{proof}
+        设
+        \begin{equation*}
+            U_n=\sum_{-n\leqslant k\leqslant 0}I_{ \{X_k\notin [a,b]\} }
+        \end{equation*}
+        为$X_{-n},\cdots,X_0$跳出区间$[a,b]$的次数。于是由定理4.2.10可得
+        \begin{equation*}
+            (b-a)\E[U_n]\leqslant \E[ (X_0-a)^+ ]
+        \end{equation*}
+        令$n\rightarrow\infty$，由MCT，可得$\E[U_\infty]<+\infty$，所以$X_n$ a.s.收敛。
+
+        注意$X_n=\E[X_0|\F_n]$，直接可得$X_n$是一致可积的，因此$L^1$收敛。
+    \end{proof}
+
+    \begin{theorem}
+        $X_{-\infty}=\fun{lim}{n\rightarrow-\infty}X_n$，$\F_{-\infty}=\bigcap_{n} \F_n$，
+        则$X_{-\infty}=\E[X_0|\F_{-\infty}]$.
+    \end{theorem}
+    \begin{proof}
+        显然$X_{-\infty}\in \F_{-\infty}$，$X_n=\E[X_0|\F_n]$，于是如果$A\in \F_{-\infty}\subset \F_n$，则
+        \begin{equation*}
+            \int_A X_n\d\P=\int_A X_0\d\P
+        \end{equation*}
+        上一个定理以及引理4.6.5表明$\E[X_n;A]\rightarrow \E[X_{-\infty};A]$，于是
+        \begin{equation*}
+            \int_A X_{-\infty}\d\P=\int_A X_0\d\P
+        \end{equation*}
+        对于$\forall A\in \F_{-\infty}$成立，于是结论得证。
+    \end{proof}
+
+    \begin{theorem}
+        如果$\F_n\searrow \F_{-\infty}$，则
+        \begin{equation*}
+            \E[Y|\F_n]\ra{{\rm a.s.\ and\ }L^1}\E[Y|\F_{-\infty}]
+        \end{equation*}
+    \end{theorem}
+    \begin{proof}
+        考虑$X_n=\E[Y|\F_n]$是一个向后鞅，由前两个定理可得$n\rightarrow -\infty$时
+        $X_n\rightarrow X_{-\infty}$ a.s.且$L^1$，即
+        \begin{equation*}
+            X_{-\infty}=\E[X_0|\F_{-\infty}]
+            =\E[ \E[Y|\F_0]|\F_{-\infty} ]=\E[Y|\F_{-\infty}]
+        \end{equation*}
+    \end{proof}
+    \begin{ex}[Durrett(Exercise 4.7.1)][Durrett(Exercise 4.7.1)]
+        证明：对于向后鞅$X_n$，如果$X_0\in L^p$，则所有$X_n\in L^p$.
+    \end{ex}
+    \begin{solve}
+        由$L^p$最大值不等式（\autoref{Lp Maximum Inquality}），对于$\forall n\leqslant 0$，
+        \begin{equation*}
+            \E\left[ \fun{sup}{n\leqslant m\leqslant 0}|X_m|^p \right]\leqslant \left(\frac{p}{p-1}\right)^p\E[ |X_0|^p ]
+        \end{equation*}
+        $n\rightarrow -\infty$可得$\fun{sup}{m\leqslant 0}|X_m|\in L^p$，
+        注意到$|X_n-X_{-\infty}|^p\leqslant ( 2\fun{sup}{m\leqslant 0}|X_m| )^p$，后者$L^p$可积，
+        所以由DCT可知$\E[|X_n-X_{-\infty}|^p]\rightarrow 0$.
+    \end{solve}
+
+    \begin{ex}[Durrett(Exercise 4.7.2)][Durrett(Exercise 4.7.2)]
+        设$Y_n\rightarrow Y_{-\infty}$ a.s.，$|Y_n|\leqslant Z\in L^1$，如果
+        $\F_n\searrow \F_{-\infty}$，则
+        $\E[Y_n|\F_n]\rightarrow \E[Y_{-\infty}|\F_{-\infty}]$ a.s. 
+    \end{ex}
+    \begin{solve}
+        注意到
+        \begin{equation*}
+            \left|\E[Y_n|\F_n]-\E[Y_{-\infty}|\F_{-\infty}]\right|
+            \leqslant \E[ |Y_n-Y_{-\infty}||\F_n ]+\left|\E[Y_{-\infty}|\F_n]-\E[Y_{-\infty}|\F_{-\infty}]\right|
+        \end{equation*}
+        显然后者趋于0，对于前者，考虑$W_N=\fun{sup}{m,n\leqslant N}|Y_m-Y_n|$，
+        则$W_N\leqslant 2Z\in L^1$且$W_N\rightarrow 0$，于是
+        \begin{equation*}
+            \fun{limsup}{n\rightarrow -\infty}
+            \E[ |Y_n-Y_{-\infty}||\F_n ]\leqslant 
+            \fun{limsup}{n\rightarrow -\infty}\E[W_N|\F_n]=
+            \E[X_N|\F_{-\infty}]\rightarrow 0
+        \end{equation*}
+    \end{solve}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

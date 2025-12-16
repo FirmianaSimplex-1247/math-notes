@@ -29,11 +29,11 @@
 
 % ---- 习题与解答环境（通用） ----
 \definecolor{shadecolor}{RGB}{241, 241, 255}
-\newcounter{exnum}
+\newcounter{exernum}
 \newcounter{solnum}
 
-\newenvironment{ex}{%
-  \begin{shaded}\stepcounter{exnum}\par\noindent\textbf{题目\arabic{exnum}.}%
+\newenvironment{exer}{%
+  \begin{shaded}\stepcounter{exernum}\par\noindent\textbf{题目\arabic{exnum}.}%
 }{%
   \end{shaded}\par%
 }
@@ -53,28 +53,50 @@
 \def\R{\mathbb{R}}
 \def\C{\mathbb{C}}
 \def\K{\mathbb{K}}
-\def\F{\mathbb{F}}
+\def\F{\mathcal{F}}
 \def\E{\mathbb{E}}
 \def\N{\mathbb{N}}
 \def\Z{\mathbb{Z}}
 \def\D{\mathbb{D}}
-\def\e{{\rm e}}
-\def\i{{\rm i}}
+\def\P{\mathbb{P}}
+\def\e{ {\rm e} }
+\def\i{ {\rm i} }
 \def\L{\mathcal{L}}
+\def\defeq{ \mathop{=}\limits^{\rm def} }
+\def\eqd{\mathop{=}\limits^{\rm d}}
+\def\eq#1{ \mathop{=}\limits^{#1} }
+\def\Ra#1{ \mathop{\Rightarrow}\limits^{#1} }
+\def\ra#1{ \mathop{\rightarrow}\limits^{#1} }
+\def\ve#1{ \textit{\textbf{#1}} }
+\def\sve#1{ \boldsymbol{#1} }
+\def\cal#1{ \mathcal{#1} }
+\newcommand*{\ag}[1]{
+        \langle #1 \rangle
+}
+\newcommand*{\agl}[2]{
+        \langle #1,#2 \rangle
+}
+\newcommand*{\fun}[2]{
+	\mathop{\rm #1}\limits_{#2}
+}
+\newcommand*{\ms}[1]{
+	\left|\left|#1\right|\right|
+}
+\newcommand*{\arr}[2]{
+	\begin{array}{#1}
+		#2
+	\end{array}
+}
+\newcommand*{\undertext}[2]{
+	\mathop{\underline{#1}}\limits_{#2}
+}
+\def\wto{ \mathop{\rightarrow}\limits^{\rm w} }
+\def\w*to{ \mathop{\rightarrow}\limits^{\rm w^*} }
+% 分段标识
+\def\steptext#1{\medskip\noindent\textbf{\underline{#1}}\quad}
 
-\def\defeq{\mathop{=}\limits^{\rm def}}
-\def\eq#1{\mathop{=}\limits^{#1}}
-\def\Ra#1{\mathop{\Rightarrow}\limits^{#1}}
-\def\ve#1{\textit{\textbf{#1}}}
-\def\sve#1{\boldsymbol{#1}}
-
-\newcommand*{\ag}[1]{\langle #1 \rangle}
-\newcommand*{\agl}[2]{\langle #1,#2 \rangle}
-\newcommand*{\fun}[2]{\mathop{\rm #1}\limits_{#2}}
-\newcommand*{\ms}[1]{\left\lVert #1 \right\rVert}
-
-\def\wto{\mathop{\rightarrow}\limits^{w}}
-\def\w*to{\mathop{\rightarrow}\limits^{w^*}}
+% 允许公式跨页
+\allowdisplaybreaks[1]
 
 % ---- CI-safe 字体兜底（通用） ----
 % 注意：这些需要 XeLaTeX

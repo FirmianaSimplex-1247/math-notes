@@ -1,0 +1,493 @@
+\chapter{Poisson过程}
+    从这一章起开始讨论连续时间的随机过程，Poisson过程是一类连续时间离散状态的随机过程。
+\section{Poisson过程的定义}
+    \begin{definition}[Poisson过程的定义]\label{Def of Poisson Process 1}
+        对于随机过程$N=\{ N_t,t\in \R,t\geqslant 0 \}$，若满足：
+        \begin{enumerate}[(1).]
+            \item 独立增量：$\forall t_1<s_1<t_2<s_2<\cdots<t_n<s_n$，
+                随机变量
+                \begin{equation*}
+                    N_{s_1-t_1},N_{s_2-t_2},\cdots,N_{s_n-t_n}
+                \end{equation*}
+                相互独立。
+            \item $N_0=0$，$\forall t<s$，$N_s-N_t\sim {\rm Poisson}( \lambda(s-t) )$.
+        \end{enumerate}
+        则称$N$为参数/比率/速率(rate)为$\lambda$的泊松(Possion)过程。
+    \end{definition}
+
+    \begin{corollary}
+        类似于马氏链的转移概率，我们可以计算出：
+        对于$s>t,m\geqslant n$，
+        \begin{equation*}
+            \P( N_s=m|N_t=n )=\P( N_s-N_t=m-n)={\rm e}^{-\lambda(s-t)}\frac{ (\lambda(s-t))^{m-n} }{(m-n)!}
+        \end{equation*}
+        倒过来也能求：
+        \begin{equation*}
+            \P( N_t=n|N_s=m )=C_m^n \left(\frac{s}{t}\right)^n \left(\frac{t-s}{t}\right)^{m-n}
+        \end{equation*}
+    \end{corollary}
+    \begin{proof}
+        \begin{align*}
+            \P( N_s=m|N_t=n )
+            &=\frac{\P( N_s=m,N_t=n )}{\P(N_t=n)}\\
+            &=\frac{\P( N_s-N_t=m-n,N_t-N_0=n )}{\P(N_t=n)}\\
+            &=\frac{\P( N_s-N_t=m-n)\P(N_t-N_0=n )}{\P(N_t=n)}\\
+            &=\P( N_s-N_t=m-n)={\rm e}^{-\lambda(s-t)}\frac{ (\lambda(s-t))^{m-n} }{(m-n)!}
+        \end{align*}
+    \end{proof}
+
+    \begin{example}
+        假设进入超市中的顾客数量是一个参数为$\lambda$的Poisson过程，
+        记作$N=\{N_t,t\geqslant 0\}$，已知顾客的性别与$N$独立，
+        是男性的概率为$1/3$，记$M_t$为时刻$t$之前进入超市的男性顾客数量，求证：
+        $M=\{M_t,t\geqslant 0\}$是一个参数为$\lambda/3$的Poisson过程。
+    \end{example}
+    \begin{proof}
+        $M_s-M_t$只与$N_s-N_t$有关，所以继承其独立增量性。下面我们求$M_s-M_t$的分布，
+        \begin{align*}
+            \P(M_s-M_t=n)
+            &=\sum_{k=n}^\infty \P( (s,t]\text{时间段内进入了$k$名顾客，其中有$n$名男性} )\\
+            &=\sum_{k=n}^\infty \P( (s,t]\text{时间段内进入了$k$名顾客})\P(\text{$k$名顾客中有$n$名男性})\\
+            &=\sum_{k=n}^\infty \P( N_s-N_t=k){k\choose n}\left(\frac{1}{3}\right)^n\left(\frac{2}{3}\right)^{k-n}\\
+            &=\sum_{k=n}^\infty {\rm e}^{-\lambda(s-t)}\frac{[\lambda(s-t)]^k}{k!}\frac{k!}{n!(k-n)!} \left(\frac{1}{3}\right)^n\left(\frac{2}{3}\right)^{k-n}\\
+            &=\left(\frac{1}{3}\right)^n{\rm e}^{-\lambda(s-t)}\frac{[\lambda(s-t)]^n}{n!}\sum_{k=n}^\infty \frac{[\lambda(s-t)]^{k-n}}{(k-n)!} \left(\frac{2}{3}\right)^{k-n}\\
+            &=\left(\frac{1}{3}\right)^n{\rm e}^{-\lambda(s-t)}\frac{[\lambda(s-t)]^n}{n!}\sum_{k=0}^\infty \frac{[\lambda(s-t)]^{k}}{k!} \left(\frac{2}{3}\right)^{k}\\
+            &=\left(\frac{1}{3}\right)^n{\rm e}^{-\lambda(s-t)}\frac{[\lambda(s-t)]^n}{n!}{\rm e}^{\frac{2}{3}\lambda(s-t)}\\
+            &={\rm e}^{-\frac{1}{3}\lambda(s-t)}\frac{[\frac{1}{3}\lambda(s-t)]^n}{n!}
+        \end{align*}
+        所以$M_s-M_t\sim {\rm Poisson}(\frac{1}{3}\lambda)$.
+    \end{proof}
+
+    \begin{definition}[复合Poisson过程]
+        设$N=\{N_t,t\geqslant 0\}$是一个参数为$\lambda$的Poisson过程，
+        而$Y_1,\cdots,Y_n,\cdots$是独立同分布的随机变量，且独立于$N$，
+        定义：
+        \begin{equation*}
+            S_t=\sum_{i=1}^{N_t} Y_i=Y_1+Y_2+\cdot+Y_{N_t},\ t\geqslant 0
+        \end{equation*}
+        则称$\{S_t,t\geqslant 0\}$为复合Poisson过程。
+    \end{definition}
+
+\section{构造Poisson过程}
+    \begin{theorem}
+        我们按照以下步骤构建出一个Poisson过程：
+        \begin{enumerate}
+        \item 一列独立同分布的随机变量$\xi_1,\xi_2,\cdots$服从参数为$\lambda$的指数分布，代表对某个事件发生时间的独立重复测量。
+        \item 令$T_0=0,T_n=\xi_1+\cdots+\xi_n$，代表第$n$次事件发生的时刻。
+        \item 对于$t\geqslant 0$，令$N_t=\fun{sup}{}\{ n\geqslant 0:T_n\leqslant t \}$，实际上
+            \begin{equation*}
+                N_t=\fun{sup}{}\{ n\geqslant 0:T_n\leqslant t \}=\fun{inf}{}\{ n\geqslant 1:T_n>t \}
+                =\sum_{n=1}^\infty I_{ \{T_n\leqslant t\} }
+            \end{equation*}
+            即时间$t$前发生事件的次数。
+        \end{enumerate}
+        那么，$N=\{N_t,t\geqslant 0\}$为Poisson过程。
+    \end{theorem}
+    \begin{proof}
+        验证\autoref{Def of Poisson Process 1}的两条性质。
+        根据构造过程可知，
+        $N_0=0$，$T_n$的密度函数为：
+        \begin{equation*}
+            T_n\sim f_n(s)=\frac{\lambda^n s^{n-1}{\rm e}^{-\lambda s}}{(n-1)!},s\geqslant 0
+        \end{equation*}
+        然后我们来求$N_t$的分布，
+        \begin{align*}
+            \P(N_t=0)&=\P(T_1>t)=\P(\xi_1>t)={\rm e}^{-\lambda t} \\
+            \P(N_t=n)&=\P(T_n\leqslant t<T_{n+1})\\
+            &=\P(T_n\leqslant t<T_n+\xi_{n+1})\\ \tag*{注意$T_n$独立于$\xi_{n+1}$}
+            &=\mathop{\iint}\limits_{ \{(s,u):s\leqslant t<s+u\} } \frac{\lambda^ns^{n-1}{\rm e}^{-\lambda s}}{(n-1)!}\cdot \lambda {\rm e}^{-\lambda u}\d s\d u\\
+            &=\frac{{\rm e}^{-\lambda t}(\lambda t)^n }{n!}
+        \end{align*}
+        接下来证明独立增量，对于$s>0$，
+        \begin{align*}
+            \P(T_{n+1}-t\geqslant s|N_t=n)
+            &=\frac{\P(T_{n+1}-t\geqslant s,N_t=n)}{\P(N_t=n)}\\
+            &=\frac{\P(T_{n+1}-t\geqslant s,T_n\leqslant t)}{\P(N_t=n)}\\
+            &=\frac{\P(\xi_{n+1}\geqslant s+t-T_n,T_n\leqslant t)}{\P(N_t=n)}\\
+            &=\frac{1}{\P(N_t=n)}\int_0^t \d v\int_{t+s-v}^{+\infty} \frac{\lambda^n v^{n-1}}{(n-1)!}\lambda {\rm e}^{-\lambda u}\d u\\
+            &=\frac{1}{\P(N_t=n)}{\rm e}^{-\lambda(t+s)}\frac{(\lambda t)^n}{n!}\\
+            &={\rm e}^{-\lambda s}
+        \end{align*}
+        令$T_1'=T_{N_t+1}-t$，$T_k=T_{N_t+k}-T_{N_t+k-1},k\geqslant 2$，
+        Claim 1：$\{T_k',k\geqslant 1\}$独立同分布，服从参数为$\lambda$的指数分布，且与$N_t$独立。证明如下：
+        观察
+        \begin{equation*}
+            \P(T_n\leqslant t,T_{n+1}-t\geqslant s,T_{n+2}-T_{n+1}\geqslant v_2,\cdots,T_{n+m}-T_{n+m-1}\geqslant v_m)
+        \end{equation*}
+        实际上就是
+        \begin{equation*}
+            \P(T_n\leqslant t,T_{n+1}-t\geqslant s,\xi_{n+2}\geqslant v_2,\cdots,\xi_{n+m}\geqslant v_m)
+        \end{equation*}
+        根据独立性，这等于
+        \begin{equation*}
+            \P(T_n\leqslant t,T_{n+1}-t\geqslant s){\rm e}^{-\lambda(v_2+\cdots+v_m)}
+        \end{equation*}
+        于是
+        \begin{align*}
+            &\P(T_{n+1}-t\geqslant s,T_{n+2}-T_{n+1}\geqslant v_2,\cdots,T_{n+m}-T_{n+m-1}\geqslant v_m|N_t=n)\\
+            =&\P(T_n\leqslant t,T_{n+1}-t\geqslant s,T_{n+2}-T_{n+1}\geqslant v_2,\cdots,T_{n+m}-T_{n+m-1}\geqslant v_m)/\P(N_t=n)\\
+            =&{\rm e}^{-\lambda(v_2+\cdots+v_m)}\P( T_{n+1}\geqslant s+t|N_t=n )\\
+            =&{\rm e}^{-\lambda(v_2+\cdots+v_m)}{\rm e}^{-\lambda s}
+        \end{align*}
+        所以
+        \begin{align*}
+            &\P(T_1'\geqslant s,T_2'\geqslant v_2,\cdots,T_m'\geqslant v_m,N_t\leqslant l)\\
+            =&\sum_{n=0}^l \P(T_1'\geqslant s,T_2'\geqslant v_2,\cdots,T_m'\geqslant v_m,N_t=n)\\
+            =&\sum_{n=0}^l \P(T_{n+1}-t\geqslant s,T_{n+2}-T_{n+1}\geqslant v_2,\cdots,T_{n+m}-T_{n+m-1}\geqslant v_m,N_t=n)\\
+            =&\sum_{n=0}^l {\rm e}^{-\lambda(v_2+\cdots+v_m)}{\rm e}^{-\lambda s}\P(N_t=n)\\
+            =&{\rm e}^{-\lambda(v_2+\cdots+v_m)}{\rm e}^{-\lambda s}\P(N_t\leqslant l)\\
+            =&\P(T_1'\geqslant s)\P(T_2'\geqslant v_2)\cdots \P(T_m'\geqslant v_m)\cdot \P(N_t\leqslant l)
+        \end{align*}
+        于是Claim 1得证。Claim 2：对于$t_0<t_1<\cdots<t_n$，
+        \begin{equation*}
+            \P( N_{t_i}-N_{t_{i-1}}=k_i,i=1,2,\cdots,n )
+            =\prod_{i=1}^n {\rm e}^{ -\lambda(t_i-t_{i-1}) }
+            \frac{ (\lambda(t_i-t_{i-1}))^{k_i} }{k_i!}
+        \end{equation*}
+        并且各个$N_{t_i}-N_{t_{i-1}}$是独立的。我们先考虑$i=2$的简单情形，
+        一般情形的证明同理。
+        令$T_1''=T_{N_{t_1}+1}-t_1$，
+        $T_k''=T_{N_{t_1}+k}-T_{N_{t_1}+k-1},k\geqslant 2$，
+        则由Claim 1，$\{ T_k'',k\geqslant 1 \}$独立同分布，
+        服从参数为$\lambda$的指数分布，且与$N_{t_1}$独立，又因为
+        \begin{align*}
+            \{ N_{t_2}-N_{t_1}=m \}
+            &=\{ T_{N_{t_1}+m}\leqslant t_2,T_{N_{t_1}+m+1}> t_2 \}\\
+            &=\{ T_{N_{t_1}+m}-t_1\leqslant t_2-t_1,T_{N_{t_1}+m+1}-t_1> t_2-t_1 \}\\
+            &=\{ \sum_{k=1}^m T_k''\leqslant t_2-t_1<\sum_{k=1}^{m+1}T_k'' \}
+        \end{align*}
+        通过此式能看出$N_{t_2}-N_{t_1}$与$N_{t_1}$独立，并且可以利用$T_k''\sim {\rm exp}\{\lambda\}$
+        求出$N_{t_2}-N_{t_1}$的分布，
+        计算过程省略。
+    \end{proof}
+    从这个定理能看出Poisson过程在现实中的应用场景，即“一段时间内某事件的发生次数”。
+
+\clearpage
+\section{Poisson的另一种定义*}
+    \begin{definition}\label{def2 of Poisson Process}
+        对于随机过程$N=\{ N_t:t\geqslant 0 \}$，若满足：
+        \begin{enumerate}[(1).]
+            \item $N_0=0$.
+            \item $\forall s<t,N_s\leqslant N_t$.
+            \item \begin{equation*}
+                \P(N_{t+h}=m+n|N_{t}=n)=\left\{ \begin{array}{ll}
+                    1-\lambda h+o(h)&,m=0\\
+                    \lambda h+o(h)&,m=1\\
+                    o(h)&,m\geqslant 2
+                \end{array} \right.
+            \end{equation*}
+            这里$o(h)$代表$h\rightarrow 0$时的低阶无穷小：$\fun{lim}{h\rightarrow 0}o(h)/h=0$，例如$h^2$.
+            \item $s<t$时，$N_t-N_s$与$\{ N_{s'},\forall s'\in [0,s] \}$独立。
+        \end{enumerate}
+        则称$N$为强度为$\lambda$的泊松(Possion)过程。
+    \end{definition}
+    \begin{theorem}
+        $N_t$服从参数为$\lambda t$的Poisson分布。
+    \end{theorem}
+    \begin{proof}
+        记$p_j(t)=\P(N_t=j)$，那么$j\geqslant 1$时，
+        \begin{align*}
+            &p_j(t+h)=\P(N_{t+h}=j)\\
+            &=\sum_{i\leqslant j} \P(N_{t+h}=j,N_{t}=i)\\
+            &=\sum_{i\leqslant j} p_i(t)\cdot \P(N_{t+h}=j|N_t=i)\\
+            &=p_j(t)\cdot \P(N_{t+h}=j|N_{t}=j)+p_{j-1}(t)\cdot \P(N_{t+h}=j|N_{t}=j-1)+o(h)\\
+            &=p_j(t)\cdot (1-\lambda h+o(h))+p_{j-1}(t)\cdot (\lambda h+o(h))+o(h)\\
+            &=p_j(t)\cdot (1-\lambda h)+p_{j-1}(t)\cdot \lambda h+o(h)
+        \end{align*}
+        $j=0$，则没有第二项。稍作变换可得
+        \begin{equation*}
+            \frac{p_j(t+h)-p_j(t)}{h}=-\lambda p_j(t)+\lambda p_{j-1}(t)+\frac{o(h)}{h}
+        \end{equation*}
+        令$h\rightarrow 0$可得
+        \begin{align*}
+            \frac{\d}{\d t}p_j(t)&=-\lambda p_j(t)+\lambda p_{j-1}(t)\\
+            \frac{\d}{\d t}p_0(t)&=-\lambda p_0(t)
+        \end{align*}
+        同时也初值$p_0(0)=1,p_j(0)=0,j\geqslant 1$.
+
+        要解这个微分方程组，既可以用递推的方法，也可以用生成函数。具体过程不写了，最终能解得
+        \begin{equation*}
+            p_j(t)=\frac{(\lambda t)^j}{j!}{\rm e}^{-\lambda t}
+        \end{equation*}
+    \end{proof}
+
+    接下来，令
+    \begin{equation*}
+        T_n=\fun{inf}{}\{ t\geqslant 0:N_t=n \},\ n=0,1,\cdots
+    \end{equation*}
+    为首次达到$n$的时刻，
+    \begin{equation*}
+        X_n=T_n-T_{n-1},\ n=1,2,\cdots
+    \end{equation*}
+    为从$n-1$到$n$的等待时间。一个简单的推论是：
+    \begin{equation*}
+        N_t=m\Leftrightarrow T_m\leqslant t< T_{m+1}
+    \end{equation*}
+    \begin{theorem}
+        $X_1,X_2,\cdots$独立同分布，且服从参数为$\lambda$的指数分布。
+    \end{theorem}
+    \begin{proof}
+        考虑$X_1$的分布，
+        \begin{equation*}
+            \P(X_1>t)=\P(N(t)=0)={\rm e}^{-\lambda t}
+        \end{equation*}
+        所以$X_1$服从参数为$\lambda$的指数分布。
+
+        由独立增量可知
+        \begin{equation*}
+            \P(X_2>t|X_1=t_1)=\P( N_( t_1+t )-N(t_1)=0|N_(t_1)=1,N(t)=0,t<t_1)
+            =\P( N_( t_1+t )-N(t_1)=0 )={\rm e}^{-\lambda t}
+        \end{equation*}
+        所以$X_2$和$X_1$独立同分布，递推可证。
+    \end{proof}
+
+    \begin{corollary}[Poisson过程的马氏性]
+        设$0\leqslant t_1<\cdots<t_k<t<t+s$，$0\leqslant n_1\leqslant \cdots\leqslant n_k\leqslant n<n+m$，
+        则
+        \begin{equation*}
+            \P(N_{t+s}=n+m|N_t=n,N_{t_1}=n_1,\cdots,N_{t_k}=n_k)
+            =\P(N_{t+s}=n+m|N_t=n)
+        \end{equation*}
+    \end{corollary}
+\section{Poisson过程的更多性质*}
+    \begin{theorem}[合并]
+        设$\{ X_t,t\geqslant 0 \}$和$\{Y_t,t\geqslant 0\}$是两个相互独立的Poisson过程，参数分别为$\lambda,\mu$，则
+        $\{ X_t+Y_t,t\geqslant 0 \}$是参数为$\lambda+\mu$的Poisson过程。
+    \end{theorem}
+    \begin{proof}
+        记$N_t=X_t+Y_t$，我们来验证\autoref{def2 of Poisson Process}中的四条要求，
+        (1)(2)(4)显然，我们只说明(3)：
+        \begin{align*}
+            \P( N_{t+h}=n|N_t=n )
+            &=\P( X_{t+h}-X_t=0 )\P( Y_{t+h}-Y_t=0 )\\
+            &=(1-\lambda h+o(h))(1-\mu h+o(h))\\
+            &=1-(\lambda+\mu)h+o(h)\\
+            \P( N_{t+h}=n+1|N_t=n )
+            &=\P( X_{t+h}-X_t=1 )\P( Y_{t+h}-Y_t=0 )+\P( X_{t+h}-X_t=0 )\P( Y_{t+h}-Y_t=1)\\
+            &=(\lambda h+o(h))(1-\mu h+o(h))+(\mu h+o(h))(1-\lambda h+o(h))\\
+            &=(\lambda+\mu)h+o(h)\\
+            \P( N_{t+h}=n+2|N_t=n )
+            &=\P( X_{t+h}-X_t=1 )\P( Y_{t+h}-Y_t=1 )+o(h)\\
+            &=(\lambda h+o(h))(\mu h+o(h))+o(h)\\
+            &=o(h)
+        \end{align*}
+    \end{proof}
+
+    \begin{theorem}[细分]
+        $\{X_t,t\geqslant 0\}$是参数为$\lambda$的Poisson过程，
+        $\varepsilon_1,\varepsilon_2,\cdots$独立同分布，
+        分布为$1,0$的两点分布，$\P(\varepsilon_1=1)=p$，
+        则
+        \begin{equation*}
+            \left\{ Y_t=\sum_{n=1}^{X_t} I_{ \{ \varepsilon_n=1 \} },t\geqslant 0 \right\}
+        \end{equation*}
+        与
+        \begin{equation*}
+            \left\{ Z_t=\sum_{n=1}^{X_t} I_{ \{ \varepsilon_n=0 \} },t\geqslant 0 \right\}
+        \end{equation*}
+        是两个相互独立的Poisson过程，参数分别为$\lambda p$和$\lambda(1-p)$.
+    \end{theorem}
+    
+    \begin{theorem}
+        给定$N(t)=n$的条件下，$(T_1,\cdots,T_n)$的联合密度为
+        \begin{equation*}
+            f(t_1,t_2,\cdots,t_n)=\frac{n!}{t^n}I_{ \{ 0<t_1<t_2<\cdots<t_n<t \} }
+        \end{equation*}
+        相当于$(0,t)$均匀分布上的$n$个次序统计量。
+    \end{theorem}
+    上课讲的两个证明都不太严谨，这里就省略了。从直观上理解，就是因为等待时间独立同分布，
+    前$n$个等待时间之和$\leqslant t$，所以
+    这些时间点都是均匀分布在$(0,t)$上。
+    \begin{example}
+        假设乘客按照速率为$\lambda$的Poisson过程到达火车站，
+        且火车在时刻$t$离站，求时间段$(0,t]$内乘客的总等待时间的期望。
+    \end{example}
+    \begin{solve}
+        用$N_t$代表$t$时乘客数量，那么时间段$(0,t]$内
+        就有$N_t$名乘客进行了等车。
+
+        第$1$位乘客在$T_1$时到达，等待了$t-T_1$；
+        第$2$位乘客在$T_1$时到达，等待了$t-T_2$；
+        以此类推，总等待时间为
+        \begin{equation*}
+            \sum_{n=1}^{N_t} (t-T_n)
+        \end{equation*}
+        先求条件期望：
+        \begin{align*}
+            \E\left[ \left. \sum_{n=1}^{N_t} (t-T_n) \right| N_t=k \right]
+            &=kt-\E\left[ \left. \sum_{n=1}^{k} T_n \right| N_t=k \right]\\
+            &=kt-\E\left[ \left. \sum_{n=1}^{k} U_n \right| N_t=k \right]\\
+            &=kt-\frac{kt}{2}=\frac{kt}{2}
+        \end{align*}
+        其中$U_n$服从$(0,t)$上的均匀分布，那么
+        \begin{equation*}
+            \E\left[\sum_{n=1}^{N_t} (t-T_n)\right]
+            =\E\left[\E\left[ \left. \sum_{n=1}^{N_t} (t-T_n) \right| N_t \right]\right]
+            =\E\left[ \frac{tN_t}{2} \right]
+            =\frac{\lambda t^2}{2}
+        \end{equation*}
+    \end{solve}
+
+\section{生过程*}
+    \begin{definition}[生过程]
+        随机过程$N=\{ N(t),t\geqslant 0 \}$若满足：
+        \begin{enumerate}[(1).]
+            \item 状态空间为$S=\{0,1,2,\cdots\}$.
+            \item $N(0)\geqslant 0$，$\forall s<t,N(s)<N(t)$.
+            \item \begin{equation*}
+                \P(N(t+h)=n+m|N(t)=n)=\left\{ \begin{array}{ll}
+                    1-\lambda_n h+o(h)&,m=0\\
+                    \lambda_n h+o(h)&,m=1\\
+                    o(h)&,m\geqslant 2
+                \end{array} \right.
+            \end{equation*}
+            \item $s<t$时，给定$N(s)$的条件下，$N(t)-N(s)$与$\{ N(s'),\forall s'\in [0,s] \}$独立。
+        \end{enumerate}
+        则称$N$为参数为$\lambda_0,\lambda_1,\cdots$的生过程。
+    \end{definition}
+    \begin{example}
+        当$\lambda_n=\lambda$为常数时，生过程就是（初值可能不为零的）Poisson过程；
+        考虑这样一种情形：每个个体以速率$\lambda$独立繁育后代，即$\lambda_n=\lambda \cdot n$，
+        这称为简单生过程；带迁移的简单生过程：$\lambda_n=\lambda n+v$，其中常数$v$称为迁移速率。
+    \end{example}
+    
+    \begin{definition}
+        定义
+        \begin{equation*}
+            T_n=\fun{inf}{}\{ t\geqslant 0:N(t)=n \},\ \forall n\in \N
+        \end{equation*}
+        以及
+        \begin{equation*}
+            T_\infty=\fun{lim}{n\rightarrow\infty} T_n
+        \end{equation*}
+        如果$N(t)$在有限时间内（概率为1）达到$+\infty$，即：
+        \begin{equation*}
+            \P(T_\infty=+\infty)=\P(\fun{lim}{n\rightarrow +\infty} T_n=+\infty)=1
+        \end{equation*}        
+        则称$N$会爆破。否则，则称其不会爆破。
+    \end{definition}
+    \begin{theorem}
+        生过程$N$不会爆破$\Leftrightarrow \sum \lambda_n^{-1}=+\infty$.
+    \end{theorem}
+    \begin{proof}
+        记$X_n=T_n-T_{n-1}\sim {\rm exp}\{ \lambda_{n-1} \}$，则
+        \begin{equation*}
+            T_\infty=\fun{lim}{m\rightarrow\infty}\sum_{n=1}^n X_n
+        \end{equation*}
+        如果$\sum \lambda_n^{-1}<\infty$，则
+        \begin{equation*}
+            \E[T_\infty]=\fun{lim}{n\rightarrow\infty}\sum_{n=1}^m\E[ X_n ]
+            =\sum_{n=1}^\infty \lambda_{n-1}^{-1}<+\infty
+        \end{equation*}
+        从而$T_\infty<\infty$ a.s.$\Rightarrow \P(T=\infty)=0<1$，$N$不爆破。
+
+        如果$\sum \lambda_n^{-1}=\infty$，则
+        \begin{equation*}
+            \E[ {\rm e}^{-T_\infty} ]
+            =\fun{lim}{m\rightarrow\infty}\prod_{m=1}^n \E[ {\rm e}^{-X_i} ]
+            =\fun{lim}{m\rightarrow\infty}\prod_{m=1}^n \frac{1}{1+\lambda_{n-1}^{-1}}
+            \leqslant 
+            \fun{lim}{m\rightarrow\infty}\frac{1}{\sum_{n=1}^m\lambda_{n-1}^{-1}}=0
+        \end{equation*}
+        从而$T_\infty=\infty$ a.s.，$N$会爆破。
+    \end{proof}
+
+    \begin{theorem}
+        记
+        \begin{equation*}
+            p_{ij}(t)=\P( N(s+t)=j|N(s)=i )=\P( N(t)=j|N(0)=i )
+        \end{equation*}
+        向前方程：$\forall i,j\in \N_+$，
+        \begin{equation*}
+            \left\{ \begin{array}{l}
+                \frac{\d}{\d t}p_{ij}(t)=\lambda_{j-1}p_{i,j-1}(t)-\lambda_j p_{ij}(t),\ \forall j\geqslant i\\
+                \lambda_{-1}=0\\
+                p_{ij}(0)=\delta_{ij}
+            \end{array} \right.
+        \end{equation*}
+        向后方程：$\forall i,j\in \N_+$，
+        \begin{equation*}
+            \left\{ \begin{array}{l}
+                \frac{\d}{\d t}p_{ij}(t)=\lambda_{i}p_{i+1,j}(t)-\lambda_i p_{ij}(t),\ \forall j\geqslant i\\
+                p_{ij}(0)=\delta_{ij}
+            \end{array} \right.
+        \end{equation*}
+    \end{theorem}
+    \begin{proof}
+        边界条件由定义直接得出：$p_{ij}(0)=\delta_{ij}$.
+
+        任取$j\geqslant i\geqslant 0$，$t\geqslant 0$，$h>0$，有
+        \begin{align*}
+            p_{ij}(t+h)
+            &=\P( N(t+h)=j|N(0)=i )\\
+            &=\sum_{i\leqslant k\leqslant j}\P( N(t+h)=j,N(t)=k|N(0)=i )\\
+            &=\sum_{i\leqslant k\leqslant j}\P( N(t+h)=j|N(t)=k,N(0)=i )\P( N(t)=k|N(0)=i )\\
+            &=\sum_{i\leqslant k\leqslant j}p_{kj}(h)p_{ik}(t)
+        \end{align*}
+        $j=i$时，
+        \begin{align*}
+            p_{ii}(t+h)&=p_{ii}(h)p_{ii}(t)=(1-\lambda_i h+o(h))p_{ii}(t)\\
+            \Rightarrow \frac{\d }{\d t}p_{ii}(t)&=\fun{lim}{h\rightarrow 0}\frac{p_{ii}(t+h)-p_{ii}(t)}{h}
+            =\fun{lim}{h\rightarrow 0}\frac{(-\lambda_i h+o(h))p_{ii}(t)}{h}
+            =-\lambda_i p_{ii}(t)
+        \end{align*}
+        $j=i+1$时，
+        \begin{align*}
+            p_{i,i+1}(t+h)&=p_{i,i+1}(h)p_{i,i}(t)+p_{i+1,i+1}(h)p_{i,i+1}(t)\\
+            &=(\lambda_ih+o(h))p_{i,i}(t)+(1-\lambda_{i+1}h+o(h))p_{i,i+1}(t)\\
+            \Rightarrow \frac{\d }{\d t}p_{ii}(t)&=\fun{lim}{h\rightarrow 0}\frac{p_{i,i+1}(t+h)-p_{i,i+1}(t)}{h}=\lambda_ip_{i,i}(t)-\lambda_{i+1}h
+        \end{align*}
+        $j\geqslant i+2$时，$k$可取值$i,i+1,\cdots,j-1,j$，注意到$k\leqslant j-2$时，$p_{kj}(h)=o(h)$，因此
+        \begin{align*}
+            p_{ij}(t+h)
+            &=p_{jj}(h)p_{ij}(t)+p_{j-1,j}(h)p_{i,j-1}(t)+o(h)\\
+            &=(1-\lambda_j h+o(h))p_{ij}(t)+(\lambda_{j-1}h+o(h))p_{i,j-1}(t)+o(h)\\
+            \Rightarrow \frac{\d }{\d t}p_{ij}(t)&=\fun{lim}{h\rightarrow 0}\frac{p_{ij}(t+h)-p_{ij}(t)}{h}=\lambda_{j-1}p_{i,j-1}(t)-\lambda_jp_{ij}(t)
+        \end{align*}
+        综上所述，整理可得向前方程。
+
+        得到向前方程的思路可以大致表示为：$p_{ij}(t+h)=\sum_k \P(i\ra{t} k\ra{h} j)=\sum_k p_{ik}(t)p_{kj}(h)$，那么
+        我们考虑$\sum_k \P(i\ra{h} k\ra{t} j)$，就可得到向后方程，证明方法类似，具体细节不再赘述。
+    \end{proof}
+
+    \begin{theorem}
+        向前方程有唯一解，并且此解满足向后方程。
+    \end{theorem}
+
+    \if{0}{
+    我们扩充一下停时的定义。
+    \begin{definition}
+        随机过程$N=\{ N(t),t\geqslant 0 \}$，随机变量$T$的取值为$[0,+\infty]$，
+        如果对于$\forall t\geqslant 0$，$\{ T\leqslant t \}$
+        是$\sigma( \{ N(s),s\in [0,t] \} )$可测的，则称$T$是$N$的停时。
+    \end{definition}
+
+    \begin{theorem}[强马氏性]
+        给定$I=\{ T<T_\infty \}\cap \{ N(T)=i \}$的条件下，
+        $N^*=\{ N^*(u)=N(T+u),u\geqslant 0 \}$为初值为$i$的生过程，且与$\{ N(s),s\leqslant T \}$独立。
+    \end{theorem}
+    }\fi
+
+    \begin{definition}
+        随机过程$M=\{ M(t),t\geqslant 0 \}$的状态空间为可数集$S$，
+        如果
+        \begin{equation*}
+            \forall \omega\in \Omega,\forall t\in [0,+\infty),\exists \varepsilon_{t,\omega}>0{\rm\ s.t.\ }
+            M(t,\omega)=M(t+u,\omega),\forall 0\leqslant u<\varepsilon_{t,\omega}
+        \end{equation*}
+        则称$M$右连续。
+    \end{definition}
+
+    \begin{definition}
+        称随机过程$M=\{ M(t),t\geqslant 0 \}$有平稳独立增量，如果$\forall 0=t_0<t_1<\cdots<t_n$，
+        \begin{equation*}
+            M(t_1)-M(t_0),\cdots,M(t_n)-M(t_{n-1})
+        \end{equation*}
+        相互独立，且$\forall 0\leqslant s<t$，
+        $M(t)-M(s)$与$M(t-s)-M(t_0)$同分布。
+    \end{definition}
+
+    \begin{example}
+        随机过程$M=\{ M(t),t\geqslant 0 \}$非降、右连续、取值为整数、有平稳独立增量，
+        $M(0)=0$，且$M(t)-M(t-)\in \{ 0,1 \}$，则$M$为参数为$\E[ M(1)]$的Poisson过程。
+    \end{example}

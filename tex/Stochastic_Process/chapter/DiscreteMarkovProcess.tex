@@ -1,0 +1,2298 @@
+\chapter{离散时间马氏过程}
+    主要内容为随机过程（研课）关于马氏链的部分，
+    标星号的为应用随机过程中提到的新内容。研随课程在前期用测度论的语言给出了
+    严谨的马氏链定义，详细介绍了马氏性与强马氏性以及应用；
+    而应随则全程拿初等语言死磕，着重介绍了状态分类的判断准则和
+    平均返回时间、平均经过次数、首次到达时间期望等各种奇奇怪怪的量的计算方法。
+    应随有些讲得特别不清不楚的内容我干脆就删了（强马氏性），以及遍历定理相关的那部分我没听（结果期中考了，淦），也没多大兴趣，不整理了。
+\section{马氏链的定义}
+
+\subsection{基本定义}
+    \begin{definition}[马氏链]\label{Def of Markov Chain}
+        概率空间$(\Omega,\F,\P)$上的离散随机过程$X=\{X_n,n\geqslant 0\}$
+        中的随机变量所有可能的取值组成的集合称为状态空间，记作$S$.
+
+        设$S$是至多可列集，称$\{X_n\}$具有马氏性(Markov property)是指：
+        \begin{equation*}
+            \P(X_{n+1}=j|X_n=i,X_{n-1}=i_{n-1},\cdots,X_0=i_0)=\P(X_{n+1}=j|X_n=i)
+        \end{equation*}
+        其中$i,j,i_{k}\in S,k=0,1,\cdots,n-1$是任意的。
+        此时$X$就被称为离散时间离散状态马氏链，简称离散马氏链。
+    \end{definition}
+    马氏性的直观理解：给定$n$时刻及以前的信息，
+    则未来($n+1$时刻)与过去($<n$时刻)无关，只与现在($n$时刻)的状态有关。
+    \begin{definition}
+        对于马氏链$X=\{X_n,n\geqslant 0\}$，如果它还满足
+        \begin{equation*}
+            p_{ij}\defeq \P(X_{n+1}=j|X_n=i)
+        \end{equation*}
+        与$n$无关，则称其为齐次的马氏链，$p_{ij}$称为一步转移概率，
+    \end{definition}
+    我们下文中默认探讨的都是齐次的离散马氏链。齐次有个好处是：我们只需要关心
+    两个时刻之间的时间差，而不需要关心具体的时刻。后文中的\autoref{e.g.3 of Markov Property}给出了一个非齐次马氏链的例子.
+
+    \begin{example}[Ehrenfest Chain][Ehrenfest Chain]
+        有两个瓶子记作A、B，两个瓶子一共有$r$个球，
+        初始时A瓶中有$k$个球，B瓶中有$r-k$个球。每次操作从$r$个球中随机地选一个，
+        并将其放到另外一个瓶子里。记$X_n$为$n$次操作之后A瓶中的球数，则$\{X_n\}$是一个马氏链，
+        状态空间$S=\{ 0,1,\cdots,r \}$，一步转移概率：
+        \begin{equation*}
+            p_{kj}=\P(X_{n+1}=j|X_n=k)\left\{ \begin{array}{ll}
+                0&,|k-j|\neq 1\\
+                \frac{k}{r}&,j=k+1\\
+                \frac{r-k}{r}&,j=k-1
+            \end{array} \right.
+        \end{equation*}
+    \end{example}
+
+\subsection{基本性质和应用*}
+    \begin{proposition}[马氏链的等价定义]\label{Other def of Markov Porperty}
+        对于离散随机过程$\{X_n\}$，以下命题等价：
+        \begin{enumerate}[(1).]
+            \item 具有马氏性：$\forall n\geqslant 0,\forall i,j,i_{n-1},\cdots,i_0\in S$，
+                \begin{equation*}
+                    \P(X_{n+1}=j|X_n=i,X_{n-1}=i_{n-1},\cdots,X_0=i_0)=\P(X_{n+1}=j|X_n=i)
+                \end{equation*}
+            \item $\forall m,n\geqslant 0,\forall s,x_m,\cdots,x_0\in S$，
+                \begin{equation*}
+                    \P(X_{m+n}=s|X_m=x_m,X_{m-1}=x_{m-1},\cdots,X_0=x_0)=\P(X_{m+n}=s|X_m=x_m)
+                \end{equation*}
+            \item $\forall 0\leqslant n_1<n_2<\cdots<n_k\leqslant n,\forall s,x_{n_1},\cdots,x_{n_k}\in S$，
+                \begin{equation*}
+                    \P(X_{n+1}=s|X_{n_k}=x_{n_k},\cdots,X_{n_1}=x_{n_1})=\P(X_{n+1}=s|X_{n_k}=x_{n_k})
+                \end{equation*}
+        \end{enumerate}
+    \end{proposition}
+
+    \begin{example}[][Markov Property]
+        $\{X_n\}$是马氏链，请问以下等式成立吗？
+        \begin{enumerate}[(1).]
+            \item $\P(X_3=j|X_2=i,X_1\in A,X_0\in B)=\P(X_3=j|X_2=i)$.
+            \item $\P(X_3=j|X_2\in C,X_1\in A,X_0\in B)=\P(X_3=j|X_2\in C)$.
+        \end{enumerate}
+    \end{example}
+    \begin{solve}
+        \begin{enumerate}[(1).]
+            \item 成立，拆开计算验证即可：
+                \begin{align*}
+                    LHS&=\frac{\P(X_3=j,X_2=i,X_1\in A,X_0\in B)}{\P(X_2=i,X_1\in A,X_0\in B)}\\
+                    &=\sum_{a\in A,b\in B}\frac{\P(X_3=j,X_2=i,X_1=a,X_0=b)}{\P(X_2=i,X_1\in A,X_0\in B)}\\
+                    &=\sum_{a\in A,b\in B}\frac{\P(X_3=j|X_2=i,X_1=a,X_0=b)\P(X_2=i,X_1=a,X_0=b)}{\P(X_2=i,X_1\in A,X_0\in B)}\\
+                    &=\sum_{a\in A,b\in B}\frac{\P(X_3=j|X_2=i)\P(X_2=i,X_1=a,X_0=b)}{\P(X_2=i,X_1\in A,X_0\in B)}\\
+                    &=\frac{\P(X_3=j|X_2=i)\P(X_2=i,X_1\in A,X_0\in B)}{\P(X_2=i,X_1\in A,X_0\in B)}\\
+                    &=\P(X_3=j|X_2=i)=RHS
+                \end{align*}
+            \item 不一定成立，考虑取$C=S$，则等式化为$\P(X_3=j|X_1\in A,X_0\in B)=\P(X_3=j)$，这要求$X_1,X_0$和$X_3$独立。
+        \end{enumerate}
+    \end{solve}
+
+    如果马氏链的状态空间$S$是有限集，那么一步转移概率$p_{ij}$可以组成
+    转移概率矩阵$\mathbf{P}=(p_{ij})_{|S|\times |S|}$.
+    \begin{example}
+        某产品有三种品牌，分别记作1、2、3，记$X_n$为某顾客第$n$购买的产品品牌，
+        并设$\{X_n\}$是一个马氏链，其转移矩阵为
+        \begin{equation*}
+            \mathbf{P}=\begin{pmatrix}
+                0.8&0.1&0.1\\
+                0.2&0.6&0.2\\
+                0.3&0.3&0.4
+            \end{pmatrix}
+        \end{equation*}
+        问：
+        \begin{enumerate}[(1).]
+            \item 顾客目前购买了品牌2，请问下一次购买3、再下一次购买1的概率？
+            \item 顾客目前购买了品牌2，请问下下次购买1的概率？
+        \end{enumerate}
+    \end{example}
+    \begin{solve}
+        \begin{enumerate}[(1).]
+            \item 即$\P(X_2=1,X_1=3|X_0=2)=\P(X_2=1|X_1=3,X_0=2)\P(X_1=3|X_0=2)=p_{31}p_{23}=0.06$.
+            \item 即$\P(X_2=1|X_0=2)=\sum_{i}\P(X_2=1,X_1=i|X_0=2)=\sum_{i}p_{i1}p_{2i}=0.16+0.12+0.06=0.34$.
+        \end{enumerate}
+    \end{solve}
+    这个例子表明多步转移概率是可以通过一步转移概率来计算的，那么它们之间具体的关系是什么？
+
+    \begin{theorem}[Chapman-Kolmogorov Equation]\label{Chapman-Kolmogorov Equation}
+        设状态空间$S$是离散的（即至多可数），则
+        \begin{equation*}
+            \P_x(X_{m+n}=z)=\sum_{y\in S}\P_x(X_m=y)\P_y(X_n=z),\forall x,z\in S
+        \end{equation*}
+        这里$\P_x(A)$是指$\P_{X_0}(A)|_{X_0=x}$，即给定初始状态$X_0=x$。
+    \end{theorem}
+    \begin{proof}
+        \begin{align*}
+            \P_x(X_{m+n}=z)
+            &=\sum_{y\in S}\P_x(X_{m+n}=z,X_m=y)\\
+            &=\sum_{y\in S}\P(X_{m+n}=z|X_m=y)\P_x(X_m=y)\\
+            &=\sum_{y\in S}\P_y(X_n=z)\P_x(X_m=y)
+        \end{align*}
+    \end{proof}
+    如果状态空间有限，我们可以写出Chapman-Kolmogorov方程的矩阵形式：
+    \begin{equation*}
+        \mathbf{P}(m,m+n+r)=
+        \mathbf{P}(m,m+n)\mathbf{P}(m+n,m+n+r)
+    \end{equation*}
+    所以$n$步转移概率矩阵$\mathbf{P}(m,m+n)=\mathbf{P}^n$，这是Chapman-Kolmogorov方程的一个简单推论。
+
+    记$\mu_i^{(n)}=\P(X_n=i)$，为$X_n$的质量函数，行向量$\mu^{(n)}=(\mu_i^{(n)},i\in S)$记录了$X_n$的分布，那么
+    \begin{lemma}
+        $\mu^{(m+n)}=\mu^{(m)}\mathbf{P}^n$.
+    \end{lemma}
+    \begin{proof}
+        \begin{align*}
+            \mu_j^{(m+n)}&= \P(X_{m+n}=j)\\
+            &=\sum_{i\in S}\P(X_{m+n}=j|X_m=i)\P(X_m=i)\\
+            &=\sum_{i\in S}\mu_i^{(m)}p_{ij}(m,m+n)\\
+            &=(\mu^{(m)}\mathbf{P}^n)_j
+        \end{align*}
+    \end{proof}
+    因此，转移概率矩阵$\mathbf{P}$和初始时刻$X_0$的分布$\mu^{(0)}$决定了马氏链的分布。
+
+    \begin{example}[][e.g.2 of Markov Property]
+        满足C-K方程的随机过程一定是马氏链吗？
+    \end{example}
+    \begin{solve}
+        答案是否定的，下面给出反例：考虑随机过程$\{Y_n,n\geqslant 1\}$，其中
+        奇数项$Y_1,Y_3,Y_5,\cdots$独立同分布，
+        \begin{equation*}
+            \P(Y_{2k+1}=\pm 1)=\frac{1}{2},\forall k\in \N
+        \end{equation*}
+        而偶数项$Y_{2k}=Y_{2k-1}Y_{2k+1}$，可以证明：
+        \begin{enumerate}[$1^\circ$]
+            \item 偶数项独立同分布，分布和奇数项一样。
+            \item $\{Y_n\}$两两独立。
+        \end{enumerate}
+        于是
+        \begin{equation*}
+            p_{ij}(m,m+n)=\P(Y_{m+n}=j|Y_m=i)=\P(Y_{m+n}=j)=\frac{1}{2}
+        \end{equation*}
+        回头看C-K方程：
+        \begin{equation*}
+            p_{ij}(m,m+n+r)=\sum_{k\in S}p_{ik}(m,m+n)p_{kj}(m+n,m+n+r)
+        \end{equation*}
+        两边都是$\frac{1}{2}$.但是$\{Y_n\}$并不是一个马氏链：
+        \begin{equation*}
+            \P(Y_{2k+1}|Y_{2k}=-1,Y_{2k-1}=1)=0\neq 
+            \P(Y_{2k+1}|Y_{2k}=-1)=\frac{1}{2}
+        \end{equation*}
+    \end{solve}
+
+    \begin{ex}[非齐次马氏链的例子][e.g.3 of Markov Property]
+        接\autoref{e.g.2 of Markov Property}，如果令$Z_n=(Y_n,Y_{n+1})$，证明$\{Z_n,n\geqslant 1\}$是一个（非齐次）马氏链，并写出其一步转移概率。
+    \end{ex}
+    \begin{solve}
+        状态空间为$S=\{ (1,1),(1,-1),(-1,1),(-1,-1) \}$，
+        我们先说明$\{Z_n\}$是马氏链：记状态$i=(i^{(1)},i^{(2)})$，
+        要证明其为马氏链，也就是证明
+        \begin{equation*}
+            \P(Z_n=i|Z_{n-1}=i_{n-1},\cdots,Z_1=i_1)=\P(Z_n=i|Z_{n-1}=i_{n-1})
+            \tag*{(*)}
+        \end{equation*}
+        考虑把(*)左式展开：
+        \begin{align*}
+            &\P(Z_n=i|Z_{n-1}=i_{n-1},\cdots,Z_1=i_1)\\
+            =&\frac{\P(Y_{n+1}=i^{(2)},Y_n=i^{(1)}=i_{n-1}^{(2)},Y_{n-1}=i_{n-1}^{(1)}=i_{n-2}^{(2)},\cdots,Y_2=i_2^{(1)}=i_1^{(2)},Y_1=i_1^{(1)})}
+            {\P(Y_n=i_{n-1}^{(2)},Y_{n-1}=i_{n-1}^{(1)}=i_{n-2}^{(2)},\cdots,Y_2=i_2^{(1)}=i_1^{(2)},Y_1=i_1^{(1)})}
+        \end{align*}
+        条件概率的定义规定了条件事件概率不能为零，
+        所以上式中所有状态相等的那些等式，都必须是成立的，唯一一个可能不成立
+        的是$i^{(1)}=i_{n-1}^{(2)}$，不成立时(*)式成立（两边都是零），
+        所以接下来也不妨假设是成立的。将原本得到分式简化一下：
+        \begin{align*}
+            &\frac{\P(Y_{n+1}=i^{(2)},Y_n=i_{n-1}^{(2)},Y_{n-1}=i_{n-1}^{(1)},\cdots,Y_2=i_1^{(2)},Y_1=i_1^{(1)})}
+            {\P(Y_n=i_{n-1}^{(2)},Y_{n-1}=i_{n-1}^{(1)},\cdots,Y_2=i_2^{(1)},Y_1=i_1^{(1)})}\\
+            =&\P(Y_{n+1}=i^{(2)}|Y_n=i_{n-1}^{(2)},Y_{n-1}=i_{n-1}^{(1)},\cdots,Y_2=i_1^{(2)},Y_1=i_1^{(1)})\\
+            =&\left\{ \begin{array}{ll}
+                \frac{1}{2}&,n\text{是奇数}\\
+                1&,n\text{是偶数，且}i^{(2)}\cdot i_{n-1}^{(1)}=i_{n-1}^{(2)}\\
+                0&,n\text{是偶数，且}i^{(2)}\cdot i_{n-1}^{(1)}\neq i_{n-1}^{(2)}
+            \end{array} \right.
+        \end{align*}
+        到这里已经能看出来了，(*)左式只和$n-1$之后发生的事情有关。
+        如果想严谨一些，就展开(*)右式再讨论即可，这里就不过多叙述了。
+    
+        一步转移概率如下：$n$为偶数时，
+        \begin{table}[H]
+            \centering
+            \begin{tabular}{ccccc}%5
+                &$(1,1)$&$(1,-1)$&$(-1,1)$&$(-1,-1)$\\
+                $(1,1)$&$\frac{1}{2}$&$\frac{1}{2}$&$0$&$0$\\
+                $(1,-1)$&$0$&$0$&$\frac{1}{2}$&$\frac{1}{2}$\\
+                $(-1,1)$&$\frac{1}{2}$&$\frac{1}{2}$&$0$&$0$\\
+                $(-1,-1)$&$0$&$0$&$\frac{1}{2}$&$\frac{1}{2}$\\
+            \end{tabular}
+        \end{table}
+        $n$为奇数时，
+        \begin{table}[H]
+            \centering
+            \begin{tabular}{ccccc}%5
+                &$(1,1)$&$(1,-1)$&$(-1,1)$&$(-1,-1)$\\
+                $(1,1)$&$1$&$0$&$0$&$0$\\
+                $(1,-1)$&$0$&$0$&$0$&$1$\\
+                $(-1,1)$&$0$&$1$&$0$&$0$\\
+                $(-1,-1)$&$0$&$0$&$1$&$0$\\
+            \end{tabular}
+        \end{table}
+    \end{solve}    
+
+\subsection{转移概率函数}
+    \begin{definition}\label{Transport Function}
+        设$(S,\beta(S))$是一个可测空间，如果函数$p:S\times \beta(S)\rightarrow \R$满足：
+        \begin{enumerate}[$1^\circ$]
+            \item 对于任意固定的$x\in S$，$p_x\defeq p(x,\cdot):\beta(S)\rightarrow \R$是一个概率测度；
+            \item 对于任意固定的$A\in \beta(S)$，$p^A\defeq p(\cdot,A):S\rightarrow \R$是$(S,\beta(S))$上的可测函数；
+        \end{enumerate}
+        则称$p$是一个转移概率函数。
+    \end{definition}
+
+    \begin{definition}\label{Transport Function of MC}
+        概率空间$(\Omega,\F,\P)$上的随机过程$\{X_n\}$是关于滤流$\{\F_n\}$的马氏链，
+        状态空间为$S$，再给定可测空间$(S,\beta(S))$，
+        如果$(S,\beta(S))$上的转移概率函数$p$满足：
+        \begin{equation}
+            \P(X_{n+1}\in B|\F_n)=p(X_n,B),\ \forall n,\forall B\in \beta(S)\label{Markov property from Transport Function}
+        \end{equation}
+        则称$\{X_n\}$是（关于滤流$\{\F_n\}$的）以$p$为转移概率的马氏链。
+    \end{definition}
+    
+    我们可以通过概率空间$(\Omega,\F,\P)$、状态空间$S$和
+    转移概率矩阵$\mathbf{P}$来描述一条马氏链，
+    但如果涉及到$S$非离散的情况，$\P(X_n=i)=0$，
+    一步转移概率$\P(X_{n+1}=j|X_n=i)$作为条件概率就无法定义。
+    因此我们采用转移概率函数而非转移概率矩阵来描述马氏链。
+
+    下面是笔者的一些想法，尝试寻找转移概率函数和一步转移概率的关系：
+    \begin{equation*}
+        \{X_n=i,X_{n-1}=i_{n-1},\cdots,X_0=i_0\}\in \F_n
+    \end{equation*}
+    根据条件期望的定义，可得
+    \begin{align*}
+        &\int_{ \{X_n=i,X_{n-1}=i_{n-1},\cdots,X_0=i_0\} }
+        \P(X_{n+1}\in B|\F_n)\d\P\\
+        &=\int_{ \{X_n=i,X_{n-1}=i_{n-1},\cdots,X_0=i_0\} }
+        \E[ I_{ \{X_{n+1}\in B\} }|\F_n]\d\P\\
+        &=\int_{ \{X_n=i,X_{n-1}=i_{n-1},\cdots,X_0=i_0\} }I_{ \{X_{n+1}\in B\}}\d\P\\
+        &=\P( X_{n+1}\in B,X_n=i,X_{n-1}=i_{n-1},\cdots,X_0=i_0 )\\
+        &=\P( X_{n+1}\in B|X_n=i )\P( X_n=i,X_{n-1}=i_{n-1},\cdots,X_0=i_0 )
+    \end{align*}
+    然后考虑另一侧，
+    \begin{align*}
+        \int_{ \{X_n=i,X_{n-1}=i_{n-1},\cdots,X_0=i_0\} }p(X_n,B)\d\P
+        &=\int p(X_n,B)I_{\{X_n=i,X_{n-1}=i_{n-1},\cdots,X_0=i_0\}}\d\P\\
+        &=\int p(i,B)I_{\{X_n=i,X_{n-1}=i_{n-1},\cdots,X_0=i_0\}}\d\P\\
+        &=p(i,B)\P(X_n=i,X_{n-1}=i_{n-1},\cdots,X_0=i_0)
+    \end{align*}
+    这就得到$p(i,B)=\P( X_{n+1}\in B|X_n=i )$，进一步
+    （如果独点集$\{j\}$是可测的话）得到
+    \begin{equation*}
+        p(i,j)=\P(X_{n+1}=j|X_n=i)
+    \end{equation*}    
+    可以发现这正是我们之前定义的一步转移概率。
+    所以我认为，转移概率函数是一种比一步转移概率更“通用”的表示方法，
+    正如我们用$\E[X|\sigma(Y)]$的语言代替了$\E[X|Y]$，
+    就是为了解决连续型分布落在单个点上的概率为零导致无法定义条件概率的问题。
+
+    但是因为我们正在探讨的马氏链很简单：离散时间、离散状态、齐次，所以
+    大部分情况下我们可以采用初等的语言来描述（尽管形式上非常繁琐），
+    转移概率函数在叙述方式上的“优越性”还没有被充分展现。
+
+\section{马氏链的构造与性质}
+
+\subsection{从转移概率构造马氏链}
+    现在研究的问题是：如果先给出$(S,\beta(S))$和转移概率函数$p$，
+    如何给出概率空间$(\Omega,\P,\F)$及其上的以$p$为转移概率的马氏链$\{X_n\}$？
+
+    \begin{definition}\label{MC from Transport Function}
+        我们现在只给定$(S,\beta(S))$和转移概率函数$p$，
+        令$\Omega_0=S^\infty$，即$S$上的序列全体，对于$\omega=(\omega_0,\cdots,\omega_n,\cdots)\in\Omega$，
+        定义函数：
+        \begin{equation*}
+            X_n:\Omega_0\rightarrow S,\omega\mapsto \omega_n
+        \end{equation*}
+        令$\F=\beta(S)^\infty$，那么$X_n$就是$(\Omega_0,\F)$到$(S,\beta(S))$的可测函数。
+    
+        如果在$(S,\beta(S))$上给定一个概率测度$\mu$，根据Kolmogorov扩张定理，$(\Omega_0,\F)$上存在唯一
+        概率测度$\P_\mu$满足：$\forall n,\forall B_k\in \beta(S),k=0,\cdots,n$，
+        \begin{equation}
+            \P_\mu( X_0\in B_0,\cdots,X_n\in B_n )
+            =\int_{B_0}\mu(\d X_0)\int_{B_1}p(X_0,\d X_1)\int_{B_2}p(X_1,\d X_2)\cdots \int_{B_n}p(X_{n-1},\d X_n)\label{Eq 4.2.2}
+        \end{equation}
+        左边是$\{ \omega=(\omega_0,\cdots,\omega_n,\cdots):\omega_0\in B_0,\cdots,\omega_n\in B_n \}$的概率测度，
+        右边第一项积分是指$\int_{B_0}X_0\d\mu$，即$X_0$在$B_0$上对测度$\mu$积分，
+        后面的几项有点复杂，我们回顾\autoref{Transport Function}：
+        固定$X_0$时，$p(X_0,\cdot)$是一个概率测度，所以$\int_{B_1}p(X_0,\d X_1)$其实就是$X_1$在$B_1$上对这个概率测度积分，也就是：
+        \begin{equation*}
+            \int_{B_1} X_1 \d p(X_0,\cdot )
+        \end{equation*}
+        这样积分出来是一个与$X_0$的值有关的量，其余项同理。
+    \end{definition}
+
+    整理一下思绪：我们给定了测度空间$(S,\beta(S),\mu)$和转移概率函数$p$，定义出了
+    概率空间$(\Omega_0,\F,\P_\mu)$和其上的一个随机过程$\{X_n\}$，
+    \begin{equation*}
+        (\Omega_0,\F,\P_\mu)\mathop{\longrightarrow}\limits^{ X_n }(S,\beta(S),\mu)
+    \end{equation*}
+    $\{X_n\}$的状态空间是$S$，
+    那么$\{X_n\}$是这个概率空间上的以$p$为转移概率马氏链$\{X_n\}$吗？答案是肯定的。
+
+    \begin{theorem}\label{thm4.3}
+        令$\F_n=\sigma(X_0,\cdots,X_n)$，
+        则\autoref{MC from Transport Function}中给出的$\{X_n\}$，
+        就是关于滤流$\{\F_n\}$的以$p$为转移概率的马氏链，即满足：
+        \begin{equation}
+            \P_\mu(X_{n+1}\in B|\F_n)=p(X_n,B),\ \forall n,\forall B\in \beta(S)\label{Eq of thm4.3-1}
+        \end{equation}
+    \end{theorem}
+    \begin{proof}
+        式(\ref{Eq of thm4.3-1})也就是：
+        \begin{equation*}
+            \E[ I_{ \{X_{n+1}\in B\} }|\F_n ]=p(X_n,B),\ \forall n,\forall B\in \beta(S)
+        \end{equation*}
+        固定$B$之后，$p(X_n,B)$是关于$X_n$的可测函数，当然是$\F_n$-可测的，于是我们只需要验证条件期望的第二条定义：
+        \begin{equation*}
+            \int_A \E[ I_{ X_{n+1}\in B }|\F_n ]\d\P_\mu=\int_A p(X_n,B) \d\P_\mu,\ \forall A\in\F_n
+        \end{equation*}
+        实际上左式可以变换为：
+        \begin{equation*}
+            \int_A \E[ I_{ X_{n+1}\in B }|\F_n ]\d\P_\mu
+            =\E[ \E[ I_{ X_{n+1}\in B }|\F_n ]I_A ]=
+            \E[ \E[ I_{ X_{n+1}\in B }I_A|\F_n ] ]
+            =\E[ I_{ X_{n+1}\in B }I_A]
+        \end{equation*}
+        所以即证：
+        \begin{equation}
+            \E[ I_{ X_{n+1}\in B }I_A]=\int_A p(X_n,B) \d\P_\mu,\ \forall A\in\F_n\label{Eq of thm4.3-2}
+        \end{equation}
+        不失一般性，设$A=\{ X_0\in B_0,\cdots,X_n\in B_0 \}$，则
+        \begin{align*}
+            (\ref{Eq of thm4.3-2})LHS&=\P_\mu( X_0\in B_0,\cdots,X_n\in B_0,X_{n+1}\in B )\\
+            &=\int_{B_0} \mu(\d X_0)\int_{B_1} p(X_0,\d X_1)\cdots \int_{B_n} p(X_{n-1},\d X_n)\int_B p(X_n,\d X_{n+1})\\
+            &=\int_{B_0} \mu(\d X_0)\int_{B_1} p(X_0,\d X_1)\cdots \int_{B_n} p(X_n,B)\cdot p(X_{n-1},\d X_n)
+        \end{align*}
+        实际上我们可以证明：对于任意的$\beta(S)$-可测函数$f$，都有：
+        \begin{equation}
+            \int_{B_0} \mu(\d X_0)\int_{B_1} p(X_0,\d X_1)\cdots \int_{B_n} f(X_n)\cdot p(X_{n-1},\d X_n)=\int_A f(X_n)\d\P_\mu\label{Eq of thm4.3-3}
+        \end{equation}
+        然后我们令$f(X_n)=p(X_n,B)$，式(\ref{Eq of thm4.3-2})就得证。
+
+        至于如何证明式(\ref{Eq of thm4.3-3})，就是经典的四步走：示性函数$\mathop{\rightarrow}\limits^{\text{线性组合}} $简单函数
+        $\mathop{\rightarrow}\limits^{\text{逼近}}$非负函数
+        $\mathop{\rightarrow}\limits^{\text{正负部分离}} $一般可测函数。我们只验证一下示性函数的情况：设$f=\chi_C,C\in\beta(S)$，
+        \begin{align*}
+            (\ref{Eq of thm4.3-3})LHS&=\int_{B_0} \mu(\d X_0)\int_{B_1} p(X_0,\d X_1)\cdots \int_{B_n} \chi_C\cdot p(X_{n-1},\d X_n)\\
+            &=\int_{B_0} \mu(\d X_0)\int_{B_1} p(X_0,\d X_1)\cdots \int_{B_{n-1}} p(X_{n-1},B_n\cap C) p(X_{n-2},\d X_{n-1}) \\
+            (\ref{Eq of thm4.3-3})RHS&=\int_A \chi_C(X_n) \d\P_\mu\\
+            &=\P_\mu(X_0\in B_0,\cdots ,X_{n-1}\in B_{n-1},X_n\in B_n\cap C)
+        \end{align*}
+        根据式(\ref{Eq 4.2.2})展开就得证。
+    \end{proof}
+
+    下面是一些应用和推论。先回顾单调类定理：
+    \begin{theorem}
+        $\mathcal{A}$是一个包含全集$\Omega$的$\pi$-系，$\mathcal{H}$是某些实值函数的集合，若
+        \begin{enumerate}[$1^\circ$]
+            \item $\forall A\in \mathcal{A}\Rightarrow I_A\in \mathcal{H}$.
+            \item $f,g\in \mathcal{H}\Rightarrow af+bg\in \mathcal{H}$.
+            \item $0\leqslant f_n\in \mathcal{H}$且$f_n \nearrow f$，则$f\in \mathcal{H}$.
+        \end{enumerate}
+        则$\mathcal{H}$包含所有$\sigma(\mathcal{A})$-可测的有界实值函数。
+    \end{theorem}
+    根据单调类定理我们可以得到：
+    \begin{equation}
+        \E[ f(X_{n+1}|\F_n) ]=\int_S f(y) p(X_n,\d y)\label{Eq 4.2.6}
+    \end{equation}
+    进而得到以下推论：
+
+    \begin{corollary}
+        概率空间$(\Omega,\F,\P)$上，$\{X_n\}$是以$p$为转移概率的马氏链，给定若干有界可测函数$f_0,\cdots,f_m$，有：
+        \begin{equation}
+            \E[f_0(X_0)f_1(X_1)\cdots f_m(X_m)]=\int_S f_0(X_0)\mu(\d X_0)
+            \int_S f_1(X_1)p(X_0,\d X_1)\cdots \int_S f_m(X_m)p(X_{m-1},\d X_m)\label{Eq 4.2.7}
+        \end{equation}
+    \end{corollary}
+    \begin{proof}
+        归纳法：$m=1$时即为式(\ref{Eq 4.2.6})，假设命题对于$m$成立，考虑$m+1$：
+        \begin{align*}
+            \E[ f_0(X_0)f_1(X_1)\cdots f_m(X_m)f_{m+1}(X_{m+1}) ]
+            &=\E[\  \E[ f_0(X_0)f_1(X_1)\cdots f_{m+1}(X_{m+1})|\F_m ] \ ]\\
+            &=\E[\  f_0(X_0)\cdots f_m(X_m)\cdot \E[f_{m+1}(X_{m+1})|\F_m] \ ]\\
+            &=\E[\ f_0(X_0)\cdots \mathop{\underline{f_m(X_m)\int_S f_{m+1}(y)p(X_m,\d y)}}\limits_{\defeq \hat{f}(X_m)}\ ]\\
+            &=\int_S f_0(X_0)\mu(\d X_0)\int_S f_1(X_1)\mu(\d X_1)\cdots\int_S p(X_{m-1},\d X_m)\hat{f}(X_m)
+        \end{align*}
+        令$y=X_{m+1}$即得。
+    \end{proof}
+
+\subsection{马氏性}
+    引入推移算子，
+    \begin{definition}
+        给定$(S,\beta(S))$，定义$\Omega_0=S^\infty$上的推移算子：
+        \begin{equation*}
+            \theta_n:(\omega_0,\cdots,\omega_n,\cdots)\mapsto (\omega_n,\omega_{n+1},\cdots)
+        \end{equation*}
+    \end{definition}
+    对于转移概率函数$p$，$p(X,\cdot)$是一个概率测度，下文中，我们记
+    \begin{equation*}
+        \P_X(A)\defeq p(X,A),\ 
+        \E_X[Y]\defeq \int Y(\omega) p(X,\d\omega)
+    \end{equation*}
+    \begin{theorem}\label{thm4.4}
+        给定马氏链$\{X_n\}$和转移概率$p$，设$Y$是$\sigma(X_0,\cdots,X_n,\cdots)$-有界可测的，
+        $\F_n=\sigma(X_0,\cdots,X_n)$.则马氏性可叙述如下：
+        \begin{equation*}
+            \E_\mu[ Y\circ \theta_m |\F_m]=\E_{X_m}[Y]
+        \end{equation*}
+    \end{theorem}
+    \begin{proof}
+        不难看出右式是$X_m$的函数，故是$\F_m$-可测的，现只需验证：$\forall A\in\F_m$，
+        \begin{equation}
+            \E_\mu[ Y\circ \theta_m\cdot I_A ]=\E_{\mu}[ \E_{X_m}[Y]\cdot I_A ]\label{Eq 4.2.8}
+        \end{equation}
+        不失一般性，可以设$A$具有以下形式\footnote{所有这样的集合是一个$\pi$类，生成整个$\F_m$.}：$A=\{ X_0\in A_0,X_1\in A_1,\cdots,X_m\in A_m \}$，
+        $Y$具有以下形式\footnote{根据单调类定理可得。}：$Y=g_0(X_0)g_1(X_1)\cdots g_n(X_n),\forall n\geqslant 0$，其中$g_i$都是有界可测的。
+        \begin{align*}
+            (\ref{Eq 4.2.8})LHS=&\E_\mu[ g_0(X_m)\cdots g_n(X_{m+n})I_A ]\\
+            =&\E_\mu[ g_0(X_m)\cdots g_n(X_{m+n})I_{A_0}(X_0)\cdots I_{A_m}(X_m) ]\\
+            =&\int_{A_0}\mu(\d X_1)\int_{A_1}p(X_0,\d X_1)\cdots \int_{A_m}g_0(X_m)p(X_{m-1},\d X_m)\\
+            &\times\int g_1(X_{m+1})p(X_m,\d X_{m+1})\cdots 
+            \int g_n(X_{m+n})p(X_{m+n-1},\d X_{m+n})\\
+            =&\int_{A_0}\mu(\d X_1)\int_{A_1}p(X_0,\d X_1)\cdots \int_{A_m}\E_{X_m}[Y]p(X_{m-1},\d X_m)\\
+            =&\E_\mu[\E_{X_m}[Y]\cdot I_A]=(\ref{Eq 4.2.8})RHS
+        \end{align*}
+    \end{proof}
+
+\subsection{强马氏性}
+    \begin{definition}
+        $N$是关于$\{\F_n\}$的停时，定义：
+        \begin{equation*}
+            \F_{N}=\{ A:A\cap \{ N\leqslant n \}\in \F_n,\forall n \}
+        \end{equation*}
+        \begin{equation*}
+            \theta_N(\omega)=\left\{ \begin{array}{ll}
+                \theta_n(\omega)&,{\rm on\ }\{ N=n \}\\
+                \text{whatever}&,{\rm on\ }\{ N=+\infty \}
+            \end{array} \right.
+        \end{equation*}
+    \end{definition}
+
+    \begin{theorem}[强马氏性]\label{thm4.5}
+        r.v.$Y:\Omega\rightarrow \R$有界，则在$\{N<+\infty\}$上有
+        \begin{equation}
+            \E_\mu[ Y\circ \theta_N|\F_N ]=\E_{X_N}[Y]
+        \end{equation}
+    \end{theorem}
+    \begin{proof}
+        右侧是$X_N$的函数，所以是$\F_N$-可测的，接下来验证$\forall A\in \F_N$，有
+        \begin{equation*}
+            \E_\mu[Y\circ \theta_N\cdot I_A]=\E_\mu[ \E_{X_N}[Y]I_A ]
+        \end{equation*}
+        因为仅考虑$N<+\infty$的情况，将其拆分：
+        \begin{align*}
+            \E_\mu[Y\circ \theta_N\cdot I_A]
+            &=\sum_{n=0}^\infty \E_\mu[ Y\circ \theta_n\cdot \undertext{I_{A\cap \{N=n\}}}{\in \F_n} ]\\
+            &=\sum_{n=0}^\infty \E_\mu[ \E_\mu[Y\circ \theta_n\cdot I_{A\cap \{N=n\}}|\F_n] ]\\
+            &=\sum_{n=0}^\infty \E_\mu[ \E_\mu[Y\circ \theta_n|\F_n]I_{A\cap \{N=n\}} ]\\
+            &=\sum_{n=0}^\infty \E_\mu[ \E_{X_n}[Y]I_{A\cap \{N=n\}} ]\\
+            &=\E_\mu [\E_{X_N}[Y];I_{A}]
+        \end{align*}
+    \end{proof}
+
+\clearpage
+
+\section{马氏链状态的分类}
+    
+\subsection{常返态与瞬时态}
+    先约定一些记号：
+    \begin{enumerate}
+        \item $k$次转移概率记为$p^k(x,y)=\P(X_k=y|X_0=x)=\P_x(x_k=y)$.
+        \item 随机变量$N(y)=\sum_{n=1}^\infty I_{X_n=y}$，为回到$y$的总次数。
+        \item 规定$T_y^0=0$，
+        \begin{equation*}
+            T_y^k=\fun{inf}{}\{ n>T_y^{k-1}:X_n=y\},k\geqslant 1
+        \end{equation*}
+        这些都是停时，为第$k$次到达$y$的时刻。简记$T_y=T_y^1$，为首次到达时刻。
+        对于$x\in S$，记$\rho_{xy}=\P_x(T_y<+\infty)$，为
+        从$x$出发、有限时间内到达$y$的概率。
+    \end{enumerate}
+
+    \begin{definition}\label{Def of recurrent/transient}
+        如果$\rho_{yy}=1$，称状态$y$是常返的(recurrent)，否则称为瞬时的(transient)。
+    \end{definition}
+
+    \begin{definition}
+        考虑状态空间$S$的子集$C$，如果
+        \begin{enumerate}[(1).]
+            \item $x\in C,\rho_{xy}>0\Rightarrow y\in C$，称$C$封闭(closed).
+            \item $x,y\in C\Rightarrow \rho_{xy}>0$，称$C$是不可约的(irredueible).
+        \end{enumerate}
+    \end{definition}
+    
+    \begin{theorem}\label{thm4.7}
+        \begin{equation}
+            \P_x(T_y^k<+\infty)=\rho_{xy}\rho_{yy}^{k-1}\label{Eq 4.2.10}
+        \end{equation}
+    \end{theorem}
+    \begin{proof}
+        $k=1$，式(\ref{Eq 4.2.10})显然成立，下面归纳证明$k>1$的情况。若$k-1$成立，则
+        令$N=T_y^{k-1}$，
+        注意到
+        $T_y^k=N+T_y\circ \theta_N$，因为：
+        \begin{align*}
+            T_y^k(\omega)
+            &=\fun{inf}{}\{ n>N:X_n(\omega)=\omega_n=y \}\\
+            &=\fun{inf}{}\{ n-N>0:X_n(\omega)=\omega_n=y \}\\
+            &=N+\fun{inf}{}\{ m>0:X_{m}(\omega)\circ\theta_N=\omega_n=y \}\\
+            &=N+T_y\circ \theta_N
+        \end{align*}
+        然后我们就可以得到结论了：
+        \begin{align*}
+            \P_x(T_y^k<+\infty)&=\P_x(T_y^k<+\infty,N<+\infty)\\
+            &=\P_x(T_y\circ \theta_N<+\infty,N<+\infty)\\
+            &=\E_x[ I_{ \{N<+\infty\} }\cdot I_{ \{T_y\circ \theta_N<+\infty\} } ]\\
+            &=\E_x[ I_{ T_y<+\infty }\circ \theta_N \cdot I_{ \{N<+\infty\} } ]\\
+            &=\E_x[\ \E_x[ I_{ T_y<+\infty }\circ \theta_N \cdot I_{ \{N<+\infty\} }|\F_N ]\ ]\\
+            &=\E_x[\ I_{ \{N<+\infty\} }\cdot \E_x[ I_{ \{T_y<+\infty\}\circ \theta_N|\F_N } ]\ ]\\
+            &=\E_x[\ I_{ \{N<+\infty\} }\E_{X_N}[I_{ \{T_y<+\infty\} }]\ ]\tag*{By 强马氏性}\\
+            &=\E_x[\ I_{ \{N<+\infty\} }\E_{y}[I_{ \{T_y<+\infty\} }]\ ]\\
+            &=\E_x[\ I_{ \{N<+\infty\} }\P_{y}(T_y<+\infty)\ ]\\
+            &=\rho_{yy}\cdot \P_y(N<+\infty)\\
+            &=\rho_{yy}\rho_{xy}\rho_{yy}^{k-2}=\rho_{xy}\rho_{yy}^{k-1}
+        \end{align*}
+    \end{proof}
+
+    \begin{corollary}\label{cor4.8}
+        如果$\rho_{yy}<1$，则$N(y)$的期望有限，为
+        \begin{equation*}
+            \E_x[N(y)]=\frac{\rho_{xy}}{1-\rho_{yy}}
+        \end{equation*}
+    \end{corollary}
+    \begin{proof}
+        求和即可：
+        \begin{equation*}
+            \E_x[N(y)]
+            =\sum_{k=1}^\infty \P_x( N(y)\geqslant k )
+            =\sum_{k=1}^\infty \P_x(T_y^k<+\infty)
+            =\sum_{k=1}^\infty \rho_{xy}\rho_{yy}^{k-1}=\frac{\rho_{xy}}{1-\rho_{yy}}
+        \end{equation*}
+    \end{proof}
+
+    \begin{corollary}\label{Addition 0521}
+        $\forall x,y\in S$，记
+        \begin{equation*}
+            P_{xy}=\sum_{n=1}^\infty p^n(x,y)
+        \end{equation*}
+        则
+        \begin{enumerate}[(1).]
+            \item $\rho_{xy}>0 \Leftrightarrow P_{xy}>0$.\footnote{$P_{xy}>0$正是$x$可达$y$的定义，随机过程课上没有介绍后文却用到了相关结论，出于严谨笔者将那些结论补充为这个推论。}
+            \item $y$常返$\Leftrightarrow P_{xy}=+\infty$.
+        \end{enumerate}
+    \end{corollary}
+    \begin{proof}
+        注意到
+        \begin{equation*}
+            \frac{\rho_{xy}}{1-\rho_{yy}}=\E_x[N(y)]=\sum_{n=1}^\infty \E_x[I_{ \{X_n=y\} }]
+            =\sum_{n=1}^\infty p^n(x,y)=P_{xy}
+        \end{equation*}
+    \end{proof}
+
+    \begin{theorem}\label{thm4.8}
+        $y$常返$\Rightarrow N(y)=+\infty$ a.s.
+    \end{theorem}
+    \begin{proof}
+        如果$y$常返，则$\forall k\geqslant 1$，
+        \begin{equation*}
+            \P_y(N(y)\geqslant k)=\P_y(T_y^k<+\infty)=\rho_{yy}^k=1
+        \end{equation*}
+        这意味着$N(y)=+\infty$ a.s.
+    \end{proof}
+
+    \begin{theorem}\label{thm4.9}
+        如果$x$常返，且$\rho_{xy}>0$，则$y$常返且$\rho_{yx}=1$.
+    \end{theorem}
+    \begin{proof}
+        （反证）假设$\rho_{yx}<1$，令$K=\fun{inf}{}\{ k:p^k(x,y)>0 \}$，
+        注意到
+        \begin{equation*}
+            \rho_{xy}=\P_x\left( \bigcup_{n=1}^\infty \{X_n=y\} \right)
+        \end{equation*}
+        所以$p^K(x,y)>0\Rightarrow $存在一系列$y_1,\cdots,y_{K-1}$使得
+        \begin{equation*}
+            p(x,y_1)p(y_1,y_2)\cdots p(y_{K-1},y)>0
+        \end{equation*}
+        且$y_1,\cdots,y_{K-1}\neq y$，因为$K$是首次到达$y$的时刻。考虑
+        \begin{equation*}
+            p(x,y_1)p(y_1,y_2)\cdots p(y_{K-1},y)(1-\rho_{yx})>0
+        \end{equation*}
+        这说明路径$x\rightarrow y_1\rightarrow y_2\rightarrow \cdots\rightarrow y\nrightarrow x$的概率不为零，
+        这与$x$常返矛盾。
+
+        下面证明$y$常返，由于$\rho_{yx}>0$，存在$L$使得$p^L(y,x)>0$，于是
+        \begin{align*}
+            p^{L+n+K}(y,y)\geqslant & p^L(y,x)p^n(x,x)p^K(x,y)\\
+            \sum_n p^{L+n+K}(y,y)\geqslant &p^L(y,x)\left(\sum_n p^n(x,x)\right)p^K(x,y)=+\infty
+        \end{align*}
+        所以$y$常返。
+    \end{proof}
+    \begin{remark}
+        这个定理说明了两个事实：
+        如果$x$常返，则$\rho_{xy}$要么是$1$，要么是$0$；
+        对于不可约的状态子集$C$，里面的状态常返/瞬时都一致，
+        即有一个常返态则全都是常返态、有一个瞬时态则全都是瞬时态。
+    \end{remark}
+
+    \begin{theorem}\label{thm4.10}
+        $C$是封闭的有限集，则$C$包含至少一个常返态。
+        （进一步地，如果$C$不可约，则$C$中所有状态都是常返的。）
+    \end{theorem}
+    \begin{proof}
+        （反证）假设不成立，即$\forall y\in C,\rho_{yy}<1$，于是
+        \begin{equation*}
+            \E_x[ N(y) ]=\frac{\rho_{xy}}{1-\rho_{yy}}<+\infty
+        \end{equation*}
+        同时又有
+        \begin{equation*}
+            \E_x[N(y)]=\sum_{n=1}^\infty \E_x[ I_{\{X_n=y\}} ]
+            =\sum_{n=1}^\infty p^n(x,y)
+        \end{equation*}
+        于是
+        \begin{equation*}
+            +\infty>\sum_{y\in C}\E_x[N(y)]
+            =\sum_{y\in C}\sum_{n=1}^\infty p^n(x,y)
+            =\sum_{n=1}^\infty 1=+\infty
+        \end{equation*}
+        矛盾。
+    \end{proof}
+
+    \begin{corollary}
+        若状态空间$S$有限，对于$x\in S$，
+        \begin{enumerate}[(1).]
+            \item 如果$\exists y\in S{\rm\ s.t.\ }\rho_{xy}>0$且$\rho_{yx}=0$，则$x$是瞬时的。
+            \item 如果不存在(1)中这样的$y$，即$\forall y\in S,\rho_{xy}>0\Rightarrow \rho_{yx}>0$，则$x$是常返的。
+        \end{enumerate}
+        如果令$C_x=\{y:\rho_{xy}>0\}$，则$C_x$是不可约、封闭且有限的。
+    \end{corollary}
+
+    \begin{theorem}
+        \label{thm4.11}
+        所有常返态$R=\{x:\rho_{xx}=1\}$，可以将其划分为$R=\sqcup R_i$，每个
+        $R_i$闭且不可约。
+    \end{theorem}
+    \begin{proof}
+        对于每个$x\in R$，我们令
+        \begin{equation*}
+            C_x=\{ z\in R:\rho_{xz}>0,\rho_{zx}>0 \}
+        \end{equation*}
+        那么很显然，每个$C_x$都是闭且不可约的，
+        只需要证明：对于$x,y\in R$，要么$C_x\cap C_y=\varnothing$、要么$C_x=C_y$，那么
+        定理就得证。假设$C_x\cap C_y\neq \varnothing$，取$z\in C_x\cap C_y$，则
+        $\rho_{xy}\geqslant \rho_{xz}\rho_{zy}>0$，任取$w\in C_y$，
+        \begin{equation*}
+            \rho_{xw}\geqslant \rho_{xy}\rho{yw}>0\Rightarrow w\in C_x
+        \end{equation*}
+        反过来也成立，这说明$C_x=C_y$.
+    \end{proof}
+    \begin{remark}
+        这个定理也表明所有马氏链都能划分为瞬时态和一系列闭、不可约的子链，
+        每一个子链都可以视为一条新的马氏链。
+    \end{remark}
+
+\subsection{进一步分类与判断*}
+    \subsubsection{常返与瞬时}
+        回顾\autoref{Def of recurrent/transient}，常返态的定义为
+        \begin{equation*}
+            \rho_{ii}=\P(T_i<+\infty|X_0=i)=\P(\exists n\geqslant 1,X_n=i|X_0=i)=1
+        \end{equation*}
+        接下来，记
+        \begin{equation*}
+            f_{ij}(n)=\P(T_j=n|X_0=i),\ f_{ij}=\sum_{n=1}^\infty f_{ij}(n)
+        \end{equation*}
+        \begin{proposition}
+            $f_{ij}=\rho_{ij}$，也就是
+            \begin{equation*}
+                \sum_{n=1}^\infty\P(T_j=n|X_0=i)=\P(\exists n\geqslant 1,X_n=j|X_0=i)
+            \end{equation*}
+        \end{proposition}
+        \begin{proof}
+            其实非常直观，只需要注意到事件$A_n=\{ T_j=n,X_0=i \}$互不相交就可以了，这是因为
+            \begin{equation*}
+                A_n=\{ X_n=j,X_{n-1}\neq j,\cdots,X_1\neq j,X_0=i \}
+            \end{equation*}
+            而且
+            \begin{equation*}
+                \bigsqcup_{n=1}^\infty A_n=\{ T_j<+\infty,X_0=i \}
+            \end{equation*}
+            然后就可以得到
+            \begin{equation*}
+                LHS=\sum_{n=1} \frac{\P(A_n)}{\P(X_0=i)}
+                =\frac{\P( T_j<+\infty,X_0=i )}{\P(X_0=i)}
+                =\P(T_j<+\infty|X_0=i)=RHS
+            \end{equation*}
+        \end{proof}
+        这样我们就把$\rho_{ij}$拆成了级数的形式，那么就可以通过研究级数的收敛性来判断状态是否常返了。
+    
+        设生成函数：
+        \begin{equation*}
+            P_{ij}(s)=\sum_{n=0}^\infty s^n p_{ij}(n),\ 
+            F_{ij}(s)=\sum_{n=0}^\infty s^n f_{ij}(n)
+        \end{equation*}
+        并规定$p_{ij}(0)=\delta_{ij}$，$f_{ij}(0)=0$，可以发现：
+        \begin{enumerate}[(1).]
+            \item $f_{ij}=F_{ij}(1)$.
+            \item $|s|<1$时，$P_{ij}(s),F_{ij}(s)<\infty$.
+        \end{enumerate}
+        于是由Abel定理\footnote{复分析里提到过，这里还是说一下吧：
+        如果级数
+        \begin{equation*}
+            f(z)=\sum_{n=0}^\infty a_nz^n
+        \end{equation*}
+        的收敛半径为$1$，且级数在$z=1$处收敛于$S$，那么$f$在$z=1$有非切向极限$S$.对于本课程，
+        我们只需要考虑其沿实轴趋于$1$的极限，这当然是非切向极限。
+        }，可知$s\nearrow 1$时$P_{ij}(s)\rightarrow P_{ij}(1)$，$F_{ij}(s)\rightarrow F_{ij}(1)$.
+        
+        \begin{theorem}
+            \begin{enumerate}[(1).]
+                \item $P_{ii}(s)=1+F_{ii}(s)P_{ii}(s)$.
+                \item $P_{ij}(s)=F_{ij}(s)P_{jj}(s),i\neq j$.
+            \end{enumerate}
+        \end{theorem}
+        \begin{proof}
+            先来研究一下$p_{ij}(m)$，对于事件$\{X_m=j,X_0=i\}$，可以利用首达时对其拆分：
+            \begin{equation*}
+                \{X_m=j,X_0=i\}=\bigsqcup_{r=1}^m \{ X_m=j,T_j=r,X_0=i \}
+            \end{equation*}
+            于是
+            \begin{align*}
+                p_{ij}(m)&=\frac{\P( X_m=j,X_0=i )}{\P(X_0=i)}\\
+                &=\sum_{r=1}^m \P(X_m=j,T_j=r|X_0=i)\\
+                &=\sum_{r=1}^m \P(X_m=j,X_r=j,X_{r-1}\neq j,\cdots,X_1\neq j|X_0=i)\\
+                &=\sum_{r=1}^m \P(X_m=j|X_r=j,X_{r-1}\neq j,\cdots,X_1\neq j,X_0=i)\P(X_r=j,X_{r-1}\neq j,\cdots,X_1\neq j|X_0=i)\\
+                &=\sum_{r=1}^m \P(X_m=j|X_r=j,X_{r-1}\neq j,\cdots,X_1\neq j,X_0=i)f_{ij}(r)
+            \end{align*}
+            回顾\autoref{Other def of Markov Porperty}的(2)和
+            \autoref{Markov Property}的(1)，可以得到
+            \begin{equation*}
+                \P(X_m=j|X_r=j,X_{r-1}\neq j,\cdots,X_1\neq j,X_0=i)=\P(X_m=j|X_r=j)=p_{jj}(m-r)
+            \end{equation*}
+            这就得到
+            \begin{equation*}
+                p_{ij}(m)=\sum_{r=1}^m p_{jj}(m-r)f_{ij}(r),\ m\geqslant 1
+            \end{equation*}
+            于是回到$P_{ij}$，
+            \begin{align*}
+                P_{ij}(s)&=\sum_{n=1}^\infty s^n p_{ij}(n)+p_{ij}(0)\\
+                &=\sum_{n=1}^\infty \sum_{r=1}^n s^n p_{jj}(n-r)f_{ij}(r)+\delta_{ij}\\
+                &=\sum_{r=1}^\infty \sum_{n=r}^\infty s^n p_{jj}(n-r)f_{ij}(r)+\delta_{ij}\tag*{换求和顺序}\\
+                &=\sum_{r=1}^\infty \sum_{t=0}^\infty s^{t+r}p_{jj}(t)f_{ij}(r)+\delta_{ij}\tag*{令$t=n-r$}\\
+                &=\sum_{r=0}^\infty \sum_{t=0}^\infty s^{t+r}p_{jj}(t)f_{ij}(r)+\delta_{ij}\tag*{补一项$f_{ij}(0)=0$}\\
+                &=P_{jj}(s)\cdot F_{ij}(s)+\delta_{ij}
+            \end{align*}
+            于是得证。
+        \end{proof}
+        
+        \begin{corollary}\label{Cor6.2.5}
+            \begin{enumerate}[(1).]
+                \item $j$常返$\Leftrightarrow$
+                    \begin{equation*}
+                        \sum_{n=0}^\infty p_{jj}(n)=+\infty
+                    \end{equation*}
+                \item $j$常返且$f_{ij}>0\Rightarrow $
+                    \begin{equation*}
+                        \sum_{n=0}^\infty p_{ij}(n)=+\infty
+                    \end{equation*}
+                \item $j$瞬时，则$\forall i$，
+                    \begin{equation*}
+                        \sum_{n=0}^\infty p_{ij}(n)<+\infty
+                    \end{equation*}
+                    进而$\fun{lim}{n\rightarrow\infty}p_{ij}(n)=0$.
+            \end{enumerate}
+        \end{corollary}
+        \begin{proof}
+            利用
+            \begin{equation*}
+                P_{jj}(s)=\frac{1}{1-F_{jj}(s)},\ |s|<1
+            \end{equation*}
+            以及Abel定理和一些处理级数的基本技巧折腾一下就能倒出来了。
+        \end{proof}
+    
+        接下来，我们引入状态的返回次数这一概念，进一步研究常返与瞬时。
+        \begin{definition}
+            对于随机过程$\{X_n,n\in \N\}$，我们给定条件$\P(X_0=i)=1$，
+            可以定义随机变量$N_i(j)$，为$\{X_1,X_2,\cdots,\}$中经过$j$的次数，即
+            \begin{equation*}
+                N_i(j)(\omega)=\sum_{n=1}^\infty I_{\{X_n(\omega)=j\}}
+            \end{equation*}
+        \end{definition}
+        回顾\autoref{thm4.7}，我们用比较初等的语言再证明一遍。
+        \begin{proposition}
+            \begin{equation*}
+                \P(N_i(j)=n)=\left\{ \begin{array}{ll}
+                    1-f_{ij}&,n=0\\
+                    f_{ij}(f_{jj})^{n-1}(1-f_{jj})&,n\geqslant 1
+                \end{array} \right.
+            \end{equation*}
+        \end{proposition}
+        \begin{proof}
+            $n=0$显然，对于$n\geqslant 1$，
+            \begin{align*}
+                \P(N_i(j)=n)=&\sum_{1\leqslant k_1<k_2<\cdots <k_n}\P(X_0=i,X_{k_1}=j,\cdots,X_{k_n}=j,X_k\neq j{\rm\ for\ other\ }k\geqslant 1)\\
+                =&\sum_{1\leqslant k_1<k_2<\cdots <k_n}\P(X_0=i)\cdot \P(X_{k_1}=j,\cdots,X_{k_n}=j,X_k\neq j{\rm\ for\ other\ }k\geqslant 1|X_0=i)\\
+                =&(\star 1)
+            \end{align*}
+            后面那个很复杂的项，我们沿时间线上的$k_1$切开，$\leqslant k_1$为$A$，$>k_1$为$B$，后面的条件为$C$，那么根据
+            \begin{equation*}
+                \P(AB|C)=\P(A|BC)\cdot \P(B|C)
+            \end{equation*}
+            我们可以进一步拆分：
+            \begin{align*}
+                (\star 1)=&\sum_{1\leqslant k_1<k_2<\cdots <k_n}
+                \P(X_0=i)\cdot \P(X_{k_1}=j,X_k\geq j{\rm\ for\ }1\leqslant k\leqslant k_1-1|X_0=i)\cdot\\
+                &\P(X_{k_2}=j,\cdots X_{k_n}=j,X_k\neq j{\rm\ for\ other\ }k\geqslant k_1+1|X_0=i,X_{k_1}=j,X_k\geq j{\rm\ for\ }1\leqslant k\leqslant k_1-1)\\
+                =&(\star 2)
+            \end{align*}
+            注意到第二项就是“$i$出发$k_1$时首次到达$j$”，也就是$f_{ij}(k_1)$；
+            第三项则由马氏性，可以转化为
+            \begin{align*}
+                (\star 2)=&\sum_{1\leqslant k_1<k_2<\cdots <k_n}
+                \P(X_0=i)\cdot f_{ij}(k_1)\cdot 
+                \P(X_{k_2}=j,\cdots X_{k_n}=j,X_k\neq j{\rm\ for\ other\ }k\geqslant k_1+1|X_{k_1}=j)\\
+                =&(\star 3)
+            \end{align*}
+            注意这时第三项回到了类似于$(\star 1)$式的形式，我们以此类推继续沿时间线上的$k_2$切开，最后得到：
+            \begin{align*}
+                &(\star 3)\\
+                &=\sum_{1\leqslant k_1<k_2<\cdots <k_n}
+                \P(X_0=i)\cdot f_{ij}(k_1)\cdot f_{jj}(k_2-k_1)
+                \P(X_{k_3}=j,\cdots X_{k_n}=j,X_k\neq j{\rm\ for\ other\ }k\geqslant k_2+1|X_{k_2}=j)\\
+                &=\cdots \\
+                &=\sum_{1\leqslant k_1<k_2<\cdots <k_n}
+                \P(X_0=i)\cdot f_{ij}(k_1)\cdot 
+                f_{jj}(k_2-k_1)f_{jj}(k_3-k_2)\cdots f_{jj}(k_n-k_{n-1})\P(X_k\neq j{\rm\ for\ }k>k_n|X_{k_n}=j)\\
+                &=\sum_{1\leqslant k_1<k_2<\cdots <k_n}
+                \P(X_0=i)\cdot f_{ij}(k_1)\cdot 
+                f_{jj}(k_2-k_1)f_{jj}(k_3-k_2)\cdots f_{jj}(k_n-k_{n-1})(1-f_{jj})\\
+                &=\P(X_0=i)(1-f_{jj})\sum_{1\leqslant k_1<k_2<\cdots <k_n}
+                f_{ij}(k_1)\cdot 
+                f_{jj}(k_2-k_1)f_{jj}(k_3-k_2)\cdots f_{jj}(k_n-k_{n-1})
+            \end{align*}
+            后面这一堆求和其实就是$f_{ij}f_{jj}^{n-1}$，可以换元：$t_2=k_2-k_1,t_3=k_3-k_2$等等，就能看出来了。\footnote{
+                至于$\P(X_0=i)$，按定义来说应该得是$1$的，结果也如此，
+                但既然如此一开始何必带着这玩意儿算呢？这里属实没搞懂。
+            }
+        \end{proof}
+        从直观上理解：注意$f_{ij}$代表从$i$出发最终到达$j$的概率，
+        $n=0$即再也不到达$j$，所以概率为$1-f_{ij}$；对于$n\geqslant 1$的情况，
+        $i$出发经过了$j$共计$n$次，首次到达为$f_{ij}$，之后$j$出发返回$j$共计$n-1$次为$f_{jj}^{n-1}$，
+        最终再也不回来为$1-f_{jj}$.
+    
+        对前$n$项求和得到：$\P(N_i(i)\leqslant n)=1-f_{ii}^{n+1}$，这就说明
+        \begin{equation*}
+            \P(N_i(i)<+\infty)=\left\{ \begin{array}{ll}
+                1&,f_{ii}<1\\
+                0&,f_{ii}=1
+            \end{array} \right.
+        \end{equation*}
+        则$i$常返$\Leftrightarrow \P(N_i(i)=+\infty)$，
+        这意味着常返态有$1$的概率回到自身无穷多次。
+    \subsubsection{零常返与正常返}
+        接下来我们进一步对常返态进行分类。
+        \begin{definition}
+            对于状态$i$，平均常返时间：
+            \begin{equation*}
+                \mu_i\defeq \E[T_i|X_0=i]=\left\{ \begin{array}{ll}
+                    \sum_{n=1}^\infty nf_{ii}(n)&,i\text{常返}\\
+                    +\infty&,i\text{瞬时}
+                \end{array} \right.
+            \end{equation*}
+            如果$i$常返且$\mu_i=+\infty$，称其零常返；
+            如果$i$常返且$\mu_i<+\infty$，称其非零常返或正常返。
+        \end{definition}
+    
+        \begin{theorem}\label{Thm of ASP-0521-1}
+            若$i$常返，则$i$零常返$\Leftrightarrow \fun{lim}{n\rightarrow\infty}p_{ii}(n)=0$.
+        \end{theorem}
+        这个定理的证明不要求掌握。
+    
+        \begin{definition}
+            对于状态$i$，周期：
+            \begin{equation*}
+                d(i)={\rm gcd}\{n\geqslant 1:p_{ii}(n)>0\}
+            \end{equation*}
+            如果$d(i)>1$，称$i$为周期的，反之为非周期的。
+        \end{definition}
+        如果状态$i$的周期为$i$，说明至少存在两个互质的$u,v$使得$p_{ii}(u),p_{ii}(v)>0$，
+        因此，根据裴蜀定理，存在一个充分大的$N$使得$n>N$时，
+        $n$总能写成一些$u$和$v$的和，即$n=k_1u+k_2v$，进而
+        $p_{ii}(n)\geqslant p_{ii}(u)^{k_1}p_{ii}(v)^{k_2}>0$.这个结果意味着：
+        对于非周期的状态$i$，在充分大的时刻之后，每一个时间点都有可能返回。有点欧拉筛的感觉。
+        \begin{definition}
+            对于状态$i$，如果它非零常返且非周期，称其为遍历的(aperiodic)。
+        \end{definition}
+
+\subsection{实例：简单对称随机游走}
+    \label{e.g. of Simple Symmetry Random Walk}
+    我们一般利用\autoref{Addition 0521}来判断常返/瞬时，
+    利用\autoref{Thm of ASP-0521-1}（或者直接找平稳分布，后文会介绍）来判断零常返/正常返。
+    
+    下面以简单对称随机游走为例介绍这些定理的应用，注意随机游走的各个状态之间都是相互可达的，
+    所以不可约，我们只需要分析原点的状态即可。
+
+    \begin{lemma}
+        Stirling公式：$n\rightarrow\infty$时，
+        \begin{equation*}
+            n!\sim \sqrt{2\pi n}\left( \frac{n}{e} \right)^n
+        \end{equation*}
+        为同阶无穷大。
+    \end{lemma}
+    \begin{example}
+        一维情形：随机过程$X=(X_n)_{n\in\N}$，
+        状态空间为$\mathbb{Z}$，
+        $X_0=0$ a.s.，
+        给定$X_n$状态后，$X_{n+1}$等概率地向随机一个方向（左、右）移动一步。
+        则$X$是一个马氏链，分析每个状态的常返性（瞬时/常返/正常返/零常返）。
+    \end{example}
+    \begin{proof}
+        考虑$2n$步之后回到原点的概率：
+        \begin{equation*}
+            p(2n)=2^{-2n}\frac{(2n)!}{n!n!}
+        \end{equation*}
+        由Stirling公式，
+        \begin{equation*}
+            p(2n)\sim n^{-\frac{1}{2}}
+        \end{equation*}
+        所以$\sum p(2n)$发散，但$\fun{lim}{n\rightarrow\infty}p(2n)=0$，
+        所以原点是零常返的，因此所有状态都是零常返的。
+    \end{proof}
+
+    \begin{example}
+        二维情形：
+        随机过程$X=(X_n)_{n\in\N}$，
+        状态空间为$\mathbb{Z}\times \mathbb{Z}$，
+        $X_0=(0,0)$ a.s.，
+        给定$X_n$状态后，$X_{n+1}$等概率地向随机一个方向（左、右、上、下）移动一步。
+        则$X$是一个马氏链，分析每个状态的常返性（瞬时/常返/正常返/零常返）。
+    \end{example}
+    \begin{proof}
+        考虑$2n$步之后回到原点的概率：
+        \begin{equation*}
+            p(2n):=\P(X_{2n}=(0,0))=4^{-2n}\sum_{m=0}^n \frac{(2n)!}{m!m!(n-m)!(n-m)!}
+            =4^{-2n}\frac{(2n)!}{n!n!}\sum_{m=0}^n \frac{n!}{m!(n-m)!}\cdot \frac{n!}{m!(n-m)!}
+        \end{equation*}
+        这里要用到一个组合的技巧，设$(1+x)^{2n}$中$x^n$的系数为$C_n$，直接展开得到
+        \begin{equation*}
+            C_n={2n\choose n}=\frac{(2n)!}{n!n!}
+        \end{equation*}
+        另一方面，拆分成$(1+x)^n\cdot (1+x)^n$，设$(1+x)^n$中$x^m$的系数是$B_m$，
+        \begin{equation*}
+            C_n
+            =\sum_{m=0}^n B_m\cdot B_{n-m}
+            =\sum_{m=0}^n {n\choose m}\cdot {n\choose n-m}
+            =\sum_{m=0}^n \frac{n!}{m!(n-m)!}\cdot \frac{n!}{m!(n-m)!}
+        \end{equation*}
+        这就说明
+        \begin{equation*}
+            p(2n)=4^{-2n}\left(\frac{(2n)!}{n!n!}\right)^2
+        \end{equation*}
+        借助Stirling公式，
+        可得
+        \begin{equation*}
+            p(2n)\sim \frac{1}{n}4^{2n}
+        \end{equation*}
+        所以
+        \begin{equation*}
+            \sum_{n=0}^\infty p(2n)=+\infty,\ 
+            \fun{lim}{n\rightarrow\infty}p(2n)=0
+        \end{equation*}
+        所以原点是零常返的，从而所有状态都是零常返的。
+    \end{proof}
+    从另一个角度看，一、二维的随机游走是不可能存在平稳分布的，
+    所以如果常返则肯定是零常返的，但三维情形下是瞬时的。
+    \begin{example}
+        三维情形：随机过程$X=(X_n)_{n\in\N}$，
+        状态空间为$\mathbb{Z}^3$，
+        $X_0=(0,0,0)$ a.s.，
+        给定$X_n$状态后，$X_{n+1}$等概率地向随机一个方向（前、后、左、右、上、下）移动一步。
+        则$X$是一个马氏链，分析每个状态的常返性（瞬时/常返/正常返/零常返）。
+    \end{example}
+    \begin{proof}
+        考虑$2n$步之后回到原点的概率：
+        \begin{equation*}
+            p(2n)
+            =6^{-2n}\sum_{ i+j+k=n }\frac{(2n)!}{i!i!j!j!k!k!}
+            =2^{-2n}\frac{(2n)!}{n!n!}\sum_{ i+j+k=n }
+            \left( 3^{-n}\frac{n!}{i!j!k!} \right)^2
+        \end{equation*}
+        考虑
+        \begin{equation*}
+            3^n=(1+1+1)^n=\sum_{ i+j+k=n }\frac{n!}{i!j!k!}
+        \end{equation*}
+        所以
+        \begin{equation*}
+            p(2n)\leqslant 2^{-2n}\frac{(2n)!}{n!n!}\fun{max}{i+j+k=n}3^{-n}\frac{n!}{i!j!k!}
+        \end{equation*}
+        根据Stirling公式，
+        \begin{equation*}
+            2^{-2n}\frac{(2n)!}{n!n!}\sim \frac{1}{\sqrt{n}}
+        \end{equation*}
+        下证：
+        \begin{equation*}
+            \alpha_{i,j,k}=3^{-n}\frac{n!}{i!j!k!},\ 
+            \fun{max}{i+j+k=n}\alpha_{i,j,k}\sim n^{-1}
+        \end{equation*}
+        事实上，
+        \begin{enumerate}[(1).]
+            \item 如果$\fun{max}{i+j+k=n}\alpha_{i,j,k}=\alpha_{i',j',k'}$，则$i',j',k'\in \{ [\frac{n}{3}],[\frac{n}{3}]+1 \}$；
+            \item 由Stirling公式，\begin{equation*}
+                \alpha_{i,j,k}\sim 3^{-n}\frac{n^n}{{i'}^{i'}{j'}^{j'}{k'}^{k'}}
+                \sqrt{\frac{n}{i'j'k'}}\cdot \frac{1}{2\pi}
+            \end{equation*}
+            \item \begin{equation*}
+                {i'}^{i'}{j'}^{j'}{k'}^{k'}\sim \left( \left(\frac{n}{3}\right)^{\frac{n}{3}} \right)^3=
+                \left(\frac{n}{3}\right)^n
+            \end{equation*}
+            \begin{equation*}
+                i'j'k'\sim n^3
+            \end{equation*}
+        \end{enumerate}
+        从而
+        \begin{equation*}
+            \alpha_{i',j',k'}\sim 3^{-n}\cdot \frac{n^n}{\left( \frac{n}{3} \right)^n}
+            \cdot \sqrt{ \frac{n}{n^3} }\cdot \frac{1}{2\pi}\sim n^{-1}
+        \end{equation*}
+        因此，$n$充分大时
+        \begin{equation*}
+            p(2n)\leqslant Cn^{-\frac{3}{2}}
+        \end{equation*}
+        所以$\sum p(2n)$收敛，这说明原点是瞬时态，从而所有状态都是瞬时态。
+    \end{proof}
+    直观上来看这是一个很有趣的事实，
+    醉汉在地面上随机游走总能回家，但喝醉的小鸟在空中“随机游走”就回不了家。
+
+\clearpage
+
+\section{平稳测度与平稳分布}
+    
+\subsection{基本定义}
+    \begin{definition}
+        测度$\mu$如果满足：
+        \begin{equation*}
+            \sum_x \mu(x)p(x,y)=\mu(y)
+        \end{equation*}
+        则称之为平稳测度。
+        
+        进一步地，如果$\mu$是概率测度，则称之为平稳分布；
+        如果$\mu$满足：
+        \begin{equation*}
+            \mu(x)p(x,y)=\mu(y)p(y,x)
+        \end{equation*}
+        则称之为可逆测度。
+    \end{definition}
+
+    \begin{theorem}
+        $\mu$是平稳分布，且$X_0$的分布也是$\mu$，
+        令$Y_m=X_{n-m},-\infty<m\leqslant n$，则
+        $\{Y_m,-\infty<m\leqslant n\}$是马氏链，转移概率$q(x,y)=\mu(y)p(y,x)/\mu(x)$.
+
+        进一步地，如果$\mu$是可逆测度，则$p=q$.
+    \end{theorem}
+    \begin{proof}
+        $Y$是“倒过来”的$X$，利用贝叶斯公式翻转一下：
+        \begin{align*}
+            q(x,y)&=\P(Y_{m+1}=y|Y_m=x)\\
+            &=\P(X_{n-m-1}=y|X_{n-m}=x)\\
+            &=\frac{\P(X_{n-m}=x|X_{n-m-1}=y)\P(X_{n-m-1}=y)}{\P(X_{n-m}=x)}
+            =\frac{\mu(y)p(y,x)}{\mu(x)}
+        \end{align*}
+    \end{proof}
+
+\subsection{平稳测度的存在唯一性}
+    \begin{theorem}[存在性]\label{Existence of Stationary Measure}
+        $x$常返，$T_x=\fun{inf}{}\{ m\geqslant 1:X_m=x \}$，则定义
+        \begin{equation*}
+            \mu_x(y)\defeq \E_x\left[ \sum_{n=0}^{T_x-1}I_{ \{X_n=y\} } \right]
+            =\E_x\left[ \sum_{n=0}^{\infty}I_{ \{X_n=y,T_x>n\} } \right]
+            =\sum_{n=0}^{\infty} \P_x ( X_n=y,T_x>n )
+        \end{equation*}
+        证明：$(\mu_x(y),y\in S)$是一个平稳测度。
+    \end{theorem}
+    \begin{proof}
+        首先，如果考虑$X_0=x$，则返回$x$前只会经过$x$一次，即初始状态的一次：
+        \begin{equation*}
+            \mu_x(x)=\E_x\left[ \sum_{n=0}^{T_x-1}I_{ \{X_n=x\} } \right]
+            =\E_x[ I_{ \{X_0=x\} } ]=1
+        \end{equation*}
+        我们的目标是要证明：
+        \begin{equation*}
+            \mu_x(z)=\sum_{y\in S}\mu_x(y)p(y,z),\ \forall z\in S \tag*{$(\star 1)$}
+        \end{equation*}
+        注意到
+        \begin{align*}
+            \P_x(X_n=y,X_{n+1}=z,T_x>n)
+            &=\E_x[ I_{ \{X_n=y,T_x>n\} }I_{ \{X_{n+1}=z\} } ]\\
+            &=\E_x[ \E_x[I_{ \{X_n=y,T_x>n\} }I_{ \{X_{n+1}=z\} }|\F_n] ]\\
+            &=\E_x[ I_{ \{X_n=y,T_x>n\} }\E_x[I_{ \{X_{n+1}=z\} }|\F_n] ]\\
+            &=\E_x[ I_{ \{X_n=y,T_x>n\} }\E_{X_n}[I_{ \{X_{1}=z\} }] ]\\
+            &=\E_x[ I_{ \{X_n=y,T_x>n\} }p(X_n,z) ]\\
+            &=\P_x(X_n=y,T_x>n)p(y,z)
+        \end{align*}
+        所以
+        \begin{align*}
+            (\star 1)RHS&=\sum_{y\in S}\sum_{n=0}^\infty\P_x(X_n=y,T_x>n)p(y,z)\\
+            &=\sum_{n=0}^\infty \sum_{y\in S}\P_x(X_n=y,X_{n+1}=z,T_x>n)\\
+            &=\sum_{n=0}^\infty \P_x(X_{n+1}=z,T_x>n)
+        \end{align*}
+        如果$z\neq x$，则
+        \begin{equation*}
+            \sum_{n=0}^\infty \P_x(X_{n+1}=z,T_x>n)=\sum_{n=0}^\infty \P_x(X_{n+1}=z,T_x>n+1)=\mu_x(z)
+        \end{equation*}
+        如果$z=x$，则
+        \begin{equation*}
+            \sum_{n=0}^\infty \P_x(X_{n+1}=z,T_x>n)=\P_x(T<+\infty)=1=\mu_x(x)
+        \end{equation*}
+        得证。
+    \end{proof}
+    上述定理表明，只要马氏链中存在常返态，则能构造出平稳测度。
+    \begin{theorem}[唯一性]\label{Uniqueness of Stationary Measure}
+        如果马氏链$X$不可约、常返，则其平稳测度在相差常数倍意义下唯一。
+    \end{theorem}
+    \begin{proof}
+        取$a\in S$，由\autoref{Existence of Stationary Measure}，$\{\mu_a(y)\}$是一个平稳测度，假设
+        $\{v(y)\}$是另一个平稳测度，我们希望证明：存在常数$c>0$使得$v(y)=c\mu_a(y)$.
+
+        一方面，根据平稳测度的性质，我们得到
+        \begin{align*}
+            v(z)
+            &=\sum_{y\in S} v(y)p(y,z)\\
+            &=v(a)p(a,z)+\sum_{y\neq a}v(y)p(y,z)\tag*{$(\star)$}
+        \end{align*}
+        把上式求和中的$v(y)$拆开，得到
+        \begin{align*}
+            v(z)
+            &=v(a)p(a,z)+\sum_{y\neq a}\left[ v(a)p(a,y)+\sum_{x\neq a}v(x)p(x,y) \right]p(y,z)\\
+            &=v(a)p(a,z)+\sum_{y\neq a}v(a)p(a,y)p(y,z)+\sum_{y\neq a}\sum_{x\neq a}v(x)p(x,y)p(y,z)\\
+            &=v(a)\P_a(X_1=z)+v(a)\sum_{y\neq a}\P_a(X_1=y,X_2=z)+\sum_{y\neq a}\sum_{x\neq a}v(x)p(x,y)p(y,z)\\
+            &=v(a)\P_a(X_1=z)+v(a)\P_a(X_1\neq a,X_2=z)+\sum_{y\neq a}\sum_{x\neq a}v(x)p(x,y)p(y,z)
+        \end{align*}
+        再按照$(\star)$式把最后那一项里的$v(x)$拆开，
+        \begin{align*}
+            v(z)=&v(a)\P_a(X_1=z)+v(a)\P_a(X_1\neq a,X_2=z)+\sum_{y\neq a}\sum_{x\neq a}\left[
+                v(a)p(a,x)+\sum_{w\neq a}v(w)p(w,x)
+            \right]p(x,y)p(y,z)\\
+            =&v(a)\P_a(X_1=z)+v(a)\P_a(X_1\neq a,X_2=z)+v(a)\P_a(X_1\neq a,X_2\neq a,X_3=z)+\\
+            &\sum_{y\neq a}\sum_{x\neq a}\sum_{w\neq a}v(w)p(w,x)p(x,y)p(y,z)
+        \end{align*}
+        以此类推，把最后一项放缩到$0$，我们最终得到
+        \begin{align*}
+            v(z)
+            &\geqslant v(a)\P_a(X_1=z)+v(a)\P_a(X_1\neq a,X_2=z)+\cdots+v(a)\P_a(X_k\neq a,1\leqslant k<n,X_{n}=z)+\cdots\\
+            &=v(a)\sum_{n=1}^\infty \P_a(X_k\neq a,1\leqslant k<n,X_{n}=z)\\
+            &=v(a)\sum_{n=1}^\infty \P_a(T_a>n,X_n=z)\\
+            &=v(a)\mu_a(z)
+        \end{align*}
+
+        另一方面，考虑
+        \begin{align*}
+            v(a)
+            &=\sum_{x\in S}v(x)p^n(x,a)\\
+            &\geqslant \sum_{x\in S}v(a)\mu_a(x)p^n(x,a)\\
+            &=v(a)\sum_{x\in S}\mu_a(x)p^n(x,a)\\
+            &=v(a)\mu_a(a)=v(a)
+        \end{align*}
+        所以我们得到
+        \begin{equation*}
+            v(z)=v(a)\mu_a(z)
+        \end{equation*}
+    \end{proof}
+
+\subsection{平稳分布的性质}
+    \begin{theorem}\label{thm4.21}
+        如果马氏链有平稳分布$\pi$，则$\pi(y)>0\Rightarrow y$常返。
+    \end{theorem}
+    \begin{proof}
+        平稳分布满足
+        \begin{equation*}
+            \pi\mathbf{P}^n=\pi
+        \end{equation*}
+        所以
+        \begin{equation*}
+            \sum_{x\in S}\pi(x)p^n(x,y)=\pi(y)>0
+        \end{equation*}
+        从而
+        \begin{equation*}
+            \sum_{n=1}^\infty\sum_{x\in S}\pi(x) p^n(x,y)=\sum_{n=1}^\infty \pi(y)=+\infty
+        \end{equation*}
+        假设$y$瞬时，$\rho_{yy}<1$，则由\autoref{Addition 0521}可知，
+        \begin{equation*}
+            \sum_{n=1}^\infty p^n(x,y)=\frac{\rho_{xy}}{1-\rho_{yy}}
+        \end{equation*}
+        所以
+        \begin{equation*}
+            \sum_{n=1}^\infty\sum_{x\in S}\pi(x) p^n(x,y)
+            =\sum_{x\in S}\pi(x)\frac{\rho_{xy}}{1-\rho_{yy}}<+\infty
+        \end{equation*}
+        这就矛盾。
+    \end{proof}
+
+    \begin{theorem}\label{thm4.22}
+        如果不可约马氏链有平稳分布$\pi$，则$\forall \pi(x)>0$，
+        进一步地，
+        \begin{equation*}
+            \pi(x)=\frac{1}{\E_x[T_x]}
+        \end{equation*}
+        其中$T_x=\fun{min}{}\{ n\geqslant 1:X_n=x \}$.
+    \end{theorem}
+    \begin{proof}
+        假设存在某个$\pi(y)=0$，
+        \begin{equation*}
+            \pi(y)=\sum_{x\in S}\pi(x)p^n(x,y)=0
+        \end{equation*}
+        不可约所以$\rho_{xy}>0$，从而
+        \begin{equation*}
+            \sum_{n=1}^\infty p^n(x,y)>0
+        \end{equation*}
+        于是存在某个$N$使得$p^N(x,y)>0$，这就和
+        \begin{equation*}
+            \pi(y)=\sum_{x\in S}\pi(x)p^N(x,y)=0
+        \end{equation*}
+        矛盾。
+
+        任取一个$x$，考虑平稳测度$\mu_x$，存在常数$c$使得$\mu_x(y)=c\pi(y)$，于是
+        \begin{equation*}
+            \sum_{y\in S}\mu_x(y)=c
+        \end{equation*}
+        同时，
+        \begin{equation*}
+            \sum_{y\in S}\mu_x(y)=\sum_{n=0}^\infty \sum_{y\in S}\P_x(X_n=y,T_x>n)
+            =\sum_{n=0}^\infty \P_x(T_x>n)=\E_x[T_x]
+        \end{equation*}
+        所以
+        \begin{equation*}
+            c=\E_x[T_x]=\frac{\mu_x(y)}{\pi(y)}
+        \end{equation*}
+        取$x=y$得证。
+    \end{proof}
+
+    \begin{definition}
+        $\E_x[T_x]$称为平均返回时间，如果有限，则称$x$正常返，否则称为零常返。
+    \end{definition}
+
+    \begin{theorem}\label{thm4.23}
+        对于不可约马氏链，以下说法等价：
+        \begin{enumerate}[(1).]
+            \item 存在正常返态；
+            \item 存在平稳分布；
+            \item 所有的状态都正常返。
+        \end{enumerate}
+    \end{theorem}
+    \begin{proof}
+        只说明一下$(1)\Rightarrow (2)$：
+        考虑平稳测度$\mu_x$，
+        \begin{equation*}
+            \sum_{y\in S}\mu_x(y)=\sum_{n=0}^\infty \sum_{y\in S}\P_x(X_n=y,T_x>n)=\E_x[T_x]<+\infty
+        \end{equation*}
+        和有限，则取
+        \begin{equation*}
+            v(y)=\frac{\mu_x(y)}{\E_x[T_x]}
+        \end{equation*}
+        就是平稳分布。
+    \end{proof}
+    这个定理告诉我们，不可约、常返马氏链中的状态要么都是正常返的，要么都是零常返的，而且如果存在平稳分布，就是正常返的。
+
+\subsection{利用平稳分布判断状态*}
+    本节来自应随课程，大部分都是重复内容，没有补充太多新东西，可直接跳过。
+
+    可以按照以下步骤来构造一个平稳测度/分布：
+    \begin{enumerate}
+        \item 取一个不可约、常返的马氏链$X=\{X_n,n\in \N\}$，状态空间为$S$，转移矩阵为$\mathbf{P}$.
+        \item 定义首达时$T_k$，注意$k$常返所以$\P(T_k<+\infty|X_0=k)=1$.
+        \item 给定条件$X_0=k$的情况下，定义
+            \begin{equation*}
+                N_{k,i}(\omega)\defeq \sum_{n=1}^{T_k} I_{ \{X_n=i\} }
+            \end{equation*}
+            为从$k$出发回到$k$前经过$i$的次数。
+        \item $\P(N_{k,k}=1)=1$，$T_k(\omega)=\sum_{i\in S}N_{k,i}(\omega)$.
+        \item 注意到
+            \begin{equation*}
+                N_{k,i}(\omega)=\sum_{n=1}^\infty I_{ \{X_n=i,T_k\geqslant n \} }
+            \end{equation*}
+        \item 定义$\rho_i(k)=\E[ N_{k,i}|X_0=k ]$，则
+            \begin{equation*}
+                \rho_i(k)=\sum_{n=1}^\infty \P(X_n=i,T_k\geqslant n|X_0=k)
+            \end{equation*}
+        \item 由4，得到
+            \begin{equation*}
+                \mu_k=\E[T_k|X_0=k]=\sum_{i\in S}\E[ N_{k,i}|X_0=k ]=\sum_{i\in S}\rho_i(k)
+            \end{equation*}
+        \item 行向量$\rho(k)=(\rho_i(k),i\in S)$就是一个平稳测度，如果$\mu_k<+\infty$，$\pi=(\rho_i(k)/\mu_k,i\in S)$就是一个平稳分布。
+    \end{enumerate}
+    
+    我们可以利用平稳分布的存在性判断不可约马氏链是否非零常返。
+    \begin{theorem}\label{Thm3}
+        对于不可约马氏链，其存在平稳分布的充要条件为所有状态为非零常返的。此时$\pi_i=\mu_i^{-1}$，也是唯一的。
+    \end{theorem}
+    该定理提供了一个判断不可约马氏链是否（非零）常返的方法，
+    以及通过平均返回时间求平稳分布的方法。
+
+    那么，无法验证平稳分布存在性的情况下，
+    如何判断不可约马氏链是否常返呢？
+    \begin{theorem}\label{Thm10}
+        对于不可约马氏链$X$，
+        $X$瞬时$\Leftrightarrow \exists s\in S,\exists \{y_j,j\neq s\}$满足
+        \begin{equation*}
+            \forall j,|y_j|\leqslant 1;\ \exists j',|y_{j'}|>0
+        \end{equation*}
+        并使得
+        \begin{equation*}
+            y_i=\sum_{j\neq s}p_{ij}y_j,i\neq s
+        \end{equation*}
+    \end{theorem}
+    \autoref{Thm10}提供了不可约马氏链常返的充要条件：方程
+    \begin{equation*}
+        y_i=\sum_{j\neq s} p_{ij}y_j,i\neq s
+    \end{equation*}
+    的有界解都是$0$.
+
+    \begin{theorem}\label{Thm13}
+        不可约马氏链$X$，$S=\N$，若存在$s\notin S,\{y_j,j\neq s\}$使得
+        \begin{equation*}
+            y_i\geqslant \sum_{j\neq s}p_{ij}y_j,i\neq s
+        \end{equation*}
+        且$i\rightarrow +\infty$时$y_i\rightarrow +\infty$，则$X$常返。
+    \end{theorem}
+
+    最后是一个实际应用的例子。
+    \begin{example}[带边界的随机游走]
+        状态空间$S=\N$，转移矩阵形如：
+        \begin{table}[H]
+            \centering
+            \begin{tabular}{cccccc}%6
+                &$0$&$1$&$2$&$3$&$\cdots$\\
+                $0$&$q$&$p$&$0$&$0$&\\
+                $1$&$q$&$0$&$p$&$0$&\\
+                $2$&$0$&$q$&$0$&$p$&\\
+                $3$&$0$&$0$&$q$&$0$&\\
+                $\vdots$&&&&&
+            \end{tabular}
+        \end{table}
+        即向左走概率为$q$，向右走概率为$p$，$p+q=1$，
+        但是在$0$向左走会被挡住，只能停留。
+        证明这个马氏链是不可约的，
+        分析其常返/瞬时的条件。
+    \end{example}
+    \begin{solve}
+        显然每个状态之间都是相互可达的，所以$X$是不可约的。解方程$\pi=\pi \mathbf{P}$可得
+        $\pi_j=r^j(1-r)$，其中$r=p/q$，
+        因此$r<1$时，$X$存在平稳分布$\pi$，进而是非零常返的；
+        $r>1$时，取$s=0$，$y_j=1-r^{-j}$，可以判断$X$是瞬时的；
+        $r=1$时，取$s=0,y_j=j$，由\autoref{Thm13}知$X$是零常返的。
+    \end{solve}
+    相关：\autoref{ASP-hw5.2}
+
+\subsection{极限定理*}
+    本节来自应随课程，讨论了平稳分布与$\fun{lim}{n\rightarrow \infty}p_{ij}(n)$之间的关系。
+    \begin{theorem}\label{Thm17}
+        马氏链$X$是不可约、非周期的，则
+        \begin{equation*}
+            \fun{lim}{n\rightarrow \infty}p_{ij}(n)=\frac{1}{\mu_j},\ \forall i,j
+        \end{equation*}
+    \end{theorem}
+    \begin{proof}
+        如果$X$是瞬时的，则由\autoref{Cor6.2.5}(3)立即得证。下面只考虑$X$是常返的。
+
+        我们采用“耦合方法”：取马氏链$Y=\{Y_n,n\in\N\}$，其满足$Y$与$X$独立，并且状态空间、转移矩阵和$X$都相同，
+        取$Z=\{Z_n=(X_n,Y_n)\}$，为一个新的马氏链，称为$X$的耦合链。很容易得到其转移概率为：
+        \begin{equation*}
+            p_{(i,j),(k,l)}=\P(X_1=k,Y_1=l|X_0=i,Y_0=j)=
+            \P(X_1=k|X_0=i)\P(Y_1=l,Y_0=j)=p_{ik}p_{jl}
+        \end{equation*}
+        因为$X$不可约、非周期，故$\forall i,j,k,l$，在$n$充分大时，
+        $\forall n$有$p_{ik}(n),p_{jl}(n)>0$，这说明$Z$也是不可约、非周期的。
+
+        先考虑$X$非零常返，此时$X$存在平稳分布$\pi$，那么
+        \begin{equation*}
+            v=(v_{ij}=\pi_i\pi_j,(i,j)\in S\times S)
+        \end{equation*}
+        就是$Z$的平稳分布，从而$Z$也是非零常返的。
+        \begin{equation*}
+            \fun{lim}{n\rightarrow\infty}| p_{ik}(n)-p_{ik}(n) |=0,\ \forall i,j,k\tag*{Claim 1}
+        \end{equation*}
+        现在，考虑$\pi \mathbf{P}^n=\mathbf{P}^n$，可得
+        \begin{equation*}
+            \pi_k=\sum_{i\in S}\pi_i p_{ik}(n)
+        \end{equation*}
+        于是
+        \begin{equation*}
+            \pi_k-p_{jk}(n)=\sum_{i\in S}\pi_i p_{ik}(n)-\sum_{i\in S}\pi_i p_{jk}(n)
+            =\sum_{i\in S}\pi_i( p_{ik}(n)-p_{jk}(n) )=(\star 1)
+        \end{equation*}
+        任取$S$的有限子集$F$，因为$\forall \pi_i,p_{ij}(n)\in [0,1]$，所以
+        \begin{align*}
+            (\star 1)&=\sum_{i\in F}\pi_i( p_{ik}(n)-p_{jk}(n) )+\sum_{i\notin F}\pi_i( p_{ik}(n)-p_{jk}(n) )\\
+            &\leqslant \sum_{i\in F}( p_{ik}(n)-p_{jk}(n) )+\sum_{i\notin F}\pi_i
+        \end{align*}
+        根据Claim 1，有限和是趋于$0$的，再令$F\nearrow S$，即可得$\pi_k-p_{jk}(n)\rightarrow 0$.
+
+        再考虑$X$零常返，此时只需证明$p_{ij}(n)\rightarrow 0$即可。仍然考虑耦合链$Z$，
+        \begin{enumerate}
+            \item 如果$Z$瞬时，有\autoref{Cor6.2.5}即可得证。
+            \item 如果$Z$非零常返，考虑首达时：
+                \begin{align*}
+                    T_{ii}^Z&=\fun{min}{}\{n\geqslant 1:Z_n=(i,i)\}\\
+                    T_i&=\fun{min}{} \{n\geqslant 1:X_n=i\}
+                \end{align*}
+                $Z$非零常返而$X$零常返，故
+                \begin{equation*}
+                    \E[T_{ii}^Z|Z_0=(i,i)]<+\infty,\ 
+                    \E[T_i|Z_0=(i,i)]=\E[T_i|X_0=i]=+\infty
+                \end{equation*}
+                但是$T_i\leqslant T_{ii}^Z$ a.s.，导致矛盾。
+            \item 如果$Z$零常返，Claim 1同样成立（下文中Claim 1的证明中只用到了$Z$常返的条件，与是否“零”常返无关）。假设
+                “$\fun{lim}{n\rightarrow\infty}p_{ij}(n)=0,\forall i,j$”不成立，则
+                \begin{equation*}
+                    \forall i,j,\exists \{n_r\}_{r=1}^\infty,\alpha_j{\rm\ s.t.\ }\fun{lim}{r\rightarrow\infty}p_{ij}(n_r)=\alpha_j\tag*{Claim 3}
+                \end{equation*}
+                其中$\alpha_j$不全为零、与$i$的选取无关，$n_r$与$i,j$的选取无关。
+                于是令行向量$\alpha=(\alpha_j,j\in S)$，那么任取有限集$F\subset S$，
+                \begin{equation*}
+                    \sum_{j\in F}\alpha_j=\fun{lim}{r\rightarrow \infty}\sum_{j\in F}p_{ij}(n_r)\leqslant 1
+                \end{equation*}
+                再令$F\nearrow S$即可得$0<\sum \alpha_j\leqslant 1$.
+                \begin{equation*}
+                    \sum_{k\in S}\alpha_k p_{kj}=\alpha_j,\ \forall j\in S\tag*{Claim 4}
+                \end{equation*}
+                这说明我们找到了$X$的平稳分布，这与$X$零常返矛盾。
+        \end{enumerate}
+
+        Claim 1的证明：
+        假设$X_0=i,Y_0=j,Z_0=(i,j)$，选定$s\in S$，设
+        \begin{equation*}
+            T=\fun{min}{}\{ n\geqslant 1:Z_n=(s,s) \}
+        \end{equation*}
+        由于$Z$不可约、常返，根据\autoref{ASP-hw4.5}，$\P(T<+\infty)=f_{(i,j),(s,s)}=1$，
+        于是$\P(T>n)\rightarrow 0$.
+        \begin{equation*}
+            \P(X_n\leqslant x|T<n)=\P(Y_n\leqslant x|T<n),\ \forall x\tag*{Claim 2}
+        \end{equation*}
+        现在，
+        \begin{align*}
+            p_{ik}(n)&=\P(X_n=k)\\
+            &=\P(X_n=k,T<n)+\P(X_n=k,T\geqslant n)\\
+            &=\P(Y_n=k,T<n)+\P(X_n=k,T\geqslant n)\\
+            &\leqslant \P(Y_n=k)+\P(T\geqslant n)=p_{jk}(n)+\P(T\geqslant n)
+        \end{align*}
+        交换$i,j$位置可得$|p_{ik}(n)-p_{jk}(n)|\leqslant \P(T\geqslant n)\rightarrow 0$.
+
+        Claim 2的证明：
+        实际上就是“给定$T\leqslant n$”条件下$X_{n+1}$和$Y_{n+1}$分布相同。老师是用初等方法证明的，太复杂所以我不想抄了。
+        不过用测度论的语言就很好理解。回顾\autoref{Transport Function of MC}，我们取滤流
+        \begin{equation*}
+            \F_n=\sigma( X_0,\cdots,X_n,Y_0,\cdots,Y_n )
+        \end{equation*}
+        就有$X_n,Y_n\in \F_n$，所以
+        \begin{equation*}
+            \P(X_{n+1}\in B|\F_{n})=p(X_n,B)
+        \end{equation*}
+        当然对$Y$也成立。同时，我们也能得到多步转移概率：
+        \begin{equation*}
+            \P(X_{n+1}\in B|\F_{m})=p_{n+1-m}(X_m,B),\ \forall m\leqslant n
+        \end{equation*}
+        这说明给定$m$时刻之前的信息，$X_{n+1}$的分布只取决于$X_m$.
+        $T$是$Z$的停时，同时
+        \begin{equation*}
+            \{T\leqslant n\}=\bigsqcup_{m=1}^n \{ T=m \}
+            =\bigsqcup_{m=1}^n \undertext{\{ (X_1,Y_1)\neq (i,i),\cdots,(X_{m-1},Y_{m-1})\neq (i,i),X_m=Y_m=i \}}{\subset \F_m}
+        \end{equation*}
+        所以
+        \begin{align*}
+            \P(X_{n+1}\in B,T\leqslant n)
+            &=\sum_{m=1}^n \P( X_{n+1}\in B,(X_1,Y_1)\neq (i,i),\cdots,(X_{m-1},Y_{m-1})\neq (i,i),X_m=Y_m=i )\\
+            &=\sum_{m=1}^n \P( X_{n+1}\in B|(X_1,Y_1)\neq (i,i),\cdots,(X_{m-1},Y_{m-1})\neq (i,i),X_m=Y_m=i )\cdot \P( T=m )\\
+            &=\sum_{m=1}^n p_{n+1-m}(i,B)\cdot \P( T=m )
+        \end{align*}
+        最后式子只与$B$有关，考虑$Y$则会得到相同的结果，所以二者同分布。
+
+        Claim 3的证明：    
+        \begin{figure}[H]
+
+            \centering
+            \includegraphics[scale=0.5]{ASP-Claim 3.png}
+             
+        \end{figure}
+
+        Claim 4的证明：
+        \begin{figure}[H]
+
+            \centering
+            \includegraphics[scale=0.5]{ASP-Claim 4.png}
+             
+        \end{figure}
+    \end{proof}
+    这个定理表明，
+    如果$X$是不可约、非零常返、非周期的，那$p_{ij}(n)\rightarrow \pi_j$，
+    这说明$\fun{lim}{n\rightarrow \infty}p_{ij}(n)$与初始状态$X_0$的分布无关，
+    即
+    \begin{equation*}
+        \P(X_n=j)=\sum_{i\in S}\P(X_0=i)\cdot p_{ij}(n)\rightarrow 
+        \frac{1}{\mu_j}
+    \end{equation*}
+    其现实意义是：即使不知道初始状态，
+    经过足够长的时间之后，我们能够近似地预测此时落在某个的状态的概率。
+    或者说，有多个独立样本参与了随机过程，经过足够长的时间之后，
+    会发现每个状态处的样本数量趋近于稳定，这便是平稳分布。
+
+    即使不给定不可约的条件，也有相关的结论。
+    \begin{theorem}\label{ASP-Thm21}
+        对于马氏链$X$，其任意非周期状态$j$都有
+        \begin{equation*}
+            \fun{lim}{n\rightarrow \infty}p_{jj}(n)=\frac{1}{\mu_j}
+        \end{equation*}
+        \begin{equation*}
+            \fun{lim}{n\rightarrow \infty}\frac{f_{ij}}{\mu_j},\ i\neq j
+        \end{equation*}
+    \end{theorem}
+    \begin{corollary}\label{ASP-Cor22}
+        令
+        \begin{equation*}
+            \tau_{ij}(n)=\frac{1}{n}\sum_{m=1}^n p_{ij}(m)
+        \end{equation*}
+        若$j$非周期，则
+        \begin{equation*}
+            \fun{lim}{n\rightarrow\infty}\tau_{ij}(n)=\frac{f_{ij}}{\mu_j}
+        \end{equation*}
+    \end{corollary}
+    了解即可，不要求掌握证明。
+
+\clearpage
+
+\section{终止分布问题(Exit Distributions)*}
+    本小节内，对于状态空间$S$的子集$A$，我们记
+    \begin{equation*}
+        V_A={\rm inf}\{ n\geqslant 0:X_n\in A \},\ T_A={\rm inf}\{ n\geqslant 1:X_n\in A \}
+    \end{equation*}
+    本节讨论的是系统离开/进入某些状态时的分布。
+
+    \begin{theorem}
+        马氏链$X=\{X_n,n\geqslant 0\}$状态空间为$S$，$A,B\subset S$满足$C=S-(A\cup B)$有限，
+        如果：
+        \begin{enumerate}[(1).]
+            \item $h(A)=1$，$h(B)=0$.
+            \item 对于$\forall x\in C$满足
+            \begin{equation*}
+                h(x)=\sum_{y\in S}p_{xy}h(y)
+            \end{equation*}
+            \item $\P(V_A\wedge V_B<+\infty|X_0=x)>0,\forall x\in C$
+        \end{enumerate}
+        则$h(x)=\P(V_A\wedge V_B<+\infty|X_0=x)$.
+    \end{theorem}
+    \textbf{这个定理用来计算“从$x$出发，进入$B$之前，能够进入$A$的概率”。}
+
+    \begin{example}
+        甲有$x$元，乙有$N-x$元，两人玩公平的游戏，每轮游戏的败者需给胜者$1$元，直到某人输光为止。
+        求甲最终能够获胜（即乙输光）的概率。
+    \end{example}
+    \begin{solve}
+        马氏链$X=\{X_n,n\geqslant 0\}$，$X_n$代表了玩了$n$轮游戏之后，甲拥有的钱数。
+        状态空间$S=\{0,1,\cdots,N\}$，$A=\{ N \}$，$B=\{ 0 \}$，此题目即求
+        \begin{equation*}
+            h(x)=\P(V_A<V_B|X_0=x)
+        \end{equation*}
+        那么可知，$h(x)$需满足：
+        \begin{enumerate}[(1).]
+            \item $h(0)=0$.
+            \item $h(N)=1$.
+            \item $h(x)=\frac{1}{2}h(x-1)+\frac{1}{2}h(x+1),x\neq 0,N$.
+        \end{enumerate}
+        可解得
+        \begin{equation*}
+            h(x)=\frac{x}{N}
+        \end{equation*}
+    \end{solve}
+
+    \begin{example}
+        马氏链$X=\{X_n,n\geqslant 0\}$，状态空间$S=\{1,2,\cdots,7\}$，转移矩阵为
+        \begin{equation*}
+            \begin{matrix}
+                &1&2&3&4&5&6&7\\
+                1&0.7&&&&0.3&&\\
+                2&0.1&0.2&0.3&0.4&&&\\
+                3&&&0.5&0.3&0.2&&\\
+                4&&&&0.5&&0.5&\\
+                5&0.6&&&&0.4&&\\
+                6&&&&&&0.2&.8\\
+                7&&&&1&&&
+            \end{matrix}
+        \end{equation*}
+        分析每个状态（瞬时/正常返/零常返、周期、平均返回时间），并对每个$i,j\in S$求出
+        \begin{equation*}
+            \fun{lim}{n\rightarrow \infty }p_{ij}(n)
+        \end{equation*}
+    \end{example}
+    \begin{solve}
+        首先对马氏链进行划分，分析状态之间的可达性，可知
+        $T=\{ 2,3 \}$为瞬时态，$A=\{ 1,5 \}$和$B=\{4,6,7\}$为两条常返、不可约、闭的子链；
+        两条子链的状态空间$A,B$都有限，所以正常返；状态$2,3,4,5,6$可以停留在自身，
+        所以周期为$1$，再根据$1,5$和$6,7$相互可达可知所有的状态周期都为$1$.
+
+        然后我们来求平均返回时间，注意到$4,5$瞬时所以$\mu_4=\mu_5=+\infty$，
+        子链$A$的平稳分布$(\pi_1,\pi_5)$需满足：
+        \begin{equation*}
+            (\pi_1,\pi_5)\begin{pmatrix}
+                0.7&0.3\\
+                0.6&0.4
+            \end{pmatrix}=(\pi_1,\pi_5),\ \pi_1+\pi_5=1
+        \end{equation*}
+        可解得$\pi_1=\frac{1}{3},\pi_5=\frac{2}{3}$，同理可解得子链$B$的平稳分布：
+        $\pi_4=\frac{8}{17},\pi_6=\frac{5}{17},\pi_7=\frac{4}{17}$.
+        取倒数就得到平均返回时间。
+
+        最后我们来分析$p_{ij}(n)$的极限。注意到首先$i$不可达$j$时极限为$0$，
+        $i,j$属于同一条子链时极限为$\pi_j$，$i,j$都瞬时时极限为$0$，所以目前我们可以得到的是：
+        \begin{equation*}
+            \mathbf{P}^\infty=\begin{matrix}
+                &1&2&3&4&5&6&7\\
+                1&\pi_1&0&0&0&\pi_5&0&0\\
+                2&?&0&0&?&?&?&?\\
+                3&?&0&0&?&?&?&?\\
+                4&0&0&0&\pi_4&0&\pi_6&\pi_7\\
+                5&\pi_1&0&0&0&\pi_5&0&0\\
+                6&0&0&0&\pi_4&0&\pi_6&\pi_7\\
+                7&0&0&0&\pi_4&0&\pi_6&\pi_7\\
+            \end{matrix}
+        \end{equation*}
+        我们先来分析$\fun{lim}{n\rightarrow \infty }p_{21}(n)$，它代表的含义是：
+        “从状态$2$出发，在进入$B$之前先进入了子链$A$”，“然后停留在$A$中的状态$1$”。
+        前者为$\P(V_A<V_B|X_0=2)$，后者为$\pi_1$，两者相乘即得到答案。其余$?$处的值的计算同理：
+        \begin{equation*}
+            \fun{lim}{n\rightarrow \infty }p_{ij}(n)=\P(V_A<V_B|X_0=i)\cdot \pi_j,\ i\in T,j\in A
+        \end{equation*}
+    \end{solve}
+    相似题目：\autoref{ASP-hw5.5}.
+
+    \begin{theorem}
+        设$C=S-A$有限，
+        \begin{enumerate}[(1).]
+            \item $g(A)=0$.
+            \item $\forall x\in C$，有
+                \begin{equation*}
+                    g(x)=1+\sum_{y\in S}p_{xy}g(y)
+                \end{equation*}
+            \item $\P(V_A<+\infty |X_0=x)>0,\forall x\in C$.
+        \end{enumerate}
+        则$g(x)=\E[V_A|X_0=x]$.
+    \end{theorem}
+    \begin{proof}
+        见\autoref{Durrett(Exercise 5.2.11)}.
+    \end{proof}
+    \textbf{这个定理用来计算：从$x$出发，直到首次进入$A$的时间的期望。}
+    
+    \begin{ex}[应随第七次作业1.][ASP-hw7.1]
+        平均需要抛多少次硬币，才能连续抛出两次正面？
+    \end{ex}
+    \begin{solve}
+        记$Y_n$为第$n$抛硬币的正反，正记作$1$，反记作$0$，令$X_n=(Y_n,Y_{n+1}),n\geqslant 1$，
+        规定$X_0=0$，则
+        $X=\{X_n,n\geqslant 0\}$是一个马氏链，状态空间为：
+        $S=\{ 0,(1,1),(1,0),(0,1),(0,0) \}$，分别记作$S=\{ 0,a,b,c,d \}$.
+
+        于是，考虑集合$A=\{ a \}$，$g(x)=\E[ V_A|X_0=x ]$需满足
+        \begin{enumerate}[(1).]
+            \item $g(a)=0$.
+            \item \begin{align*}
+                g(0)&=1+\frac{1}{4}(g(a)+g(b)+g(c)+g(d))\\
+                g(b)&=1+\frac{1}{2}g(c)+\frac{1}{2}g(d)\\
+                g(c)&=1+\frac{1}{2}g(a)+\frac{1}{2}g(b)\\
+                g(d)&=1+\frac{1}{2}g(c)+\frac{1}{2}g(d)
+            \end{align*}
+        \end{enumerate}
+        可解得$g(0)=5$，注意$X_5=(Y_5,Y_6)$，所以题目的最终答案应当为$6$.
+    \end{solve}
+
+    \begin{ex}[应随第七次作业2.][ASP-hw7.2]
+        平均需要抛多少次骰子，才能每个面都出现至少一次？
+    \end{ex}
+    \begin{solve}
+        思路：$\xi_n,n\geqslant 1$代表每次抛出的点数，
+        设$X=\{X_n,n\geqslant 0\}$，其中$X_n=|\{ \xi_1,\cdots,\xi_n \}|$，代表第$n$次抛出后
+        一共出现几种不同的点数，并规定$X_0=0$，根据\autoref{Durrett(Exercise 5.1.1)}，这是一个马氏链。
+        题目要求的就是$\E_0[ V_6 ]$，令
+        \begin{equation*}
+            g(x)=\E_x[ V_6 ]
+        \end{equation*}
+        然后列方程解出$g(0)$即可，最终答案为$147/10$.
+    \end{solve}
+
+    \begin{example}[应随2020期中3.][ASP-2020mid.3]
+        车站的每两趟车之间的时间间隔等概率地为10、20、30分钟，
+        若有一趟车正好在整点时刻到达，那么平均需要等多久，会出现下一趟整点时刻到达的车？
+    \end{example}
+    \begin{solve}
+        思路：整点、10、20、30、40、50分别记作$0,1,2,3,4,5$，记$X_n$为第$n$趟车的到达时刻，
+        则其状态空间就是$S=\{ 0,1,2,3,4,5 \}$，转移矩阵为：
+        \begin{equation*}
+            \begin{matrix}
+                &0&1&2&3&4&5\\
+                0&0&\frac{1}{3}&\frac{1}{3}&\frac{1}{3}&0&0\\
+                1&0&0&\frac{1}{3}&\frac{1}{3}&\frac{1}{3}&0\\
+                2&0&0&0&\frac{1}{3}&\frac{1}{3}&\frac{1}{3}\\
+                3&\frac{1}{3}&0&0&0&\frac{1}{3}&\frac{1}{3}\\
+                4&\frac{1}{3}&\frac{1}{3}&0&0&0&\frac{1}{3}\\
+                5&\frac{1}{3}&\frac{1}{3}&\frac{1}{3}&0&0&0
+            \end{matrix}
+        \end{equation*}
+        题目要求的就是$\E_0[T_0]$，即$0$的平均返回时间。
+        不难看出平稳分布是$\frac{1}{6}(1,1,1,1,1,1)$，所以答案就是$6$.
+    \end{solve}
+
+    接下来这道习题的后两问更是重量级。本节虽然只介绍了两个定理和其应用，
+    但你不能只会这两个定理，比如这道题就需要一些用到马氏性的变换，生搬硬套就做不了。
+    希望读者能借此搞清楚这类题目的通用计算方法。
+    \begin{ex}[第7次作业3][ASP-hw7.3]
+        \begin{figure}[H]
+    
+            \centering
+            \includegraphics[scale=0.5]{ASP-hw7.3.png}
+             
+        \end{figure}
+    \end{ex}
+    \begin{solve}
+        \begin{enumerate}[(a).]
+            \item 即求$A$的平均返回时间$\mu_A$，
+            不难解得平稳分布是：
+            \begin{equation*}
+                \pi=(\pi_A,\pi_B,\pi_C,\pi_D,\pi_E)=(\frac{1}{6},\frac{1}{6},\frac{1}{3},\frac{1}{6},\frac{1}{6})
+            \end{equation*}
+            所以$\mu_A=\pi_A^{-1}=6$.
+            \item 即求$A$返回之前经过其他状态的平均次数，
+            这个是我们在构造平稳测度的时候用到的玩意儿：
+            \begin{equation*}
+                \rho_A(x)=\E_A\left[ \sum_{n=0}^{T_A-1}I_{ \{X_n=x\} } \right]
+            \end{equation*}
+            注意$\rho_A(A)=1$，所以以$A$构造的平稳测度为
+            \begin{equation*}
+                \rho_A=(1,1,2,1,1)
+            \end{equation*}
+            所求即为$\rho_A(D)=1$.
+            \item 即$\rho_A(C)=2$.
+            \item 如果从未经过$E$，返回$A$所需的平均时间。即
+            \begin{equation*}
+                \E_A[T_A|T_A<T_E]\tag*{Target of (d)}
+            \end{equation*}
+            作为准备工作，首先计算$g(x)=\P_x[V_A|V_A<V_E]$，得到
+            \begin{equation*}
+                (g(x),x\in S)=(1,\frac{3}{4},\frac{1}{2},\frac{1}{4},0)
+            \end{equation*}
+            进一步计算：
+            \begin{align*}
+                \P_A(T_A<T_E)
+                &=p(A,B)\P_B(T_A<T_E)+p(A,C)\P_C(T_A<T_E)\\
+                &=p(A,B)g(B)+p(A,C)g(C)=\frac{5}{8}
+            \end{align*}
+            接下来分析$f(x)=\E_x[V_A|V_A<V_E]$，
+            对于$x\neq A,E$，
+            \begin{align*}
+                f(x)=\E_x[V_A|V_A<V_E]
+                &=\frac{\E_x[V_A\cdot I_{ \{ V_A<V_E \} }]}{\P_x(V_A<V_E)}\\
+                &=\frac{\E_x[(V_A\circ \theta_1+1)\cdot I_{ \{ V_A<V_E \} }]}{\P_x(V_A<V_E)}\\
+                &=\frac{\E_x[(V_A\circ \theta_1)\cdot I_{ \{ V_A<V_E \} }]}{\P_x(V_A<V_E)}+1\\
+                &=\frac{\E_x[(V_A\cdot I_{ \{ V_A<V_E \} })\circ \theta_1]}{\P_x(V_A<V_E)}+1\\
+                &=\frac{\E_x[ \E_{X_1}[V_A\cdot I_{ \{ V_A<V_E \} }] ]}{\P_x(V_A<V_E)}+1\\
+                &=\frac{1}{\P_x(V_A<V_E)}\sum_{y\in S} p(x,y)\E_y[V_A\cdot I_{ \{ V_A<V_E \} }]
+            \end{align*}
+            注意给定初值$y=E$时$I_{ \{ V_A<V_E \} }=0$，初值$y=A$时$V_A=0$，所以
+            \begin{align*}
+                f(x)&=\frac{1}{\P_x(V_A<V_E)}\sum_{y\in \{B,C,D\}} p(x,y)\E_y[V_A\cdot I_{ \{ V_A<V_E \} }]+1\\
+                &=\frac{1}{\P_x(V_A<V_E)}\sum_{y\in \{B,C,D\}} p(x,y)\cdot \P_y(V_A<V_E)\cdot \frac{\E_y[V_A\cdot I_{ \{ V_A<V_E \} }]}{\P_y(V_A<V_E)}+1\\
+                &=\frac{1}{\P_x(V_A<V_E)}\sum_{y\in \{B,C,D\}} p(x,y)\cdot \P_y(V_A<V_E)\cdot \E_y[V_A|V_A<V_E ]+1\\
+                &=\frac{1}{g(x)}\sum_{y\in \{B,C,D\}} p(x,y)\cdot g(y)\cdot f(y)+1
+            \end{align*}
+            这个方程过于美观以至于我想单独列一个式子出来：
+            \begin{equation*}
+                f(x)=1+\frac{1}{g(x)}\sum_{y\in \{B,C,D\}} p(x,y)\cdot g(y)\cdot f(y) \tag*{$(\star)$}
+            \end{equation*}
+            代入$x=B,C,D$，得到三个方程：
+            \begin{align*}
+                f(B)&=1+\frac{1}{3}f(C)\\
+                f(C)&=1+\frac{3}{8}f(B)+\frac{1}{8}f(D)\\
+                f(D)&=1+f(C)
+            \end{align*}
+            解得
+            \begin{equation*}
+                f(B)=\frac{5}{3},\ f(C)=2,\ f(D)=3
+            \end{equation*}
+            回头看我们的目标，和$(\star)$的推导过程类似，我们将其转化为：
+            \begin{align*}
+                \E_A[T_A|T_A<T_E]
+                &=\frac{\E_A[ T_A\cdot I_{ \{T_A<T_E\} } ]}{\P_A(T_A<T_E)}\\
+                &=\frac{\E_A[ (T_A\circ \theta_1+1)\cdot I_{ \{T_A<T_E\} } ]}{\P_A(T_A<T_E)}\\
+                &=1+\frac{\E_A[ (T_A\circ \theta_1)\cdot I_{ \{T_A<T_E\} } ]}{\P_A(T_A<T_E)}\\
+                &=1+\frac{\E_A[ (T_A\cdot I_{ \{T_A<T_E\} })\circ \theta_1 ]}{\P_A(T_A<T_E)}\\
+                &=1+\frac{\E_A[ \E_{X_1}[T_A\cdot I_{ \{T_A<T_E\} }] ]}{\P_A(T_A<T_E)}\\
+                &=1+\frac{1}{\P_A(T_A<T_E)}\sum_{y\in S}p(A,y)\E_y[T_A\cdot I_{ \{T_A<T_E\} }]  \\
+                &=1+\frac{1}{\P_A(T_A<T_E)}\sum_{y\in\{ B,C \}}p(A,y)\E_y[T_A\cdot I_{ \{T_A<T_E\} }]  \\
+                &=1+\frac{1}{\P_A(T_A<T_E)}\sum_{y\in\{ B,C \}}p(A,y)\E_y[V_A\cdot I_{ \{V_A<V_E\} }]  \\
+                &=1+\frac{1}{\P_A(T_A<T_E)}\sum_{y\in\{ B,C \}}p(A,y)f(y)g(y)=\frac{14}{5}
+            \end{align*}
+            \item 如果从未经过$E$，返回$A$之前经过状态$D$的平均次数。
+            \begin{equation*}
+                \E_A\left[ \left. \sum_{n=0}^{T_A-1}I_{ \{X_n=D\} } \right|  T_A<T_E \right]\tag*{Target of (e)}
+            \end{equation*}
+            我们先研究
+            \begin{equation*}
+                h(x)=\E_x\left[ \left. \sum_{n=0}^{V_A-1}I_{ \{X_n=D\} } \right|  V_A<V_E \right],x\neq E
+            \end{equation*}
+            并注意到$h(A)=0$，为了简化表达，令
+            \begin{equation*}
+                Y= \sum_{n=0}^{V_A-1}I_{ \{X_n=D\} } I_{ \{ V_A<V_E \} }
+            \end{equation*}
+            于是
+            \begin{equation*}
+                h(x)=\frac{\E_x[ Y ]}{g(x)}
+            \end{equation*}
+            当$x\in \{B,C\}$时，
+            \begin{align*}
+                \E_x[Y]
+                &=\E_x\left[ \sum_{n=0}^{V_A-1}I_{ \{X_n=D\} }I_{ \{ V_A<V_E \}} \right]\\
+                &=\E_x\left[ \sum_{n=1}^{V_A}I_{ \{X_n=D\} }I_{ \{ V_A<V_E \}} \right]\\
+                &=\E_x\left[ \left(\sum_{n=0}^{V_A-1}I_{ \{X_n=D\} } \right) \circ \theta_1\cdot I_{ \{ V_A<V_E \}} \right]\\
+                &=\E_x\left[ \left(\sum_{n=0}^{V_A-1}I_{ \{X_n=D\} } \cdot I_{ \{ V_A<V_E \}}\right) \circ \theta_1 \right]\\
+                &=\E_x\left[ \E_{X_1}\left[\sum_{n=0}^{V_A-1}I_{ \{X_n=D\} } \cdot I_{ \{ V_A<V_E \}}\right] \right]\\
+                &=\E_x\left[ \E_{X_1}\left[Y\right] \right]\\
+                &=\sum_{y\in S}p(x,y)\E_y[Y]=\sum_{y\in \{B,C,D\}}p(x,y)g(y)h(y) \tag*{注意$\E_E[Y]=0$}
+            \end{align*}
+            从而可得
+            \begin{equation*}
+                h(x)=\frac{1}{g(x)}\sum_{y\in \{B,C,D\}}p(x,y)g(y)h(y),x\in \{B,C\}\tag*{$(\star 1)$}
+            \end{equation*}
+            而当$x=D$时，情况稍有不同：
+            \begin{align*}
+                \E_D[Y]
+                &=\E_D\left[ \sum_{n=0}^{V_A-1}I_{ \{X_n=D\} }I_{ \{ V_A<V_E \}} \right]\\
+                &=\E_D\left[ \left(\sum_{n=1}^{V_A}I_{ \{X_n=D\} }+1\right)I_{ \{ V_A<V_E \}} \right]\\
+                &=\E_D[ Y\circ \theta_1 ]+g(D)
+            \end{align*}
+            从而
+            \begin{equation*}
+                h(D)=1+\frac{1}{g(D)}\sum_{y\in \{B,C,D\}}p(D,y)g(y)h(y) \tag*{$(\star 2)$}
+            \end{equation*}
+            联立$(\star 1)(\star 2)$可解得
+            \begin{equation*}
+                h(B)=\frac{1}{18},\ h(C)=\frac{1}{6},\ h(D)=\frac{7}{6}
+            \end{equation*}
+            那么回到我们的目标，进行类似的变换：
+            \begin{align*}
+                \E_A\left[ \left. \sum_{n=0}^{T_A-1}I_{ \{X_n=D\} } \right|  T_A<T_E \right]
+                &=\frac{1}{\P_A(T_A<T_E)}\E_A\left[ \sum_{n=0}^{T_A-1}I_{ \{X_n=D\} } I_{ \{ T_A<T_E \} } \right]\\
+                &=\frac{1}{\P_A(T_A<T_E)}\E_A\left[ \E_{X_1}\left[\sum_{n=0}^{T_A-1}I_{ \{X_n=D\} } I_{ \{ T_A<T_E \} }\right] \right]\\
+                &=\frac{1}{\P_A(T_A<T_E)} \sum_{y\in \{B,C\}} p(A,y)
+                \E_{y}\left[\sum_{n=0}^{V_A-1}I_{ \{X_n=D\} } I_{ \{ V_A<T_E \} }\right]\\
+                &=\frac{1}{\P_A(T_A<T_E)} \sum_{y\in \{B,C\}} p(A,y)
+                \E_{y}\left[\sum_{n=0}^{V_A-1}I_{ \{X_n=D\} } I_{ \{ V_A<V_E \} }\right]\\
+                &=\frac{1}{\P_A(T_A<T_E)} \sum_{y\in \{B,C\}} p(A,y)g(y)h(y)\\
+                &=\frac{8}{5}(\frac{3}{8}h(B)+\frac{1}{4}h(C))=\frac{1}{10}
+            \end{align*}
+        \end{enumerate}
+    \end{solve}
+
+\clearpage
+
+\section{习题}
+
+\subsection{研随第四次作业}
+
+\begin{ex}[Durrett(Exercise 5.1.1)][Durrett(Exercise 5.1.1)]
+    $\xi_1,\xi_2,\cdots$独立同分布，且在$\{1,2,\cdots,N\}$上均匀取值，
+    证明$X_n=| \{\xi_1,\cdots,\xi_n\} |$是马氏链，计算其一步转移概率。
+\end{ex}
+
+\begin{ex}[Durrett(Exercise 5.1.3)][Durrett(Exercise 5.1.3)]
+    $\xi_1,\xi_2,\cdots$独立同分布，且在$\{ H,T \}$上取值，每个取值概率均为$1/2$，
+    证明$X_n=(\xi_n,\xi_{n+1})$为马氏链，计算其一步和两步转移概率$p$、$p^2$.
+\end{ex}
+这俩题没啥意思，就跳过了。
+
+补充一个结论：对于马氏链$X_n$，如果
+\begin{equation*}
+    \P\left( \bigcup_{m=n+1}^\infty \{X_m\in B_m\}|X_n \right)\geqslant \delta>0 {\rm\ on\ }\{X_n\in A_n\}
+\end{equation*}
+则
+\begin{equation*}
+    \P( \{ X_n\in A_n{\rm\ i.o.} \}-\{ X_n\in B_n{\rm\ i.o.} \} )=0
+\end{equation*}
+然后利用这个结论解决下面这道题。
+\begin{ex}[Durrett(Exercise 5.2.3)][Durrett(Exercise 5.2.3)]
+    状态$a$若满足$\P_a(X_1=a)=1$，称之为吸收态，令
+    \begin{equation*}
+        D=\{ \omega:\exists n\geqslant 1,X_n(\omega)=a \}
+    \end{equation*}
+    令$h(x)=\P_x(D)$，证明：在$D^c$上$h(X_n)\rightarrow 0$ a.s.
+\end{ex}
+\begin{solve}
+    需要用到Levy 0-1律。
+\end{solve}
+
+\begin{ex}[Durrett(Exercise 5.2.5)][Durrett(Exercise 5.2.5)]
+    证明：
+    \begin{equation*}
+        \sum_{m=0}^n \P_x(X_m=x)\geqslant \sum_{m=k}^{n+k}\P_x(X_m=x)
+    \end{equation*}
+\end{ex}
+\begin{solve}
+    令$T^{k}=\fun{inf}{}\{ i\geqslant k:X_i=x \}$，那么
+    \begin{align*}
+        \P_x(X_m=x)&=\sum_{j=k}^m \P(X_m=x,T^k=j|X_0=x)\\
+        &=\sum_{j=k}^m \P(X_m=x|T^k=j,X_0=x)\P(T^k=j|X_0=x)\\
+        &=\sum_{j=k}^m \P(X_m=x|X_j=x)\P_x(T^k=j)\\
+        &=\sum_{j=k}^m \P_x(X_{m-j}=x)\P_x(T^k=j)
+    \end{align*}
+    两边对$m$求和，
+    \begin{align*}
+        \sum_{m=k}^{n+k}\P_x(X_m=x)&=\sum_{m=k}^{n+k}\sum_{j=k}^m \P_x(X_{m-j}=x)\P_x(T^k=j)\\
+        &=\sum_{j=k}^{n+k}\sum_{m=j}^{n+k} \P_x(X_{m-j}=x)\P_x(T^k=j)\\
+        &=\sum_{j=k}^{n+k}\P_x(T^k=j)\sum_{m=0}^{n-j+k}\P_x(X_m=x)\\
+        &\leqslant \sum_{j=k}^{n+k}\P_x(T^k=j)\sum_{m=0}^{n}\P_x(X_m=x)\\
+        &=\P_x(T^k\leqslant n+k)\sum_{m=0}^{n}\P_x(X_m=x)\\
+        &\leqslant \sum_{m=0}^{n}\P_x(X_m=x)
+    \end{align*}
+\end{solve}
+
+\begin{ex}[Durrett(Exercise 5.2.8)][Durrett(Exercise 5.2.8)]
+    $X_n$为马氏链，$S=\{0,1,\cdots,N\}$，假设$X_n$是一个鞅，令
+    \begin{equation*}
+        V_x=\fun{min}{}\{ n\geqslant 0:X_n=x \}
+    \end{equation*}
+    设$\P_x(V_0\wedge V_N<+\infty)>0$对于$\forall x$成立，证明：
+    \begin{equation*}
+        \P_x(V_N<V_0)=\frac{x}{N}
+    \end{equation*}
+\end{ex}
+\begin{solve}
+    考虑鞅$X_{ n\wedge V_0\wedge V_N }$，根据其收敛性，可得
+    \begin{equation*}
+        \E_x[X_{ 0\wedge V_0\wedge V_N }]=\E_x[X_{ +\infty\wedge V_0\wedge V_N }]
+    \end{equation*}
+    即
+    \begin{equation*}
+        x=\E_x[ X_{ V_0\wedge V_N } ]=N\cdot \P(V_N<V_0)
+    \end{equation*}
+    于是得证。
+\end{solve}
+
+\begin{ex}[Durrett(Exercise 5.2.11)][Durrett(Exercise 5.2.11)]
+    令$V_A=\fun{inf}{}\{ n\geqslant 0:X_n\in A \}$，
+    \begin{enumerate}[(1).]
+        \item 设$g(x)=\E_x[V_A]$，假设$S-A$是有限集，
+            且$\forall x\in S-A$，$\P_x(V_A<+\infty)>0$，证明：
+            \begin{equation*}
+                g(x)=1+\sum_{y\in S} p(x,y)g(y),\ \forall x\notin A\tag*{($\star$)}
+            \end{equation*}
+        \item 证明：如果$g$满足($\star$)，则$g(X(n\wedge V_A))+n\wedge V_A$是一个鞅。
+        \item 证明：如果$g$满足($\star$)，且对于$\forall x\in A$都有$g(x)=0$，则$g(x)=\E_x[T_A]$.
+    \end{enumerate}
+\end{ex}
+\begin{solve}
+    这个题的结论十分有用，可以用来计算首达时的期望，在应随部分有进一步介绍。
+    \begin{enumerate}[(1).]
+        \item 设$x_0\notin A$，给定$X_0=x$的条件下，
+            \begin{align*}
+                V_A(\omega)
+                &=\fun{inf}{}\{n\geqslant 0:X_n(\omega)=\omega_n\in A\}\\
+                &=\fun{inf}{}\{n\geqslant 1:X_n(\omega)=\omega_n\in A\}\\
+                &=1+\fun{inf}{}\{n\geqslant 0:X_{n+1}(\omega)=\omega_{n+1}=X_n\circ \theta_1(\omega)\in A\}\\
+                &=1+V_A\circ \theta_1(\omega)
+            \end{align*}
+            于是
+            \begin{align*}
+                g(x)&=\E_x[V_A]=\E_x[ 1+V_A\circ \theta_1 ]\\
+                &=1+\E_x[ V_A\circ \theta_1 ]\\
+                &=1+\E_x[ \E_x[V_A\circ \theta_1|\F_1] ]\\
+                &=1+\E_x[ \E_{X_1}[V_A] ]\\
+                &=1+\E_x[ g(X_1) ]\\
+                &=1+\sum_{y\in S}\E_x[ g(y)I_{ \{X_1=y\} } ]\\
+                &=1+\sum_{y\in S}p(x,y)g(y)
+            \end{align*}
+        \item 由(1).的证明过程，可知($\star$)式就是$g(x)=1+\E_x[g(X_1)]$，
+            \begin{align*}
+                \E[ g(X_{(n+1)\wedge V_A})|\F_n ]
+                &=\E[ g(X_{n+1})I_{ \{V_A\geqslant n+1\} }|\F_n ]+\E[ g(X_{V_A})I_{\{V_A\leqslant n\}} |\F_n]\\
+                &=\E[ g(X_{n+1})|\F_n ]I_{ \{V_A\geqslant n+1\} }+\sum_{k=0}^n \E[ g(X_{k})I_{\{V_A=k\}} \F_n]\\
+                &=\E[ g(X_{1})\circ \theta_n|\F_n ]I_{ \{V_A\geqslant n+1\} }+\sum_{k=0}^n g(X_{k})I_{\{V_A=k\}}\\
+                &=\E_{X_n}[ g(X_{1})]I_{ \{V_A\geqslant n+1\} }+g(X_{V_A})I_{\{V_A\leqslant n\}}\\
+                &=(g(X_n)-1)I_{ \{V_A\geqslant n+1\} }+g(X_{V_A})I_{\{V_A\leqslant n\}}\\
+                &=g(X_{n\wedge V_A})-I_{ \{V_A\geqslant n+1\} }
+            \end{align*}
+            从而
+            \begin{align*}
+                \E[ g(X_{(n+1)\wedge V_A})-(n+1)\wedge V_A|\F_n ]&=
+                g(X_{n\wedge V_A})-I_{ \{V_A\geqslant n+1\} }-(n+1)I_{ \{V_A\geqslant n+1\} }-V_AI_{ \{V_A\leqslant n\} }\\
+                &=g(X_{n\wedge V_A})-nI_{ \{V_A\geqslant n+1\} }-V_AI_{ \{V_A\leqslant n\} }\\
+                &=g(X_{n\wedge V_A})-n\wedge V_A
+            \end{align*}
+        \item 注意$X_{V_A}\in A\Rightarrow g(X_{V_A})=0$，又
+            根据(2)中构造的鞅的收敛性，可得
+            \begin{equation*}
+                g(x)=\E_x[ g(X_0) ]=\E_x[g(X_{V_A})+V_A]
+                =\E_X[V_A]
+            \end{equation*}
+    \end{enumerate}
+\end{solve}
+
+\begin{ex}[Durrett(Exercise 5.3.1)][Durrett(Exercise 5.3.1)]
+    假设$y$是常返的，对于$k\geqslant 0$，令$R_k=T_y^k$，为第$k$次返回$y$，
+    对于$k\geqslant 1$，令$r_k=R_k-R_{k-1}$，为第$k$次返回时间。
+    利用强马氏性证明：在概率测度$\P_y$下，
+    随机向量$v_k=(r_k,X_{R_{k-1}},\cdots,X_{R_{k-1}}),k\geqslant 1$是独立同分布的。
+\end{ex}
+\begin{solve}
+    太复杂，偷个懒吧，贴一个学长写的答案：
+    \begin{figure}[H]
+
+        \centering
+        \includegraphics[scale=0.5]{Ex5.3.1.png}
+         
+    \end{figure}
+\end{solve}
+
+\begin{ex}[Durrett(Exercise 5.3.3)][Durrett(Exercise 5.3.3)]
+    证明Ehrenfest chain（\autoref{Ehrenfest Chain}）中的所有状态都是常返的。
+\end{ex}
+\begin{solve}
+    状态空间$S=\{0,1,\cdots,r\}$是有限、封闭的，
+    易证所有状态相互可达，所以不可约，所以所有状态都常返。
+\end{solve}
+
+\begin{ex}[Durrett(Exercise 5.3.7)][Durrett(Exercise 5.3.7)]
+    如果$f$满足
+    \begin{equation*}
+        f(x)\geqslant \sum_y p(x,y)f(y)
+    \end{equation*}
+    则称其为“上调和的”(superharmonic)，等价于$f(X_n)$为上鞅。
+
+    假设$p$不可约，证明$p$常返当且仅当任意非负上调和函数$f$都是常数。
+\end{ex}
+\begin{solve}
+    \begin{figure}[H]
+
+        \centering
+        \includegraphics[scale=0.5]{Ex5.3.7.png}
+         
+    \end{figure}
+\end{solve}
+   
+\subsection{研随第五次作业}
+
+\begin{ex}[Durrett(Exercise 5.5.2)][Durrett(Exercise 5.5.2)]
+    设$w_{xy}=\P_x(T_y<T_x)$，证明$\mu_x(y)=w_{xy}/w_{yx}$.
+\end{ex}
+\begin{solve}
+    \begin{figure}[H]
+
+        \centering
+        \includegraphics[scale=0.5]{Ex5.5.2.png}
+         
+    \end{figure}
+\end{solve}
+
+\begin{ex}[Durrett(Exercise 5.5.3)][Durrett(Exercise 5.5.3)]
+    证明：如果$p$不可约、常返，则
+    \begin{equation*}
+        \mu_x(y)\mu_y(z)=\mu_x(z)
+    \end{equation*}
+\end{ex}
+\begin{solve}
+    平稳测度相差常数倍，所以
+    $\mu_x(z)=\frac{\mu_x(y)}{\mu_y(y)}\mu_y(z)=\mu_x(y)\mu_y(z)$.
+\end{solve}
+
+\begin{ex}[Durrett(Exercise 5.5.4)][Durrett(Exercise 5.5.4)]
+    证明：如果$p$不可约、正常返，则
+    $\E_x[T_y]<+\infty,\forall x,y$
+\end{ex}
+\begin{solve}
+    \begin{figure}[H]
+
+        \centering
+        \includegraphics[scale=0.5]{Ex5.5.4.png}
+         
+    \end{figure}
+\end{solve}
+
+\begin{ex}[Durrett(Exercise 5.5.5)][Durrett(Exercise 5.5.5)]
+    证明：如果$p$不可约，且有不是平稳分布的平稳测度$\mu$，即$\sum_x \mu(x)=+\infty$，
+    则$p$不是正常返的。
+\end{ex}
+\begin{solve}
+    假设$p$正常返，则存在平稳分布，矛盾。
+\end{solve}
+
+\begin{ex}[Durrett(Exercise 5.5.6)][Durrett(Exercise 5.5.6)]
+    对于简单对称随机游走，证明：
+    \begin{enumerate}[(1).]
+        \item 两次途径$0$之间，途径状态$k$的次数的期望为$1$.
+        \item 从$k$出发，返回$0$前，途径状态$k$的次数的期望为$2k$.
+    \end{enumerate}
+\end{ex}
+\begin{solve}
+    简单对称随机游走是不可约、常返的，所以存在唯一平稳测度，不难发现
+    $\mu(x)=1,\forall x$就是一个平稳测度。
+    我们设
+    \begin{equation*}
+        T_x=\fun{inf}{}\{ n\geqslant 0:X_n=x \}
+    \end{equation*}
+    \begin{equation*}
+        \mu_x(y)=\E_x\left[ \sum_{n=0}^{T_x-1}I_{ \{ X_n=y \} } \right]
+    \end{equation*}
+    则$\mu_x$是一个平稳测度，注意$\mu_x(x)=1$，所以所有的$\mu_x\equiv 1$.
+    \begin{enumerate}[(1).]
+        \item 即$\mu_0(k)=1$.
+        \item 我们的目标是要证明：
+            \begin{equation*}
+                \E_k\left[ \sum_{n=0}^{T_0-1}I_{ \{ X_n=k \} } \right]=2k\tag*{$(\star 1)$}
+            \end{equation*}
+            对于$k\geqslant 1$，有\footnote{第二个等号的原因是：$X_0=X_{T_0}=0\neq k$，所以时刻$0$-$T_0-1$中$k$的次数和时刻$1$-$T_0$中$k$的次数是相等的。}
+            \begin{align*}
+                1=\E_0\left[ \sum_{n=0}^{T_0-1}I_{ \{ X_n=k \} } \right]
+                &=\E_0\left[ \sum_{n=0}^{T_0-1}I_{ \{ X_n=k \} }I_{ \{X_1=1\} } \right] \tag*{$k\geqslant 1$，所以第一步必须向右走}\\
+                &=\E_0\left[ \sum_{n=1}^{T_0}I_{ \{ X_{n}=k \} }I_{ \{X_1=1\} } \right] \\
+                &=\E_0\left[ \sum_{n=0}^{T_0-1}I_{ \{ X_{n}=k \} }\circ \theta_1\cdot I_{ \{X_1=1\} } \right]\\
+                &=\E_0\left[ \E_0\left[\left.\sum_{n=0}^{T_0-1}I_{ \{ X_{n}=k \} }\circ \theta_1 \right| \F_1 \right]\cdot I_{ \{X_1=1\} } \right]\\
+                &=\E_0\left[ \E_{X_1}\left[ \sum_{n=0}^{T_0-1}I_{ \{ X_{n}=k \} } \right]I_{ \{X_1=1\} }\right]\\
+                &=\E_0\left[ \E_{1}\left[ \sum_{n=0}^{T_0-1}I_{ \{ X_{n}=k \} } \right]I_{ \{X_1=1\} }\right]\\
+                &=p(0,1) \E_{1}\left[ \sum_{n=0}^{T_0-1}I_{ \{ X_{n}=k \} } \right]\\
+                &=\frac{1}{2}\E_{1}\left[ \sum_{n=0}^{T_0-1}I_{ \{ X_{n}=k \} } \right]
+            \end{align*}
+            所以
+            \begin{equation*}
+                \E_{1}\left[ \sum_{n=0}^{T_0-1}I_{ \{ X_{n}=k \} } \right]=2 \tag*{$(\star 2)$}
+            \end{equation*}
+            于是$k=1$时$(\star 1)$成立，下面假设$k$时$(\star 1)$成立，注意到
+            \begin{equation*}
+                \E_{k}\left[ \sum_{n=0}^{T_0-1}I_{ \{ X_n=k \} } \right]=
+                \E_{k+1}\left[ \sum_{n=0}^{T_1-1}I_{ \{ X_n=k+1 \} } \right] \tag*{$(\star 3)$}
+            \end{equation*}
+            即向右平移了一格，变为从$k+1$出发，返回$1$前，途径状态$k+1$的次数的期望。而
+            \begin{align*}
+                \E_{k+1}\left[ \sum_{n=T_1}^{T_0-1}I_{ \{ X_n=k+1 \} } \right]
+                &=\E_{k+1}\left[ \left(\sum_{n=0}^{T_0-1}I_{ \{ X_n=k+1 \} }\right)\circ \theta_{T_1} \right]\\
+                &=\E_{k+1}\left[ \E\left[\left.\left(\sum_{n=0}^{T_0-1}I_{ \{ X_n=k+1 \} }\right)\circ \theta_{T_1}\right| \F_{T_1}\right] \right]\\
+                &=\E_{k+1}\left[ \E_{X_{T_1}}\left[ \sum_{n=0}^{T_0-1}I_{ \{ X_n=k+1 \} } \right] \right]\\
+                &=\E_{k+1}\left[ \E_{X_{1}}\left[ \sum_{n=0}^{T_0-1}I_{ \{ X_n=k+1 \} } \right] \right]=2
+                \tag*{$(\star 4)$}
+            \end{align*}
+            $(\star 3)+(\star 4)$即可得$k+1$时$(\star 1)$成立，归纳得证。
+    \end{enumerate}
+\end{solve}
+\begin{remark}
+    直观上看，“从$k$出发，返回$0$前，途径$k$的次数$N_k$”就等于
+    “从$k$出发，返回$1$前，途径$k$的次数”+“从$1$出发，返回$0$前，途径$k$的次数”，
+    后者我们计算出固定为$2$，前者又等于“从$k-1$出发，返回$0$前，途径$k-1$的次数$N_{k-1}$”，
+    这说明$N_k=N_{k-1}+2$，结论就很直观了。
+\end{remark}
+
+\subsection{应随部分习题}
+
+\begin{ex}[第4次作业4][ASP-hw4.4]
+    \begin{enumerate}[(1).]
+        \item 对于不可约、非周期马氏链的每一个状态$i,j$，存在$N$使得$p_{ij}(r)>0,\forall r\geqslant N$.
+        \item 假设$\mathbf{P}$是某个具有$n$个状态的不可约、非周期马氏链的转移矩阵，证明存在一个函数$f$，使得
+        对于所有的$i,j\in S,r>f(n)$都有$p_{ij}(r)>0$.
+    \end{enumerate}
+\end{ex}
+\begin{solve}
+    \begin{figure}[H]
+
+        \centering
+        \includegraphics[scale=0.5]{ASP-hw4.4-sol.png}
+         
+    \end{figure}
+\end{solve}
+
+\begin{ex}[第4次作业5][ASP-hw4.5]
+    证明：$i\rightarrow j$，则“从$i$出发，在重新回到$i$前能够到达$j$”的概率大于$0$。
+    进一步地，在不可约、常返马氏链上有$i\rightarrow j$，
+    证明：$f_{ij}=1$.
+\end{ex}
+\begin{solve}
+    \begin{figure}[H]
+
+        \centering
+        \includegraphics[scale=0.5]{ASP-hw4.5-sol.png}
+         
+    \end{figure}
+\end{solve}
+
+\begin{ex}[第5次作业5][ASP-hw5.5]
+    \begin{figure}[H]
+
+        \centering
+        \includegraphics[scale=0.5]{ASP-hw5.5.png}
+         
+    \end{figure}
+\end{ex}
+\begin{solve}
+    \begin{figure}[H]
+
+        \centering
+        \includegraphics[scale=0.5]{ASP-hw5.5-sol.png}
+         
+    \end{figure}
+\end{solve}
+
+\clearpage
+
+\section{关于本章记号的说明}
+    汇总一下正文部分用过的记号，目的是让读者清楚地看出哪些记号是等价的，
+    以及有些场合下默认使用的记号是什么含义。
+    \begin{enumerate}
+        \item 给定初始状态的条件期望、条件概率：
+            \begin{equation*}
+                \E_x(Y)\defeq \E[Y|X_0=x]=\int Y(\omega )p(X_0,\d\omega)
+            \end{equation*}
+            \begin{equation*}
+                \P_x(A)\defeq \P(A|X_0=x)=p(x,A)=\int I_A(\omega) p(X_0,\d\omega)
+            \end{equation*}
+            注意给定的条件可以是随机变量：
+            \begin{equation*}
+                \P_X(A):\omega\rightarrow  \P(A|X_0=X(\omega))=p(X(\omega),A)=\int I_A(\theta) p(X_0(\omega),\d\theta) 
+            \end{equation*}
+            \begin{equation*}
+                \E_{X}[Y]: \omega\rightarrow \E_{X(\omega)}[Y]=\int Y(\theta)p(X(\omega),\d \theta)
+            \end{equation*}
+        \item 一步、多步转移概率：
+            \begin{equation*}
+                p_{ij}\defeq p(i,j)=\P(X_1=j|X_0=i)
+            \end{equation*}
+            \begin{equation*}
+                p_{ij}(n)=p^n(i,j)\defeq \P(X_n=j|X_0=i)
+            \end{equation*}
+        \item $\E$默认为$(\Omega,\P)$上对$\P$积分，也是$\E_\mu$的简化表达（特指$(\Omega,\P_\mu)$上对$\P_\mu$积分）。
+        \item 首次到达时刻：如无特殊说明，
+            \begin{equation*}
+                T_x\defeq {\rm inf}\{n\geqslant 1:X_n=x\},\ V_x\defeq {\rm inf}\{n\geqslant 0:X_n=x\}
+            \end{equation*}
+            还可以是集合：
+            \begin{equation*}
+                T_A\defeq {\rm inf}\{n\geqslant 1:X_n\in A\},
+                \ V_A\defeq {\rm inf}\{n\geqslant 0:X_n\in A\}                
+            \end{equation*}
+            第$k$次到达时刻：
+            \begin{equation*}
+                T_y^0=0,\ T_y^k\defeq{\rm inf}\{ n>T_y^{k-1}:X_n=y \}
+            \end{equation*}
+        \item 途径次数：一般来说并不计入初始状态，
+            \begin{equation*}
+                N(y)\defeq \sum_{n=1}^\infty I_{ \{X_n=y\} }
+            \end{equation*}
+        \item 有限时间内到达概率：
+            \begin{equation*}
+                f_{xy}=\rho_{xy}\defeq \P_x(T_y<+\infty)
+            \end{equation*}
+        \item 构造平稳测度：如无特殊说明，
+            \begin{equation*}
+                \rho_x(y)=\mu_x(y)\defeq \E_x\left[ \sum_{n=0}^{T_x-1}I_{ \{ X_n=y \} } \right]
+            \end{equation*}
+    \end{enumerate}
+
+
+
+
+
+
+

@@ -1,0 +1,1328 @@
+\chapter{布朗运动}
+    从这一章开始，使用的教材从Durrett换成了Le gall，后者的阅读体验真的很好，极力推荐。
+    本章涉及内容为Chapter 1,2.
+\section{高斯空间}
+    这一小节为Le gall Chapter1的节选。主要内容是关于正态分布的一些知识，
+    在以前的概率论课程中都有所介绍，
+    所以阅读本章内容可以跳过本小节。
+    但是笔者发现自己之前学的很粗糙很混乱，
+    还是决定整理一下。
+
+    本节默认在概率空间$(\Omega,\F,\P)$上讨论。
+    
+    \begin{definition}
+        一个实值的随机变量$X$被称为是高斯变量，如果其
+        （Lebesgue测度下的）密度函数有以下形式：
+        \begin{equation*}
+            p_X(x)=\frac{1}{\sigma\sqrt{2\pi}}{\rm exp}\left\{-\frac{(x-\mu)^2}{2\sigma^2}\right\}
+        \end{equation*}
+        也就是我们熟知的正态分布：$X\sim N(\mu,\sigma^2)$.
+
+        随机向量的情形类似：
+        如果$X=(X_1,\cdots,X_n)\sim N_n(\sve{\mu},\Sigma)$，
+        称$X$是高斯向量。
+    \end{definition}
+    \begin{proposition}\label{legall prop1.1}
+        设$X_n\sim N(\mu_n,\sigma_n^2)$，如果$X_n\ra{L^2} X$，那么
+        \begin{enumerate}[(1).]
+            \item $X\sim N(\mu,\sigma^2)$，其中$\mu=\fun{lim}{n\rightarrow\infty}\mu_n$，$\sigma=\fun{lim}{n\rightarrow\infty}\sigma_n$.
+            \item 对于$\forall 1\leqslant p<\infty$，都有$X_n\ra{L^p}X$.
+        \end{enumerate}
+    \end{proposition}
+    \begin{proof}
+        考虑
+        \begin{equation*}
+            |\E[X_n]-\E[X]|\leqslant \E[|X_n-X|]\leqslant \E[|X_n-X|^2]^\frac{1}{2}\rightarrow 0
+        \end{equation*}
+        所以$\E[X]=\mu$，同时
+        \begin{align*}
+            |{\rm var}(X_n)-{\rm var}(X)|
+            &=| \E[X_n^2]-\E[X^2]+\mu_n^2-\mu^2 |\\
+            &\leqslant \E[ |X_n-X|\cdot |X_n+X| ]+|\mu_n^2-\mu^2|\\
+            &\leqslant \E[ |X_n-X|^2 ]^\frac{1}{2}\E[ |X_n+X|^2 ]^\frac{1}{2}+|\mu_n^2-\mu^2|\rightarrow 0
+        \end{align*}
+        所以${\rm var}(X_n)=\sigma_n^2$. 然后我们考虑
+        $X$的特征函数：
+        \begin{equation*}
+            \E[{\rm e}^{{\rm i}\xi X}]=\fun{lim}{n\rightarrow \infty}\E[ {\rm e}^{{\rm i}\xi X_n} ]
+            =\fun{lim}{n\rightarrow \infty} {\rm exp}({\rm i}m_n\xi-\frac{\sigma_n^2}{2}\xi^2)
+            ={\rm exp}({\rm i}m\xi-\frac{\sigma^2}{2}\xi^2)
+        \end{equation*}
+        这说明$X\sim N(\mu,\sigma^2)$.
+
+        因为$m_n,\sigma_n$都是有界的，所以
+        \begin{equation*}
+            \fun{sup}{n}\E[ |X_n|^q ]<+\infty,\forall q\geqslant 1
+        \end{equation*}
+        因此
+        \begin{equation*}
+            \fun{sup}{n}\E[ |X_n-X|^q ]<+\infty,\forall q\geqslant 1
+        \end{equation*}
+        取$p\geqslant 1$，$Y_n=|X_n-X|^p$依概率收敛到$0$，并且一致可积，
+        由定理\ref{thm3.15}可得$Y_n\ra{L^1}0$，这就是我们要证的结论。
+    \end{proof}
+
+    \begin{definition}
+        设$H$是$L^2(\Omega,\F,\P)$的闭线性子空间，并且$H$只包含中心高斯变量（即服从期望为0的正态分布），
+        则称$H$是一个（中心）高斯空间。
+    \end{definition}
+    \begin{example}[][202405171959]
+        取$X\sim N(0,1)$，$\varepsilon$服从$\pm$两点分布并与$X$独立，$Y=\varepsilon X$，
+        那么$X+Y$不再符合正态分布，因此不在同一个高斯空间里。
+    \end{example}
+
+    \begin{corollary}
+        如果$(X_1,\cdots,X_n)\sim N_n(\ve{0},\Sigma)$，
+        那么$X_1,\cdots,X_n$张成的线性空间是一个高斯空间。
+    \end{corollary}
+
+    \begin{definition}
+        如果随机过程$X=\{X_t,t\in T\}$中随机变量的任意有限线性组合都是中心高斯变量，
+        则称$X$是（中心）高斯过程。
+    \end{definition}
+    \begin{proposition}
+        $X=\{X_t,t\in T\}$是高斯过程，则由$X$张成的闭线性空间是高斯空间。
+    \end{proposition}
+    \begin{proof}
+        只需注意到\autoref{legall prop1.1}保证了可数线性组合也是中心高斯变量。
+    \end{proof}
+
+    \begin{theorem}
+        $H$是高斯空间，$H_i,i\in I$是其线性子空间，则$H_i,i\in I$两两正交当且仅当
+        $\sigma(H_i),i\in I$相互独立。
+    \end{theorem}
+    \begin{proof}
+        $(\Leftarrow)$：如果$X\in H_i\subset \sigma(H_i)$且$Y\in H_j\subset \sigma(H_j)$，$i\neq j$，
+        由独立性可知$\E[XY]=\E[X]\cdot \E[Y]=0$，所以$H_i$与$H_j$正交。
+
+        $(\Rightarrow)$：即证：任取$i_1,\cdots,i_p\in I$，
+        $\sigma(H_{i_j}),j\in \{ 1,\cdots,p \}$相互独立。根据单调类定理，任取
+        \begin{equation*}
+            \xi_1^j,\xi_2^j,\cdots,\xi_{n_j}^j\in H_{i_j},j\in \{ 1,\cdots,p \}
+        \end{equation*}
+        那么只需证明向量$(\xi_1^j,\xi_2^j,\cdots,\xi_{n_j}^j),j\in \{ 1,\cdots,p \}$相互独立即可。
+        对于任意一个线性子空间$H_{i_j}$，$\xi_1^j,\xi_2^j,\cdots,\xi_{n_j}^j$张成了一个子空间，
+        取这个子空间上的正交基$\eta_1^j,\cdots,\eta_{m_j}^j$，这样就得到了一系列随机变量组成的向量：
+        \begin{equation*}
+            (\eta_1^1,\cdots,\eta_{m_1}^1,\cdots,\eta_1^p,\cdots,\eta_{m_p}^p)
+        \end{equation*}
+        因为分量都在$H$中，这是一个高斯向量，且分量之间不相关，因此它们相互独立\footnote{    
+        “正态”+“不相关”不足以推出独立性，如\autoref{202405171959}
+        中的$X$和$Y$就不相关，但是显然不独立。实际上
+        “正态”+“属于同一个高斯空间”$\Leftrightarrow $ 独立，这是因为高斯向量
+        联合分布的协方差矩阵$\Sigma$可分块$\Leftrightarrow $密度函数可分离导致的结果。
+    }，于是定理得证。
+    \end{proof}
+
+    对于高斯过程$X=\{X_t,t\in T\}$，我们可以定义协方差函数：
+    \begin{equation*}
+        \Gamma:T\times T\rightarrow [0,+\infty),\ (s,t)\mapsto {\rm cov}(X_s,X_t)
+    \end{equation*}
+    协方差函数$\Gamma$完全决定了$X$的有限维分布，也就完全决定了$X$.
+    那么，函数$\Gamma$需要满足什么条件才能保证存在相应的高斯过程？
+    \begin{theorem}
+        函数$\Gamma:T\times T\rightarrow [0,+\infty)$若满足：
+        \begin{enumerate}[(1).]
+            \item 对称性：$\Gamma(s,t)=\Gamma(t,s)$.
+            \item 正定性：$c$作为$T$上的实值函数，有有限的支撑集，那么
+                \begin{equation*}
+                    \sum_{s,t\in T}c(s)c(t)\Gamma(s,t)\geqslant 0
+                \end{equation*}
+                这一条保证的是$X_t$的有限线性组合的方差非负。
+        \end{enumerate}
+    \end{theorem}
+    证明没办法在这里详细说明，书上提及这是Kolmogorov延拓定理的推论。
+
+    \begin{definition}
+        $\mu$是可测空间$(E,\mathcal{G})$上$\sigma$-有限测度，$X$是一个（以下默认中心）高斯空间，
+        如果
+        \begin{equation*}
+            G:L^2(E,\mathcal{G},\mu)\rightarrow X
+        \end{equation*}
+        是一个等距映射，则称$G$是强度为$\mu$的高斯白噪声(Gaussian White Noise)。
+    \end{definition}
+
+    利用等距映射$G$，可以计算：
+    \begin{equation*}
+        {\rm var}(G(f))=\E[ G(f)^2 ]=|| G(f) ||^2_{L^2(\Omega,\F,\P)}
+        =||f||^2_{ L^2(E,\mathcal{G},\mu) }=\int f^2 \d\mu
+    \end{equation*}
+    \begin{equation*}
+        {\rm cov}(G(f),G(g))=\ag{ G(f),G(g) }_{L^2(\Omega,\F,\P)}
+        =\ag{f,g}_{L^2(E,\mathcal{G},\mu)}=\int fg \d\mu
+    \end{equation*}
+    特别地，取$f=I_{A}$，$g=I_B$，$\mu(A),\mu(B)<+\infty$，那么
+    \begin{equation*}
+        {\rm cov}(G(f),G(g))=\int I_{A\cap B}\d\mu=\mu(A\cap B)
+    \end{equation*}
+    这说明，如果$A$和$B$不相交，则$G(f)$和$G(g)$不相关，进而独立。
+
+\section{准布朗运动}
+    从这一小节开始，是Chapter 2的内容。
+    $\R_+$代表$[0,+\infty)$.
+    \begin{definition}
+        记$\mathcal{B}_+$为$\R_+$上的Borel集全体，
+        即全体开集生成的$\sigma$域，
+        那么Lebesgue测度$m$是$(\R_+,\mathcal{B}_+)$上的一个$\sigma$有限测度，
+        令$G$是$(\R,\mathcal{B}_+)$上强度为$m$的高斯白噪声，定义
+        \begin{equation*}
+            B_t=G( I_{[0,t]} ),t\geqslant 0
+        \end{equation*}
+        那么，随机过程$B=(B_t)_{t\geqslant 0}$称为一个准布朗运动(pre-Brownian Motion)。
+    \end{definition}
+
+    \begin{proposition}[准布朗运动的等价定义]\label{le gall prop2.5}
+        对于随机过程$X=(X_t)_{t\geqslant 0}$，以下说法等价：
+        \begin{enumerate}[(1).]
+            \item $X$是准布朗运动。
+            \item $X$是高斯过程，且协方差函数是$\Gamma(s,t)=s\wedge t$.
+            \item $X_0=0$ a.s.，$\forall 0\leqslant s<t$，$X_t-X_s\sim N(0,t-s)$，且与$\sigma(X_r,r\leqslant s)$独立。
+            \item $X_0=0$ a.s.，任取$0=t_0<t_1<\cdots<t_p$，$X_{t_i}-X_{t_{i-1}}\sim N(0,t_i-t_{i-1})$，且相互独立。
+        \end{enumerate}
+    \end{proposition}
+    \begin{proof}
+        $(1)\Rightarrow (2)$：根据定义可知$(B_t)_{t\geqslant 0}$同属一个高斯空间，所以是
+        高斯过程，协方差函数：
+        \begin{equation*}
+            \Gamma(s,t)=\E[ B_tB_s ]
+            =\E[ G(I_{[0,t]})G(I_{[0,s]}) ]
+            =\int I_{[0,t]}I_{[0,s]} \d m
+            =s\wedge t
+        \end{equation*}
+
+        $(2)\Rightarrow (3)$：${\rm var}(X_0)=\Gamma(0,0)=0$，即$X_0\sim N(0,0)$，
+        说明$X_0=0$ a.s.，考虑$\forall s\geqslant 0$，记
+        \begin{align*}
+            H_s&={\rm span}\{ X_r,0\leqslant r\leqslant s \}\\
+            \tilde{H}_s&={\rm span}\{ X_{s+u}-X_s,u\geqslant 0 \}
+        \end{align*}
+        那么二者是正交的，因为：
+        \begin{equation*}
+            \E[ X_r(X_{s+u}-X_s) ]=r\wedge (s+u)-r\wedge s=r-r=0
+        \end{equation*}
+        进而$\sigma(H_s)$和$\sigma(\tilde{H}_s)$是独立的。特别地取$t>s$，
+        则$X_t\in \tilde{H}_s$与$\sigma(H_s)=\sigma(X_r,0\leqslant r\leqslant s)$是独立的。
+
+        $(3)\Rightarrow (4)$：取$t=t_p,s=t_{p-1}$，则可得$X_{t_p}-X_{t_{p-1}}$与
+        $\sigma(X_r,0\leqslant r\leqslant t_{p-1})$独立，进而与
+        $X_{t_{p-1}}-X_{t_{p-2}},\cdots,X_{t_1}-X_{t_0}$独立；
+        取$t=t_{p-1},s=t_{p-2}$，则可得$X_{t_{p-1}}-X_{t_{p-2}}$与
+        $X_{t_{p-2}}-X_{t_{p-3}},\cdots,X_{t_1}-X_{t_0}$独立；以此类推。
+
+        $(4)\Rightarrow (1)$：$X_t-X_0\sim N(0,t)$，所以$X$是高斯过程。对于阶梯函数
+        \begin{equation*}
+            f=\sum_{i=1}^p \lambda_i I_{ (t_{i-1},t_i] }
+        \end{equation*}
+        定义
+        \begin{equation*}
+            G(f)\defeq \sum_{i=1}^p \lambda_i (X_{t_i}-X_{t_{i-1}})
+        \end{equation*}
+        容易验证$G$是一个等距映射：
+        \begin{align*}
+            ||G(f)-G(\tilde{f})||^2
+            &=\E\left[ \left(\sum_{i=1}^p(\lambda_i-\tilde{\lambda}_i)(X_{t_i}-X_{t_{i-1}})\right)^2 \right]\\
+            &=\sum_{i=1}^p (\lambda_i-\tilde{\lambda}_i)^2 \E[ (X_{t_i}-X_{t_{i-1}})^2 ]\\
+            &=\sum_{i=1}^p (\lambda_i-\tilde{\lambda}_i)^2 (t_i-t_{i-1})\\
+            ||f-\tilde{f}||^2&=
+            \int \left|\sum_{i=1}^p (\lambda_i-\tilde{\lambda}_i) I_{ (t_{i-1},t_i] }\right|^2 \d m\\
+            &=\sum_{i=1}^p (\lambda_i-\tilde{\lambda}_i)^2 \int I_{ (t_{i-1},t_i] } \d m\\
+            &=\sum_{i=1}^p (\lambda_i-\tilde{\lambda}_i)^2 (t_i-t_{i-1})
+        \end{align*}
+        因为阶梯函数的稠密性，
+        可以把$G$的定义域延拓到整个$L^2(\R_+)$上，从而成为一个高斯白噪声，且满足
+        $G(I_{[0,t]})=X_t$，因此$X$是一个准布朗运动。
+    \end{proof}
+
+    \begin{corollary}
+        $B=(B_t)_{t\geqslant 0}$是准布朗运动，则对于$\forall 0\leqslant t_0<t_1<\cdots<t_n$，向量$(B_{t_1},B_{t_2},\cdots,B_{t_n})$的概率密度函数为
+        \begin{equation*}
+            f(x_1,x_2,\cdots,x_n)=\frac{1}{(2\pi)^{\frac{n}{2}}\sqrt{ t_1(t_2-t_1)\cdots(t_n-t_{n-1}) }}{\rm exp}\left\{ -\sum_{i=1}^n \frac{y_i^2}{2(t_i-t_{i-1})} \right\}
+        \end{equation*}
+        其中$t_0=0$.
+    \end{corollary}
+
+    \begin{proposition}
+        $B=(B_t)_{t\geqslant 0}$是准布朗运动，
+        \begin{enumerate}[(1).]
+            \item $B^-_t=-B_t$，则$(B^-_t)_{t\geqslant 0}$是准布朗运动。
+            \item $\forall \lambda>0$，$B^{(\lambda)}_t=\lambda^{-1}B_{\lambda^2 t}$，则$( B^{(\lambda)}_t )_{t\geqslant 0}$是准布朗运动。
+            \item $\forall s\geqslant 0$，$\tilde{B}_t=B_{s+t}-B_s$，则$ (\tilde{B}_t)_{t\geqslant 0} $是准布朗运动，且与$\F_s=\sigma(B_r,r\leqslant s)$独立。
+        \end{enumerate}
+        (3)也叫布朗运动的马氏性。
+    \end{proposition}
+    \begin{proof}
+        验证\autoref{le gall prop2.5}(4)即可，不再赘述。
+    \end{proof}
+
+\section{连续轨道与布朗运动}
+    一般情况下，对于实值的随机过程$X=(X_t)_{t\geqslant 0}$，我们一般的研究角度是从时刻入手，
+    比如“截止某个时刻$X_t$达到了什么值”，或者“首次达到什么值的时刻”。本小节我们从样本空间入手，固定$\omega$，
+    考虑映射$t\mapsto X_t(\omega)$，这是一个我们很熟悉的$\R_+\rightarrow \R$的实函数，它被称为“样本轨道”。
+    注意，我们如果想要讨论样本轨道的连续性，必须得要求随机变量在一个度量空间上取值。
+
+    \begin{definition}[样本轨道、布朗运动]
+        度量空间$(E,d)$取其Borel $\sigma$-域作为可测空间，随机过程$(X_t)_{t\geqslant 0}$在$E$上取值，
+        固定$\omega\in\Omega$，得到映射：
+        \begin{equation*}
+            [0,+\infty]\rightarrow \E
+        \end{equation*}
+        \begin{equation*}
+            t\mapsto X_t(\omega)
+        \end{equation*}
+        这个映射就被称为\textbf{样本轨道}(Sample Path).
+
+        对于一个准布朗运动$B=(B_t)_{t\geqslant 0}$，如果
+        $\forall \omega\in\Omega$，$t\mapsto X_t(\omega)$处处连续，
+        则称$B$为\textbf{布朗运动}。
+    \end{definition}
+    事实上，每一个准布朗运动都可以通过某些轻微的“修改”让它的轨道处处连续，
+    使它成为布朗运动，这是我们本小节主要介绍的内容。
+
+    首先我们要定义什么情况下认为两个随机过程是相同的。
+    \begin{definition}[修改、不可分辨]\label{modification and indistinguishable}
+        两个随机过程$X=(X_t)$和$\tilde{X}=(\tilde{X}_t)$，如果
+        \begin{equation*}
+            \forall t,\P( X_t=\tilde{X}_t )
+        \end{equation*}
+        则称$\tilde{X}$是$X$的一个修改(modification).
+
+        如果存在一个零测集$N\subset \Omega$，使得$\forall \omega\in \Omega-N,\forall t,\tilde{X}_t(\omega)=X_t(\omega)$，
+        则称$\tilde{X}$与$X$不可分辨(indistinguishable)，也能形式地表述为
+        \begin{equation*}
+            \P(\forall t,\tilde{X}_t=X_t)=1
+        \end{equation*}
+        但是$\{ \forall t,\tilde{X}_t=X_t \}$可能不是可测集，所以并不合适。
+    \end{definition}
+    两个随机过程如果是不可分辨的，则就认为它们是同一个随机过程。
+
+    \begin{corollary}
+        取指标集为$\R$的某个区间，如果$X$和$\tilde{X}$的轨道处处连续a.s.，
+        则$\tilde{X}$是$X$的修改$\Leftrightarrow$$\tilde{X}$与$X$不可分辨。
+        把轨道处处连续的条件更换为左连续或者右连续，结论也成立。
+    \end{corollary}
+
+    \begin{theorem}[Kolmogorov引理]
+        随机过程$X=(X_t)_{t\in I}$，其中$I$是$\R$上的区间，且$X$在完备度量空间$(E,d)$上取值，
+        后者取其Borel $\sigma$-域作为可测空间。若存在$q,\varepsilon,C>0$使得
+        $\forall s,t\in I$，
+        \begin{equation*}
+            \E[ d(X_s,X_t)^q ]\leqslant C\cdot |t-s|^{1+\varepsilon}
+        \end{equation*}
+        则存在$X$的修改$\tilde{X}$，其轨道满足指数为$\alpha$的Holder连续性，即：
+        固定$\omega\in\Omega$，$\alpha\in (0,\frac{\varepsilon}{q})$，存在一个有限的、仅与$\alpha,\omega$有关的常数$C_\alpha(\omega)$使得
+        \begin{equation*}
+            \forall s,t\in I,d( \tilde{X}_s(\omega),\tilde{X}_t(\omega) )\leqslant C_\alpha(\omega)|t-s|^\alpha
+        \end{equation*}
+
+        并且，在不可分辨意义下，$\tilde{X}$这样的修改是唯一的。
+    \end{theorem}
+    \begin{proof}
+        不妨取$I=[0,1]$，固定$\alpha\in (0,\frac{\varepsilon}{q})$，
+        由条件可知，$\forall a>0$，$s,t\in I$，有
+        \begin{equation*}
+            \P( d(X_s,X_t)\geqslant a)\leqslant a^{-q}\E[ d(X_s,X_t)^q ]\leqslant Ca^{-q}|t-s|^{1+\varepsilon}
+        \end{equation*}
+        取$s=(i-1)\cdot 2^{-n},t=i\cdot 2^{-n},i\in\{ 1,2,\cdots,2^n \}$，以及$a=2^{-n\alpha}$，则得到
+        \begin{equation*}
+            \P( d(X_{ (i-1)\cdot 2^{-n},X_{i\cdot 2^{-n}} })\geqslant 2^{-n\alpha} )
+            \leqslant C\cdot 2^{nq\alpha}\cdot 2^{-(1+\varepsilon)n}
+        \end{equation*}
+        对$i$求和，得到：
+        \begin{equation*}
+            \P\left( \bigcup_{i=1}^{2^n} \left\{ d(X_{ (i-1)\cdot 2^{-n},X_{i\cdot 2^{-n}} })\geqslant 2^{-n\alpha} \right\}  \right)
+            \leqslant 2^{n}\cdot C\cdot 2^{nq\alpha-(1+\varepsilon)n}=C\cdot 2^{-n(\varepsilon-q\alpha)}
+        \end{equation*}
+        再对$n$求和，得到
+        \begin{equation*}
+            \sum_{n=1}^\infty \P\left( \bigcup_{i=1}^{2^n} \left\{ d(X_{ (i-1)\cdot 2^{-n},X_{i\cdot 2^{-n}} })\geqslant 2^{-n\alpha} \right\}  \right)<+\infty
+        \end{equation*}
+        根据B-C引理，
+        \begin{equation*}
+            \P( \exists n_0{\rm\ s.t.\ }\forall n>n_0,\forall i\in\{1,2,\cdots,2^n\},d(X_{ (i-1)\cdot 2^{-n},X_{i\cdot 2^{-n}} })\leqslant 2^{-n\alpha} )=1
+        \end{equation*}
+        于是我们定义
+        \begin{equation*}
+            K_\alpha(\omega)\defeq \fun{sup}{n\geqslant 1}\left(
+                \fun{sup}{1\leqslant i\leqslant 2^n}\frac{d(X_{ (i-1)\cdot 2^{-n},X_{i\cdot 2^{-n}} })}{2^{-n\alpha}}
+            \right)
+        \end{equation*}
+        则$K_\alpha$ a.s.有限，接下来，记
+        \begin{equation*}
+            D=\{ i\cdot 2^{-n}:i=0,1,\cdots,2^n-1 \}\subset [0,1)
+        \end{equation*}
+        \begin{lemma}
+            取映射$f:D\rightarrow E$，如果存在$\alpha>0,K<+\infty$使得$\forall n\in\N_+,i\in \{ 1,2,\cdots,2^n-1 \}$
+            都有
+            \begin{equation*}
+                d( f( (i-1)2^{-n} ),f( i\cdot 2^{-n} ) )\leqslant K\cdot 2^{-n\alpha}
+            \end{equation*}
+            则$\forall s,t\in D$，都有
+            \begin{equation*}
+                d( f(s),f(t) )\leqslant \frac{2K}{1-2^{-\alpha}}|t-s|^\alpha
+            \end{equation*}
+        \end{lemma}
+        于是在$\{ K_\alpha<+\infty \}$上，$\forall s,t\in D$，$d(X_s,X_t)\leqslant C_\alpha(\omega)|t-s|^\alpha$，其中
+        $C_\alpha=2(1-2^{-\alpha})^{-1}K_\alpha(\omega)$，所以映射$t\mapsto X_t(\omega)$在$D$
+        上是Holder连续的，进而是一致连续的。因为$(E,d)$完备，该映射可以被唯一地延拓为
+        $[0,1]$上的连续映射\footnote{想到了实分析的Tietze延拓定理。}：
+        \begin{equation*}
+            t\mapsto \tilde{X}_t(\omega)=\left\{ \begin{array}{ll}
+                \fun{lim}{s\rightarrow t,s\in D}X_s(\omega)&,K_\alpha(\omega)<+\infty\\
+                x_0&,K_\alpha(\omega)=+\infty
+            \end{array} \right.
+        \end{equation*}
+        那么$\tilde{X}$的轨道是Holder连续的，只需证明$\tilde{X}$是$X$的修改。
+        固定$t\in [0,1]$，
+        \begin{equation*}
+            \P(\fun{lim}{s\rightarrow t} X_s=X_t)=1
+        \end{equation*}
+        而$\tilde{X}_t$同样是$X_s$的a.s.极限，所以$X_t=\tilde{X}_t$ a.s.
+    \end{proof}
+
+    \begin{corollary}
+        考虑布朗运动$B=(B_t)_{t\geqslant 0}$，则$B$存在一个修改$\tilde{B}$满足其轨道是连续的，
+        进一步地，还满足指数为$\frac{1}{2}-\delta,\forall \delta\in (0,\frac{1}{2})$的Holder连续性。
+    \end{corollary}
+    \begin{proof}
+        取$U\sim N(0,1)$，则$B_t-B_s\eqd \sqrt{t-s}U$，于是
+        $\forall q>0$，
+        \begin{equation*}
+            \E[ |B_t-B_s|^q ]=(t-s)^{\frac{q}{2}}\E[ |U|^q ]=C_q(t-s)^\frac{q}{2}
+        \end{equation*}
+        其中$C_q=\E[ |U|^q ]<+\infty$，取$q>2$，可知$B$存在修改$\tilde{B}$，
+        其轨道满足指数为$\alpha,\forall \alpha<\frac{q-2}{2q}$的局部Holder连续性，
+        取$q$充分大则得到结论。
+    \end{proof}
+    在本章的剩余内容中，我们默认一个随机过程只要满足准布朗运动的定义，
+    就把它视为修改过后得到的布朗运动。
+
+\section{布朗运动路径的性质}
+    接下来，记
+    \begin{equation*}
+        \F_t=\sigma(B_s,s\leqslant t),\ \F_{0+}=\bigcap_{s>0}\F_s
+    \end{equation*}
+    \begin{theorem}[Blumenthal 0-1律]\label{Blumenthal 0-1 law}
+        $\forall A\in \F_{0+}$，$\P(A)=1$或$0$.
+    \end{theorem}
+    \begin{proof}
+        取$0<t_1<t_2<\cdots<t_k$，$g:\R^k\rightarrow \R$为有界连续函数，
+        对于$A\in \F_{0+}$，由连续性可知
+        \begin{equation*}
+            \E[ I_A\cdot g(B_{t_1},\cdots,B_{t_k}) ]=\fun{lim}{\varepsilon\rightarrow 0+}
+            \E[ I_A\cdot g(B_{t_1}-B_\varepsilon,\cdots,B_{t_k}-B_\varepsilon) ]
+        \end{equation*}
+        设$0<\varepsilon<t_1$，则$B_{t_1}-B_\varepsilon,\cdots,B_{t_k}-B_\varepsilon$都与$\F_\varepsilon$独立，
+        进而与$\F_{0+}$独立，于是
+        \begin{align*}
+            \fun{lim}{\varepsilon\rightarrow 0+}\E[ I_A\cdot g(B_{t_1}-B_\varepsilon,\cdots,B_{t_k}-B_\varepsilon) ]
+            &=
+            \fun{lim}{\varepsilon\rightarrow 0+}\P(A)\cdot\E[ g(B_{t_1}-B_\varepsilon,\cdots,B_{t_k}-B_\varepsilon) ]\\
+            &=\P(A)\cdot\E[ I_A\cdot g(B_{t_1},\cdots,B_{t_k}) ]
+        \end{align*}
+        由$t_1,\cdots,t_k$的任意性可知，$\F_{0+}$与$\sigma(B_t,t>0)$独立，
+        又因为$B_t\ra{p.w.} B_0{\rm\ as\ }t\rightarrow 0$，
+        $\sigma(B_t,t>0)=\sigma(B_t,t\geqslant 0)$，
+        而$\F_{0+}\subset \sigma(B_t,t\geqslant 0)$，
+        这说明$\F_{0+}$和自己独立，那$\P(A)=\P(A\cap A)=\P(A)^2\Rightarrow \P(A)=1$或$0$.
+    \end{proof}
+
+    \begin{proposition}\label{le gall prop2.14}
+        对于布朗运动$B=(B_t)_{t\geqslant 0}$，
+        \begin{enumerate}[(1).]
+            \item $\forall \varepsilon>0$，$\fun{sup}{0\leqslant s\leqslant \varepsilon}B_s>0$，$\fun{inf}{0\leqslant s\leqslant \varepsilon}B_s<0$，a.s.
+            \item $\forall s\in \R$，
+                \begin{equation*}
+                    \fun{limsup}{t\rightarrow\infty}B_t=+\infty,\ 
+                    \fun{liminf}{t\rightarrow\infty}B_t=-\infty
+                \end{equation*}
+                进而如果令$T_a=\fun{inf}{}\{ t\geqslant 0:B_t=a \}$，则可得$T_a<+\infty$ a.s.
+        \end{enumerate}
+    \end{proposition}
+    \begin{remark}
+        这里关于$\fun{sup}{0\leqslant s\leqslant \varepsilon}$、$\fun{limsup}{t\rightarrow\infty}$
+        无法确保可测性的问题，
+        书上原文说的不是很清楚。笔者在\autoref{Le gall(Exercise2.29)}的注记中尝试解释了这个问题，建议读者一起阅读。
+    \end{remark}
+    \begin{proof}
+        (1).取一列严格单调递减到$0$的实数$(\varepsilon_p)_{p\in\N_+}$，
+        令
+        \begin{equation*}
+            A=\bigcap_{p=1}^\infty \left\{ \fun{sup}{0\leqslant s\leqslant \varepsilon_p} B_s>0 \right\}
+        \end{equation*}
+        则$A\in \F_{0+}$，因为$\forall s>0$，可以取$p_0$使得$\varepsilon_{p_0}<s$，
+        那么
+        \begin{equation*}
+            A=\bigcap_{p=p_0}^\infty \left\{ \fun{sup}{0\leqslant s\leqslant \varepsilon_p} B_s>0 \right\}\in \F_s
+        \end{equation*}
+        由$s$任意性可得。而另一方面，
+        \begin{equation*}
+            \P(A)=\fun{lim}{p\rightarrow\infty} \P\left( \fun{sup}{0\leqslant s\leqslant \varepsilon_p}B_s>0 \right)
+        \end{equation*}
+        而且$\P\left( \fun{sup}{0\leqslant s\leqslant \varepsilon_p}B_s>0 \right)\geqslant \P(B_{\varepsilon_p}>0)=\frac{1}{2}$，
+        根据0-1律（\autoref{Blumenthal 0-1 law}），只能$\P(A)=1$，
+        注意右边是一个单调递减的极限，
+        因此每一项都等于$1$，也就是
+        \begin{equation*}
+            \forall \varepsilon>0,\fun{sup}{0\leqslant s\leqslant \varepsilon} B_s>0{\rm\ a.s.}
+        \end{equation*}
+        inf的情况同理，考虑$-B$即可。
+        
+        (2).根据上一题的结论，我们得到：
+        \begin{equation*}
+            1=\P\left( \fun{sup}{0\leqslant s\leqslant 1}B_s>0 \right)
+            =\fun{lim}{\delta\rightarrow 0+}
+            \P\left( \fun{sup}{0\leqslant s\leqslant 1}B_s>\delta \right)
+        \end{equation*}
+        我们考虑用另一个布朗运动$B_s'=M^{-1}\delta B_{M^2\delta^{-2} s}$，替换最右侧中的$B_s$，得到
+        \begin{align*}
+            1&=\fun{lim}{\delta\rightarrow 0+}
+            \P\left( \fun{sup}{0\leqslant s\leqslant 1}M^{-1}\delta B_{M^2\delta^{-2} s}>\delta \right)\\
+            &=\fun{lim}{\delta\rightarrow 0+}
+            \P\left( \fun{sup}{0\leqslant s\leqslant M^2\delta^{-2}}B_{s}>M \right)\\
+            &=\P\left( \fun{sup}{s\geqslant 0} B_{s}>M \right)
+        \end{align*}
+        根据$M$任意性可知，$\fun{limsup}{t\rightarrow\infty}B_t=+\infty$ a.s.，liminf的情形同理，取$-B$即可。
+    \end{proof}
+    从直观上看，这体现了布朗运动不稳定且混乱，
+    即不可能在某一处停留，并且能到达所有位置。
+    
+    \begin{corollary}
+        映射$r\mapsto B_t(w)$在任何区间上不单调a.s.
+    \end{corollary}
+    \begin{proof}
+        $\forall q\in \Q_+$，$\forall \varepsilon>0$，
+        考虑布朗运动$B_{q+t}-B_q$，应用\autoref{le gall prop2.14}，可得
+        \begin{equation*}
+            \fun{sup}{q\leqslant t\leqslant q+\varepsilon} B_t>B_q,\ 
+            \fun{inf}{q\leqslant t\leqslant q+\varepsilon} B_t<B_q,
+        \end{equation*}
+        所以$B_t$在$[q,q+\varepsilon]$上不单调，由$q,\varepsilon$任意性得证。
+    \end{proof}
+
+    \begin{proposition}\label{le gall prop2.16}
+        $0=t_0^n<t_1^n<\cdots<t_{p_n}^n=t$是$[0,t]$的一系列划分，并且当$n\rightarrow\infty$时，
+        \begin{equation*}
+            \fun{sup}{1\leqslant i\leqslant p_n}(t_i^n-t_{i-1}^n)\rightarrow 0
+        \end{equation*}
+        那么$n\rightarrow\infty$时，
+        \begin{equation*}
+            \sum_{i=1}^{p_n} (B_{t_i^n}-B_{t_{i-1}^n})^2\ra{L^2} t
+        \end{equation*}
+    \end{proposition}
+
+    \begin{corollary}\label{Unbounded Variation of B.M.}
+        映射$t\mapsto B_t(w)$在任何区间上有无穷变差。
+    \end{corollary}
+    \begin{proof}
+        不妨选取$[0,t]$，取\autoref{le gall prop2.16}中的划分，
+        \begin{equation*}
+            \sum_{i=1}^{p_n} (B_{t_i^n}-B_{t_{i-1}^n})^2\leqslant \left( \fun{sup}{1\leqslant i\leqslant p_n}|B_{t_i^n}-B_{t_{i-1}^n}| \right)\times \sum_{i=1}^{p_n} |B_{t_i^n}-B_{t_{i-1}^n}|
+        \end{equation*}
+        根据轨道的连续性，右式第一项$\rightarrow 0$，但是左边$\rightarrow t$，所以右式第二项一定有
+        \begin{equation*}
+            \sum_{i=1}^{p_n} |B_{t_i^n}-B_{t_{i-1}^n}|\rightarrow +\infty
+        \end{equation*}
+        这正是$t\mapsto B_t(w)$在此划分下的变差。
+    \end{proof}
+    无穷变差也意味着处处不可导，这似乎说明布朗运动的“速度”是无穷大？
+    解决这一悖论的办法，本章最后一小节有相关介绍。
+
+\section{布朗运动的强马氏性}
+    回顾记号：对于布朗运动$B=(B_t)_{t\geqslant 0}$，
+    \begin{equation*}
+        \F_t=\sigma(B_s,s\leqslant t),\ \F_{\infty}=\sigma(B_s,s\geqslant 0)
+    \end{equation*}
+
+    \begin{definition}
+        随机变量$T$在$[0,+\infty]$上取值，如果$\forall t\geqslant 0$，$\{T\leqslant t\}\in \F_t$，则称$T$为关于$B$的
+        停时。
+    \end{definition}
+
+    \begin{example}
+        如果令
+        \begin{equation*}
+            T_a=\fun{inf}{}\{ t\geqslant 0:B_t=a \}
+        \end{equation*}
+        则$T_a$就是一个停时，因为：
+        \begin{equation*}
+            \{ T_a\leqslant t \}=\{ \exists s\in [0,t],B_s=a \}
+            =\{ \fun{inf}{s\in [0,t]}|B_s-a|=0 \}\in \F_t
+        \end{equation*}
+        但是，$T=\fun{sup}{}\{ s\leqslant 1:B_s=0 \}$不是停时。
+    \end{example}
+
+    \begin{definition}
+        如果$T$是停时，定义：
+        \begin{equation*}
+            \F_T=\{ A\in \F_\infty:\forall t\geqslant 0,A\cap \{ T\leqslant t \}\in \F_t \}
+        \end{equation*}
+        称为$T$前$\sigma$-域。
+    \end{definition}
+
+    \begin{example}
+        首先$T$本身就是$\F_T$-可测的，因为：$\forall s\geqslant 0$，$\forall t\geqslant 0$，
+        \begin{equation*}
+            \{ T\leqslant s \}\cap \{ T\leqslant t \}=\{ T\leqslant s\wedge t \}\in \F_{s\wedge t}\subset \F_t
+        \end{equation*}
+        那么，$B_sI_{s\leqslant T}$是$\F_T$-可测的，因为：
+        \begin{equation*}
+            \{ B_sI_{s\leqslant T}\in A \}\cap \{ T\leqslant t \}=\left\{ \begin{array}{ll}
+                \varnothing&,t<s\\
+                \{B_s\in A\}\cap \{ s\leqslant T\leqslant t \}&,t\geqslant s
+            \end{array} \right. \in \F_t
+        \end{equation*}
+        从而$I_{ \{T<+\infty\} }B_T$也是$\F_T$-可测的，因为：
+        \begin{equation*}
+            I_{ \{T<+\infty\} }B_T=\fun{lim}{n\rightarrow\infty} \sum_{i=0}^\infty I_{ \{ i\cdot 2^{-n}\leqslant T\leqslant (i+1)\cdot 2^n \} }B_{i\cdot 2^{-n}}
+        \end{equation*}
+    \end{example}
+
+    \begin{theorem}[强马氏性]
+        $T$是停时，且$\P(T<+\infty)=1$，令
+        \begin{equation*}
+            B_t^{(T)}=I_{ \{T<+\infty\} }(B_{T+t}-B_T)
+        \end{equation*}
+        则$B^{(T)}=(B_t^{(T)})_{t\geqslant 0}$是布朗运动，并且和$\F_T$独立。
+    \end{theorem}
+    \begin{proof}
+        取$A\in \F_T$，$0\leqslant t_1<\cdots<t_p$，$F:\R^p\rightarrow \R_+$有界连续，Claim：
+        \begin{equation*}
+            \E[ I_A\cdot F( B_{t_1}^{(T)},\cdots,B_{t_p}^{(T)} ) ]=\P(A)\cdot \E[ F(B_{t_1},\cdots,B_{t_p}) ]
+        \end{equation*}
+        然后考虑$A=\Omega$，说明$B^{(T)}$和$B$有着相同的有限维分布，因此也是布朗运动。
+        同时，由$t_1,\cdots,t_p$的任意性可知$B^{(T)}$和$\F_T$独立。
+
+        下面来证明Claim，对于$\forall n\in\N_+,t\geqslant 0$，记
+        \begin{equation*}
+            [t]_n=\fun{min}\{ x=k\cdot 2^{-n}\geqslant t|k\in \N_+ \}
+        \end{equation*}
+        即$[t,+\infty)$上最小的$k\cdot 2^{-n},k\in \N_+$，并定义$[\infty]_n=\infty$，注意到
+        \begin{equation*}
+            F(B_{t_1}^{(T)},\cdots,B_{t_p}^{(T)})
+            =
+            \fun{lim}{n\rightarrow\infty}F(B_{t_1}^{([T]_n)},\cdots,B_{t_p}^{([T]_n)}){\rm\ a.s.}
+        \end{equation*}
+        因此由DCT可得
+        \begin{align*}
+             &\E[I_A\cdot F(B_{t_1}^{(T)},\cdots,B_{t_p}^{(T)})]\\
+            =&\fun{lim}{n\rightarrow\infty}\E[ I_A\cdot F(B_{t_1}^{([T]_n)},\cdots,B_{t_p}^{([T]_n)}) ]\\
+            =&\fun{lim}{n\rightarrow\infty}
+            \sum_{k=0}^\infty \E[ I_A\cdot I_{ \{ (k-1)2^{-n}<T\leqslant k\cdot 2^{-n} \} }
+            F( B_{k\cdot 2^{-n}+t_1}-B_{k\cdot 2^n},\cdots,B_{k\cdot 2^{-n}+t_p}-B_{k\cdot 2^{-n}} )
+            ]
+        \end{align*}
+        因为$A\in \F_T$，所以
+        \begin{equation*}
+            A\cap \{ (k-1)2^{-n}<T\leqslant k\cdot 2^{-n} \}
+            =( A\cap \{T\leqslant k\cdot 2^{-n}\} )\cap \{ T\leqslant (k-1)2^{-n} \}^c\in \F_{k\cdot 2^{-n}}
+        \end{equation*}
+        因此
+        \begin{align*}
+            &\fun{lim}{n\rightarrow\infty}\E[ I_{A\cap\{ (k-1)2^{-n}<T\leqslant k\cdot 2^{-n} \}}\cdot F( B_{k\cdot 2^{-n}+t_1}-B_{k\cdot 2^n},\cdots,B_{k\cdot 2^{-n}+t_p}-B_{k\cdot 2^{-n}} ) ]\\
+            =&\P( A\cap\{ (k-1)2^{-n}<T\leqslant k\cdot 2^{-n} \} )\cdot \E[ F(B_{t_1},\cdots,B(t_p)) ]
+        \end{align*}
+        对$k$求和即得到目标结论。
+    \end{proof}
+
+    \begin{theorem}[反射原理]
+        $\forall t\geqslant 0$，令$S_t=\fun{sup}{s\leqslant t}B_s$，设常数$a\geqslant 0$，$b\leqslant a$，则
+        \begin{equation*}
+            \P(S_t\geqslant a,B_t\leqslant b)=\P(B_t\geqslant 2a-b)
+        \end{equation*}
+        进而$S_t$与$|B_t|$有着相同的分布。
+    \end{theorem}
+    \begin{proof}
+        取停时
+        \begin{equation*}
+            T_a=\fun{inf}{}\{ t\geqslant 0:B_t=a \}
+        \end{equation*}
+        我们在\autoref{le gall prop2.14}证明过$T_a<+\infty$ a.s.，利用强马氏性，
+        \begin{equation*}
+            \P(S_t\geqslant a,B_t\leqslant b)=\P(T_a\leqslant t,B_t\leqslant b)
+            =\P(T_a\leqslant t,B_{t-T_a}^{(T_a)}\leqslant b-a)=(\star)
+        \end{equation*}
+        接下来，我们记$B'=B^{(T_a)}$，则$B'$也是布朗运动且与$\F_{T_a}$无关，即与$T_a$独立，而且因为$B'$与$-B'$同分布，
+        所以
+        \begin{equation*}
+            (\star)=\P( T_a\leqslant t,-B^{(T_a)}_{t-T_a}\leqslant b-a )
+            =\P(T_a\leqslant t,B_t\geqslant 2a-b)
+            =\P(B_t\geqslant 2a-b)
+        \end{equation*}
+        因为$B_t\geqslant 2a-b\geqslant a$，则在$t$之前就达到了$a$，即$T_a\leqslant t$. 所以，
+        \begin{equation*}
+            \P(S_t\geqslant a)=\P(S_t\geqslant a,B_t\geqslant a)+\P(S_t\geqslant a,B_t\leqslant a)
+            =2\P(B_t\geqslant a)=\P( |B_t|\geqslant a )
+        \end{equation*}
+        所以$S_t$与$|B_t|$有着相同的分布。
+    \end{proof}
+
+    从直观上看，
+    \begin{align*}
+        S_t\geqslant a,B_t\leqslant b
+        &\Leftrightarrow \text{在$[0,t]$内曾达到了$a$，而最终在$t$时刻落回了$b$的下方}\\
+        &\Leftrightarrow \text{$T_a\leqslant t$，在$[T_a,t]$下降了至少$a-b$}\\
+        &\Leftrightarrow \text{$T_a\leqslant t$，在$[T_a,t]$上升了至少$a-b$}\\
+        &\Leftrightarrow \text{在$t$时刻达到了$2a-b$的上方，即$B_t\geqslant 2a-b$}
+    \end{align*}
+    即以$T_a$为分界点，$T_a$之后的轨迹上下翻转。
+
+    \begin{corollary}
+        $\forall a>0$，$T_a$与$a^2B_1^{-2}$同分布，从而密度函数为：
+        \begin{equation*}
+            f(t)=\frac{a}{\sqrt{2\pi t^3}}{\rm exp}\left\{ -\frac{a^2}{2t} \right\}I_{ \{t>0\} }
+        \end{equation*}
+        并且$\E[T_a]=+\infty$.
+    \end{corollary}
+    \begin{proof}
+        考虑
+        \begin{equation*}
+            \P(T_a\leqslant t)=\P(S_t\geqslant a)
+            =\P(|B_t|\geqslant a)
+            =\P(B_t^2\geqslant a^2)
+            =\P(tB_1^2\geqslant a^2)
+            =\P( \frac{a^2}{B_1^2}\leqslant t )
+        \end{equation*}
+        然后利用$B_1\sim N(0,1)$即可得到结论。
+    \end{proof}
+
+\clearpage
+
+\section{习题}
+    本小节用到的结论：
+    \begin{lemma}[Fatou's Lemma]
+        $\{X_n\}$是概率空间上的一列非负随机变量，则有：
+        \begin{equation*}
+            \E[ \fun{liminf}{n\rightarrow\infty} X_n ]
+            \leqslant 
+            \fun{liminf}{n\rightarrow\infty} \E[X_n]
+        \end{equation*}
+    \end{lemma}
+
+    \begin{lemma}[Borel‑Cantelli Lemma]
+        概率空间上的一列事件$\{A_n\}$满足：
+        \begin{equation*}
+            \sum_{n=1}^\infty \P(A_n)<+\infty
+        \end{equation*}
+        那么
+        \begin{equation*}
+            \P( \text{存在无数多个$n$，$A_n$成立} )=0
+        \end{equation*}
+    \end{lemma}
+
+    \begin{lemma}[强大数定律]
+        $\{X_n,n\in\N_+\}$独立同分布，二阶矩有限，期望为$\mu$，则
+        \begin{equation*}
+            \frac{1}{n}\sum_{k=1}^n X_n\rightarrow \mu{\rm\ a.s.\ }
+        \end{equation*}
+    \end{lemma}
+    
+    \begin{lemma}[Doob-Kolmogorov Inequality]
+        $\{ X_n,n\in\N_+ \}$关于$(\F_n)_{n\in\N_+}$是鞅，
+        $\fun{sup}{n\geqslant 1}\E[ X_n^2 ]<M<+\infty$，
+        则$\forall \varepsilon>0$，
+        \begin{equation*}
+            \P( \fun{max}{1\leqslant i\leqslant n}|X_i|\geqslant \varepsilon )\leqslant \frac{1}{\varepsilon^2}\E[ X_n^2 ]
+        \end{equation*}
+    \end{lemma}
+    \begin{proof}
+        由\autoref{thm3.6}知$X_n^2$是一个下鞅，
+        再利用Doob最大值不等式（\autoref{Doob's Inquality}）即可。
+        \autoref{Durrett(Exercise 4.4.7)}是一个更强的结论。
+    \end{proof}
+
+    下面这道题展示了如何证明一个过程是布朗运动。
+    我们一般利用\autoref{le gall prop2.5}来证明一个过程是准布朗运动，
+    而难点一般在于证明轨道连续性。
+    \begin{ex}[Le gall(Exercise2.25)][Le gall(Exercise2.25)]
+        $B=(B_t)_{t\geqslant 0}$是一个布朗运动，设：
+        \begin{equation*}
+            W_t=tB_{\frac{1}{t}},\ t>0
+        \end{equation*}
+        且$W_0=0$，证明：$(W_t)_{t\geqslant 0}$在不可分辨意义下是一个布朗运动。
+    \end{ex}
+    \begin{remark}
+        什么叫“在不可分辨意义下是一个布朗运动”？
+        我们曾提到过，如果两个随机过程不可分辨，我们就认为它们是同一个随机过程。
+        题目这句话的意思我们只需要证明
+        $\P(\text{$W$的轨道处处连续})=1$即可。
+    \end{remark}
+    \begin{proof}
+        不难看出，$W_t\sim N(0,t)$，且$\{W_t\}$中任意元素的有限线性组合
+        仍然服从正态分布，因此是（中心）高斯过程，并且$\E[W_tW_0]=0$，
+        \begin{equation*}
+            \E[ W_sW_t ]=st\E[B_\frac{1}{s}B_{\frac{1}{t}}]=st( \frac{1}{s}\wedge \frac{1}{t} )=s\wedge t
+        \end{equation*}
+        由\autoref{le gall prop2.5}(2)可知$W$是一个准布朗运动。
+
+        注意到$W$的轨道在$t>0$是连续的（因为$B$的轨道连续），
+        我们只需证明：
+        \begin{equation*}
+            \fun{lim}{t\rightarrow 0^+}W_t=\fun{lim}{t\rightarrow \infty}\frac{B_t}{t}=0{\rm\ a.s.}
+        \end{equation*}
+        考虑鞅$(B_{k+1}-B_k)_{k\in\N_+}$，这是一列独立同分布的随机变量，由强大数定律可知
+        \begin{equation*}
+            \frac{1}{n}\sum_{k=1}^n (B_{k+1}-B_k)=\frac{B_n}{n}\rightarrow 0{\rm\ a.s.\ }({\rm as\ }n\rightarrow \infty)
+        \end{equation*}
+        取$n,m\geqslant 0$，注意到$\{ X_k=B_{n+k\cdot 2^{-m}}-B_n,k=0,1,\cdots,2^m \}$是一个鞅，
+        由Doob-Kolmogorov不等式，
+        \begin{equation*}
+            \P( \fun{max}{0\leqslant k\leqslant 2^m} |B_{n+k\cdot 2^{-m}}-B_n|\geqslant n^{\frac{2}{3}} )\leqslant \frac{1}{n^{\frac{4}{3}}}\E[ (B_{n+1}-B_n)^2 ]=\frac{1}{n^{\frac{4}{3}}}
+        \end{equation*}
+        令$m\rightarrow\infty$，并由$B$的轨道连续性可知，
+        \begin{equation*}
+            \P( \fun{sup}{t\in [n,n+1]}| B_{t}-B_n |\leqslant n^{\frac{2}{3}} )\leqslant \frac{1}{n^{\frac{4}{3}}}
+        \end{equation*}
+        设$A_n=\{ \fun{sup}{t\in [n,n+1]}| B_{t}-B_n |\leqslant n^{\frac{2}{3}} \}$，
+        则$\sum \P(A_n)<+\infty$，由B-C引理可知，
+        \begin{equation*}
+            \P(\text{$A_n$成立的$n$的个数有限})=1
+        \end{equation*}
+        也就是存在$N$，使得$n>N$时，所有的$A_n$都不成立a.s.，即
+        \begin{equation*}
+            |B_t-B_n|\leqslant n^{\frac{2}{3}},\forall t\in [n,n+1]{\rm\ a.s.}
+        \end{equation*}
+        得到
+        \begin{equation*}
+            \left| \frac{B_t}{t} \right|
+            \leqslant \frac{ |B_n|+|B_n-B_t| }{t}
+            \leqslant \frac{ |B_n|+n^{\frac{2}{3}} }{n}
+            =\frac{|B_n|}{n}+n^{-\frac{1}{3}}\rightarrow 0{\rm\ a.s.\ }({\rm as\ }n\rightarrow \infty)
+        \end{equation*}
+        $t\rightarrow\infty$时$n\rightarrow\infty$，结论得证。
+    \end{proof}
+
+    下面这道题的思路类似于\autoref{le gall prop2.14}的证明过程，
+    展示了0-1律的应用。
+    \begin{ex}[Le gall(Exercise2.29)][Le gall(Exercise2.29)]
+        $B=(B_t)_{t\geqslant 0}$是布朗运动，证明：a.s.成立
+        \begin{equation*}
+            \fun{limsup}{t\searrow 0} \frac{B_t}{\sqrt{t}}=+\infty
+        \end{equation*}
+        \begin{equation*}
+            \fun{liminf}{t\searrow 0} \frac{B_t}{\sqrt{t}}=-\infty
+        \end{equation*}
+    \end{ex}
+    \begin{remark}
+        这里的$\fun{limsup}{t\searrow 0}$不是可数运算，
+        不能保证可测性，但是利用布朗运动轨道的连续性，可知
+        \begin{equation*}
+            \fun{limsup}{t\searrow 0} \frac{B_t}{\sqrt{t}}
+            =
+            \fun{lim}{\varepsilon\searrow 0}\fun{sup}{t\in (0,\varepsilon]} \frac{B_t}{\sqrt{t}}
+            =
+            \fun{lim}{\varepsilon\searrow 0}\fun{sup}{t\in (0,\varepsilon]\cap \Q} \frac{B_t}{\sqrt{t}}
+        \end{equation*}
+        然后我们任取一列单调递减趋于$0$的实数$\{\varepsilon_p,p\in\N_+\}$，
+        并考虑
+        \begin{equation*}
+            \fun{lim}{p\rightarrow\infty}\fun{sup}{t\in (0,\varepsilon_p]\cap \Q} \frac{B_t}{\sqrt{t}}
+        \end{equation*}
+        如果我们能够证明总是上式$=+\infty$ a.s.，与$\varepsilon_p$的选取无关，
+        那么由$\{\varepsilon_p\}$的任意性即可得到结论，这用到了函数极限里的一个小结论：
+        \begin{lemma}
+            任取单调递增的数列$a_n$且$a_n\searrow a$，都有$\fun{lim}{n\rightarrow\infty} f(a_n)=y$，
+            那么$\fun{lim}{x\rightarrow a^+}f(x)=y$.
+        \end{lemma}
+        反证法易证。
+    \end{remark}
+    \begin{proof}
+        取$M>0$，$\varepsilon>0$，令
+        \begin{equation*}
+            A_\varepsilon=\left\{ \fun{sup}{t\in (0,\varepsilon]}\frac{B_t}{\sqrt{t}}\geqslant M \right\}
+            =\left\{ \fun{sup}{t\in (0,\varepsilon]\cap \Q}\frac{B_t}{\sqrt{t}}\geqslant M \right\}\in \F_\varepsilon
+        \end{equation*}
+        我们任取一列单调递减趋于$0$的实数$\{\varepsilon_p,p\in\N_+\}$，则
+        \begin{equation*}
+            A
+            =\bigcap_{p=1}^\infty A_{\varepsilon_p}
+            =\left\{ \fun{lim}{p\rightarrow\infty} \fun{sup}{t\in (0,\varepsilon_p]}\frac{B_t}{\sqrt{t}}\geqslant M \right\}\in \F_{0+}
+        \end{equation*}
+        于是$\P(A)=0$或$1$，我们希望证明$\P(A)=1$，所以要估计它的下界，注意到
+        \begin{equation*}
+            \fun{limsup}{p\rightarrow\infty} \frac{B_{\varepsilon_p}}{\sqrt{\varepsilon_p}}\geqslant M
+            =\fun{lim}{p\rightarrow\infty}\fun{sup}{k\geqslant p} \frac{B_{\varepsilon_k}}{\sqrt{\varepsilon_k}}\geqslant M
+            \Rightarrow 
+            \fun{lim}{p\rightarrow\infty}\fun{sup}{t\in (0,\varepsilon_p]}\frac{B_{t}}{\sqrt{t}}\geqslant M
+        \end{equation*}
+        所以
+        \begin{align*}
+            \P(A)
+            =\P( \fun{lim}{p\rightarrow\infty} \fun{sup}{t\in (0,\varepsilon_p]}\frac{B_t}{\sqrt{t}}\geqslant M )
+            &\geqslant \P( \fun{limsup}{p\rightarrow\infty} \frac{B_{\varepsilon_p}}{\sqrt{\varepsilon_p}}\geqslant M )\\
+            &=\P( \fun{limsup}{p\rightarrow\infty} \left\{\frac{B_{\varepsilon_p}}{\sqrt{\varepsilon_p}}\geqslant M\right\} )\\
+            &\geqslant \fun{limsup}{p\rightarrow\infty}\P( \frac{B_{\varepsilon_p}}{\sqrt{\varepsilon_p}}\geqslant M )\tag*{由Fatou引理}\\
+            &=\int_M^\infty \frac{1}{\sqrt{2\pi}}{\rm exp}\left\{-\frac{1}{2}x^2\right\}\d x>0
+        \end{align*}
+        所以我们证明了：
+        \begin{equation*}
+            \fun{lim}{p\rightarrow\infty} \fun{sup}{t\in (0,\varepsilon_p]}\frac{B_t}{\sqrt{t}}\geqslant M{\rm\ a.s.}
+        \end{equation*}
+        那么由$M$的任意性可知
+        \begin{equation*}
+            \fun{lim}{p\rightarrow\infty} \fun{sup}{t\in (0,\varepsilon_p]}\frac{B_t}{\sqrt{t}}=+\infty {\rm\ a.s.}
+        \end{equation*}
+    \end{proof}
+
+    下面这道题则考查的是\autoref{le gall prop2.14}和强马氏性的应用。
+    \begin{ex}[Le gall(Exercise2.30)][Le gall(Exercise2.30)]
+        $B=(B_t)_{t\geqslant 0}$是布朗运动，$H=\{ t\in[0,1]:B_t=0 \}$，证明以下事实a.s.成立：
+        $H$是$[0,1]$上的紧集、无孤立点、Lebesgue测度为零。
+    \end{ex}
+    \begin{proof}
+        闭区间上连续函数的零点集一定是闭集，
+        所以$H$是（有界）闭集，进而是紧集。
+
+        用$m$表示Lebesgue测度，那么
+        \begin{align*}
+            \E[m(H)]
+            &=\int_\Omega m(H) \d\P\\
+            &=\int_\Omega \int_{ [0,1] } I_{ t\in [0,1]:B_t=0 } \d m\d\P\\
+            &=\int_{ [0,1] } \int_\Omega I_{ t\in [0,1],\omega\in\Omega:B_t(\omega)=0 } \d\P\d m\\
+            &=\int_{ [0,1] } \P(B_t=0)\d t=0
+        \end{align*}
+        所以$m(H)=0$ a.s.
+
+        最后来证明$H$没有孤立点，我们的思路是这样的：
+        \begin{enumerate}
+            \item 对于$q\in \Q$，定义$T_q=\fun{inf}{}\{ t\in [q,1]:B_t=0 \}$，即“$q$时刻开始的第一个零点”，这是一个停时。
+            \item 证明$\forall \varepsilon>0$，$T_q$右侧$\varepsilon$-邻域内存在下一个零点，这说明$T_q$不是孤立点。
+            \item $T_q$不一定是所有的零点，任取一个其他的零点$t$，取一列有理数$q_n\nearrow t$，则$q_n\leqslant T_{q_n}<t$，这说明$t$不是孤立点，所以$H$没有孤立点。
+        \end{enumerate}
+        回顾\autoref{le gall prop2.14}(1)，我们知道
+        布朗运动的零点右侧任意小邻域内有正有负，而轨迹是连续的，所以肯定存在零点，
+        我们利用这一点来证明2.
+
+        根据强马氏性，$B^{(q)}_t=B_{T_q+t}-B_{T_q}=B_{T_q+t}$是一个布朗运动，
+        根据\autoref{le gall prop2.14}(1)，$\forall \varepsilon\in (0,1-q)$有
+        \begin{equation*}
+            \P( \fun{sup}{t\in [0,\varepsilon]}B_{T_q+t}>0,\fun{inf}{t\in [0,\varepsilon]}B_{T_q+t}<0 )=1
+        \end{equation*}
+        即
+        \begin{equation*}
+            \P( \fun{sup}{t\in [T_q,T_q+\varepsilon]}B_{t}>0,\fun{inf}{t\in [T_q,T_q+\varepsilon]}B_{T_q}<0 )=1
+        \end{equation*}
+        即$B_t$在$(T_q,T_q+\varepsilon]$上有零点(a.s.)，这说明$T_q$不是孤立点(a.s.)。
+    \end{proof}
+
+    最后放一道去年期末题，比较简单。
+    \begin{ex}[2023SPFinal.2]
+        $B=(B_t)_{t\geqslant 0}$是布朗运动，求证：
+        \begin{equation*}
+            \fun{lim}{n\rightarrow\infty} \frac{\fun{sup}{t\in [n,n+1]}B_t}{n} =0{\rm\ a.s.}
+        \end{equation*}
+        提示：可能会用到
+        \begin{equation*}
+            S_t=\fun{sup}{0\leqslant s\leqslant t}B_s
+        \end{equation*}
+        与$|B_t|$同分布。
+    \end{ex}
+    \begin{proof}
+        稍作变换：
+        \begin{equation*}
+            \frac{\fun{sup}{t\in [n,n+1]}B_t}{n}
+            =\frac{\fun{sup}{t\in [n,n+1]}B_t-B_n}{n}+\frac{B_n}{n}
+            =\frac{\fun{sup}{t\in [0,1]}B_t}{n}+\frac{B_n}{n}
+        \end{equation*}
+        因为$\fun{sup}{t\in [0,1]}B_t\eqd |B_1|$，
+        所以第一项$\rightarrow 0$，第二项我们在\autoref{Le gall(Exercise2.25)}提到过，
+        大数定律得到$\rightarrow 0$.
+    \end{proof}
+
+\clearpage
+\section{随机积分介绍*}
+\subsection{定义}
+对于一个随机过程$A=\{ A_t,t\geqslant 0 \}$，如果轨道$t\mapsto A_t(\omega)$
+a.s.有界变差，那么对于以下可测函数：
+\begin{equation*}
+    f:([0,+\infty)\times \Omega,\mathcal{B}[0,+\infty)\otimes \F)
+    \rightarrow (\R,\mathcal{R})
+\end{equation*}
+我们可以利用Lebesgue积分定义：
+\begin{equation*}
+    \left(\int_0^t f_s \d A_s\right)(\omega)
+    \defeq \int_0^t f_\omega(s)\d A_\omega(s)
+\end{equation*}
+但是，我们在\autoref{Unbounded Variation of B.M.}曾提到过，
+布朗运动的轨道没有有界变差，因此不能直接采用Lebesgue积分。
+这里的记号$f_t=f(t,\cdot)$，$A_\omega=A_{\cdot}(\omega)$，
+实分析里乘积测度那一章节把这个叫做函数的截面。
+
+我们将按照以下思路逐步定义出（有限区间$[0,t]$上）布朗运动的积分。
+\begin{enumerate}[Step 1.]
+    \item 对于$[0,t]$上的阶梯函数：取分割$\Delta:0=t_0<t_1<t_2<\cdots<t_n=t$，
+        \begin{equation*}
+            f(s)=\sum_{j=1}^n x_{j-1}I_{ \{ t_{j-1}<s\leqslant t_j \} }
+        \end{equation*}
+        那么我们定义：
+        \begin{equation*}
+            \int_0^t f(s)\d B_s\defeq \sum_{j=1}^n f_{j-1}(B_{t_j}-B_{t_{j-1}})
+        \end{equation*}
+    \item 记$\F_t=\sigma(B_s,0\leqslant s\leqslant t)$，则
+        \begin{equation*}
+            \int_0^t f(s)\d B_s\in \F_t
+        \end{equation*}
+    \item 可直接拆开计算验证以下两个式子成立：
+        \begin{equation*}
+        \E\left[ \int_0^t f(s)\d B_s \right]=0
+        \end{equation*}
+         \begin{equation*}
+        \E\left[ \left(\int_0^t f(s)\d B_s\right)^2 \right]
+        =\int_0^t |f(s)|^2 \d s
+        \end{equation*}
+    \item 如果$g$也是阶梯函数（不必与$f$同分割），则
+        $f-g$也是一个阶梯函数，从而
+        \begin{equation*}
+            \E\left[ \left|\int_0^t f(s)\d B_s-\int_0^t g(s)\d B_s\right|^2 \right]
+            =\int_0^t |f(s)-g(s)|^2 \d s
+        \end{equation*}
+    \item 阶梯函数在$L^2[0,t]$上是稠密的，所以对于$t_0\in [0,t]$，
+        任取$h\in L^2[0,t_0]$，都存在
+        一列阶梯函数$f_n$满足
+        \begin{equation*}
+            \fun{lim}{n\rightarrow\infty}\int_0^{t_0} | f(s)-f_n(s) |^2 \d s=0
+        \end{equation*}
+    \item 由Step 4，可知
+        \begin{equation*}
+            \E\left[ \left|\int_0^t f_n(s)\d B_s-\int_0^t g_m(s)\d B_s\right|^2 \right]
+            =\int_0^t |f_n(s)-f_m(s)|^2 \d s\rightarrow 0{\rm\ as\ }n\rightarrow\infty
+        \end{equation*}
+        因此，
+        \begin{equation*}
+            \left\{ \int_0^t f_n(s)\d B_s,n\in \N \right\}
+        \end{equation*}
+        是$L^2(\Omega,\F_t,\P)$中的柯西列。
+        因此，存在平方可积的r.v.$U$满足：
+        \begin{equation*}
+            \fun{lim}{n\rightarrow\infty}\E 
+            \left[ \left|\int_0^t f_n(s)\d B_s-U\right|^2 \right]=0
+        \end{equation*}
+        于是我们定义：
+        \begin{equation*}
+            \int_0^t h(s)\d B_s\defeq U=\int_0^t f_n(s)\d B_s\text{的$L^2$极限}
+        \end{equation*}
+\end{enumerate}
+
+\subsection{$L^2$可积实函数对B.M.积分的性质}
+我们本小节先介绍对于$f\in L^2[0,T]$积分的性质。
+给定区间$[0,T]$，对于$t\in [0,T]$，记$\F_t=\sigma(B_s,0\leqslant s\leqslant t)$，
+\begin{equation*}
+    X_t\defeq \int_0^t f(s)\d B_s
+\end{equation*}
+
+\begin{proposition}
+    \begin{equation*}
+        \E[ |X_t|^2 ]=\int_0^t [f(s)]^2 \d s
+    \end{equation*}
+\end{proposition}
+
+
+\begin{proposition}
+    对于$\forall g\in L^2[0,T]$，
+    \begin{equation*}
+        \E\left[ \int_0^t f(s)\d B_s\int_0^t g(s)\d B_s \right]
+        =\int_0^t f(s)g(s)\d s
+    \end{equation*}
+\end{proposition}
+
+
+\begin{proposition}
+    \begin{equation*}
+        \int_0^t f(s)\d B_s \sim N(0,\int_0^t [f(s)]^2\d s)
+    \end{equation*}
+\end{proposition}
+
+
+\begin{proposition}
+    $\{ X_t,t\in [0,T] \}$关于$t$连续。
+\end{proposition}
+
+
+\begin{proposition}
+    $\{ X_t,t\in [0,T] \}$关于$\{ \F_t,t\in [0,T] \}$
+    是连续平方可积鞅，从而$\E[X_t]=\E[X_0]=0$.
+\end{proposition}
+
+
+\begin{proposition}
+    任取分割$0=t_0<t_1<\cdots<t_n=T$，
+    离散过程$\{ X_{t_i},i=0,\cdots,n \}$关于$\{\F_{t_i}\}$为鞅。
+\end{proposition}
+
+
+\subsection{随机过程对B.M.积分的定义}
+我们在第一小节中，仅仅定义了$h\in L^2[0,t]$关于布朗运动$(B_s)$的积分，
+但$h$是与$\omega$无关的实函数，所以最后我们本小节进一步推广到满足以下条件的随机过程：
+\begin{equation*}
+    L^2_{C,t}=\left\{ \varphi=( \varphi(s),s\geqslant 0 ):\text{ $\varphi$关于$s$连续，$\varphi(s)\in \F_s=\sigma( B_u,0\leqslant u\leqslant s )$，并且
+    $\E\left[ \int_0^t |\varphi(s)|^2\d s<+\infty  \right]$ } \right\}
+\end{equation*}
+而$(B_s),(B_s^2),\cdots\in L^2_{C,T}$，根据多项式函数在连续函数中的$L^2$稠密性，我们便可以定义形如以下形式的积分了：
+\begin{equation*}
+    \int_0^t f(B_s)\d B_s
+\end{equation*}
+其中$f:\R\rightarrow \R$是连续函数。
+
+\subsubsection{定义$\int_0^t B_s \d B_s$}
+
+\textbf{Step 1.}任取一个分割
+$\Delta_n:0=t_0<t_1<\cdots<t_n=t$，定义如下过程（即自变量是$t$和$\omega$的函数）：
+\begin{equation*}
+    f_n(s)=\left\{ \begin{array}{ll}
+        B_0&,0\leqslant s\leqslant t_1\\
+        B_{t_i}&,t_i<s\leqslant t_{i+1},i\in\{1,2,\cdots,n-1\}
+    \end{array} \right.
+\end{equation*}
+并定义其积分为：
+\begin{equation*}
+    \int_0^t f_n(s)\d B_s
+    =\sum_{i=0}^{n-1} B_{t_i}( B_{t_{i+1}}-B_{t_i} )
+\end{equation*}
+那么它有如下性质。
+\begin{proposition}
+    \begin{enumerate}[(1).]
+        \item \begin{equation*}
+            \int_0^t f_n(s)\d B_s\in \F_t
+        \end{equation*}
+        \item \begin{equation*}
+            \E\left[ \int_0^t f_n(s)\d B_s \right]
+            =\sum_{i=1}^{n-1}\E[ B_{t_i}( B_{ t_{i+1} }-B_{ t_{i} } ) ]=0
+        \end{equation*}
+        \item \begin{equation*}
+            \E\left[ \left(\int_0^t f_n(s)\d B_s\right)^2 \right]
+            =\E\left[ \int_0^t [f_n(s)]^2 \d s \right]
+        \end{equation*}
+    \end{enumerate}
+\end{proposition}
+
+
+\textbf{Step 2.}再取一个$f_m$，其对应的分割是$m$段的$\Delta_m$，
+则
+\begin{equation*}
+    \E\left[ \left|\int_0^t f_n(s)\d B_s-\int_0^t f_m(s)\d B_s\right|^2 \right]
+    =\E\left[ \left|\int_0^t f_n(s)-f_m(s)\d B_s\right|^2 \right]
+    =\E\left[ \int_0^t\left| f_n(s)-f_m(s)\right|^2\d s \right]
+\end{equation*}
+
+\textbf{Step 3.}记$|\Delta_n|$为分割$\Delta_n$中的最大区间长度，考虑
+\begin{align*}
+    \E\left[ \int_0^t \left|f_n(s)-B_s\right|^2\d s \right]
+    &=\int_0^t\E\left[ \left|f_n(s)-B_s\right|^2 \right]\d s\\
+    &=\int_0^t\E\left[ \left| \sum_{i=1}^n (B_{t_{i-1}}-B_s)I_{ \{ s\in [t_{i-1},t_i] \} } \right|^2 \right]\d s\\
+    &\leqslant
+    \int_0^t\E\left[ \sum_{i=1}^n |B_{t_{i-1}}-B_s|^2I_{ \{ s\in [t_{i-1},t_i] \} }\right]\d s\\
+    &\leqslant
+    \int_0^t\E\left[ \sum_{i=1}^n |B_{t_{i-1}}-B_{t_{i}}|^2I_{ \{ s\in [t_{i-1},t_i] \} }\right]\d s\\
+    &\leqslant
+    \int_0^t \sum_{i=1}^n (t_i-t_{i-1})I_{ \{ s\in [t_{i-1},t_i] \} } \d s\\
+    &=\sum_{i=1}^n (t_i-t_{i-1})^2\rightarrow 0{\rm\ as\ }|\Delta_n|\rightarrow 0
+\end{align*}
+所以$|\Delta_n|\rightarrow 0$时，
+\begin{equation*}
+    \left\{ \int_0^t f_n(s)\d B_s \right\}
+\end{equation*}
+是$(\Omega,\F_t,\P)$中的柯西列，其极限（不依赖于具体$\Delta_n$的选取）就定义为
+\begin{equation*}
+    \int_0^t B_s\d B_s
+\end{equation*}
+
+\subsubsection{一般情形}
+我们考虑过程$\{ f_t:t\geqslant 0 \}$，其满足：
+\begin{enumerate}
+    \item[(A1)] $f_t\in \F_t$.
+    \item[(A2)] $t\mapsto f_t(\omega)$连续。
+    \item[(A3)] 对于$\forall t>0$，任取分割$\Delta^{(t)}: 0=s_0<s_1<\cdots<s_n=t $，
+        \begin{equation*}
+            \fun{lim}{|\Delta^{(t)}|\rightarrow 0}
+            \sum_{i=0}^{n-1} \int_{s_i}^{s_{i+1}} \E[ (f_u-f_{s_i})^2 ]\d u=0
+        \end{equation*}
+\end{enumerate}
+那么可以证明，$\forall t\geqslant 0$，存在$X_t$使得
+\begin{equation*}
+    \fun{lim}{|\Delta^{(t)}|\rightarrow 0}
+    \E\left[ \left| \sum_{i=0}^{n-1} f_{s_i}\cdot(B_{s_{i+1}}-B_{s_i})-X_t \right|^2 \right]=0
+\end{equation*}
+于是我们定义：
+\begin{equation*}
+    X_t=\int_0^t f_s\d B_s
+\end{equation*}
+
+下面介绍一些基本性质。
+\begin{proposition}
+    \begin{enumerate}[(1).]
+        \item $\{X_t\}$轨道连续。
+        \item 线性：
+            \begin{equation*}
+                \int_0^t af_s+bg_s \d B_s=a\int_0^t f_s \d B_s+b\int_0^t g_s \d B_s
+            \end{equation*}
+        \item $\E[ \int_0^t f_s \d B_s ]=0$.
+        \item $\forall 0\leqslant s\leqslant t$，
+            \begin{equation*}
+                \E\left[ \int_0^s f_u\d B_u\int_0^t g_u \d B_u \right]
+                =\int_0^s \E[ f_ug_u ]\d u
+            \end{equation*}
+        \item $X$关于$\{\F_t\}$是鞅。
+    \end{enumerate}
+\end{proposition}
+
+\begin{example}
+    从定义出发，证明$\int_0^t B_s \d B_s=\frac{1}{2}(B_t^2-t)$.
+\end{example}
+\begin{solve}
+    分析定义，我们应当取$f_t=B_t$，并且任取分割$\Delta:0=s_0<s_1<\cdots<s_n=t$，
+    \begin{equation*}
+        \fun{lim}{|\Delta|\rightarrow 0}
+    \E\left[ \left| \sum_{i=0}^{n-1} B_{s_i}\cdot(B_{s_{i+1}}-B_{s_i})-X_t \right|^2 \right]=0
+    \end{equation*}
+    其中$X_t=\frac{1}{2}(B_t^2-t)$，注意到
+    \begin{align*}
+        \sum_{i=0}^{n-1} 2B_{s_i}\cdot(B_{s_{i+1}}-B_{s_i})
+        &=\sum_{i=0}^{n-1} [B_{s_{i+1}}^2-B_{s_i}^2-(B_{s_{i+1}}-B_{s_i})^2]\\
+        &=B_t^2-\sum_{i=0}^{n-1} (B_{s_{i+1}}-B_{s_i})^2
+    \end{align*}
+    所以我们只需证明：
+    \begin{equation*}
+        \fun{lim}{|\Delta|\rightarrow 0}
+    \E\left[ \left| \sum_{i=0}^{n-1} (B_{s_{i+1}}-B_{s_i})^2-t \right|^2 \right]=0
+    \end{equation*}
+    （从这里开始是作业15.1）直接拆开算就行。
+\end{solve}
+\subsection{${\rm It\hat{o}}$公式}
+我猜这一段讲义的意思是这样的。
+
+首先，对于一个随机过程$\{X_t\}$，其微分具有以下形式
+\begin{equation*}
+    \d X_t=u_t\d t+f(t)\d B_t
+\end{equation*}
+其中，$u=\{ u_s,s\geqslant 0 \}$轨道连续，
+适应$\F_s=\sigma(B_u,0\leqslant u\leqslant s)$，
+$f=\{f_t,t\geqslant 0\}$满足条件(A1)-(A3)。然而并不知道
+$X$需要满足什么条件才能保证这样的$u,f$存在。
+
+然后，我们已经证明过了：
+\begin{equation*}
+    \d (B_t^2)=2B_t\d B_t+\d t
+\end{equation*}
+所以，我们猜测存在这样一个公式：
+\begin{equation*}
+    \d (g(B_t))=g'(B_t)\d B_t+\frac{1}{2}g''(B_t)\d t
+\end{equation*}
+
+实际上还真就是如此。
+\begin{theorem}
+    $g:\R\rightarrow \R$有界，三阶连续可导，所有导函数也有界，
+    记$f(t)=B_t(\omega)$，
+    分割$\Delta:0=s_0<s_1<\cdots <s_n=t$，则有
+    \begin{align*}
+        g(f(t))-g(f(0))
+        &=\sum_{i=0}^{n-1} [ g(f(s_{i+1}))-g(f(s_{i})) ]\\
+        &=\sum_{i=0}^{n-1} \left( g'(f(s_i))[ f(s_{i+1})-f(s_i) ] \right)\\
+        &+\sum_{i=0}^{n-1} \left( \frac{1}{2}g''(f(s_i))[ f(s_{i+1})-f(s_i) ]^2 \right)\\
+        &+\sum_{i=0}^{n-1} \left( \frac{1}{6}g'''(\xi_i)[ f(s_{i+1})-f(s_i) ]^3 \right)\\
+        &=I_1^\Delta+I_2^\Delta+I_3^\Delta
+    \end{align*}
+    那么
+    \begin{equation*}
+        \fun{lim}{|\Delta|\rightarrow 0} I_1^\Delta
+        =\int_0^t g'(B_s)\d B_s
+    \end{equation*}
+    \begin{equation*}
+        \fun{lim}{|\Delta|\rightarrow 0} I_2^\Delta
+        =\frac{1}{2}\int_0^t g''(B_s)\d B_s
+    \end{equation*}
+    \begin{equation*}
+        \fun{lim}{|\Delta|\rightarrow 0} I_3^\Delta=0
+    \end{equation*}
+    因此，
+    \begin{equation*}
+        g(B_t)-g(0)=\int_0^t g'(B_s)\d B_s+\frac{1}{2}\int_0^t g''(B_s)\d B_s
+    \end{equation*}
+    写成微分形式：
+    \begin{equation*}
+        \d (g(B_t))=g'(B_t)\d B_t+\frac{1}{2}g''(B_t)\d t
+    \end{equation*}
+\end{theorem}
+然后，我们承认以下事实：
+\begin{equation*}
+    (\d B_t)^2=\d t
+\end{equation*}
+并且，$(\d t)^2$、$(\d t\d B_t)$相对于$\d t$都是高阶无穷小。
+讲义里给出了直观理解方式：
+\begin{equation*}
+    \fun{lim}{|\Delta|\rightarrow 0} \sum [t_{i+1}-t_i]^2=\sum (\d t)^2=0
+\end{equation*}
+\begin{equation*}
+    \fun{lim}{|\Delta|\rightarrow 0} \sum [ B_{t_{i+1}}-B_{t_i} ]^2=\sum (\d B_t)^2=t
+\end{equation*}
+最后，是一个推广的结论。
+\begin{theorem}
+    $g(t,x):[0,+\infty)\times \R\rightarrow\R$二阶导函数连续，
+    令$Y_t=g(t,X_t)$，则
+    \begin{equation*}
+        Y_t=Y_0+\int_0^t \p_t g(s,X_s)\d s
+        +\int_0^t \p_x g(s,X_s)\d X_s+
+        \frac{1}{2}\int_0^t \p_{xx}^2 g(s,X_s)( \d X_s )^2
+    \end{equation*}
+    其中，
+    \begin{equation*}
+        (\d X_t)^2=( u_t \d t )^2+2u_t\d t\cdot f_t \d B_t+(f_t \d B_t)^2=f_t^2 \d t
+    \end{equation*}
+    完全展开之后的形式为：
+    \begin{equation*}
+        Y_t=Y_0+\int_0^t \p_t g(s,X_s)\d s
+        +\int_0^t \p_x g(s,X_s)\cdot u_s \d s+
+        \int_0^t \p_x g(s,X_s)\cdot f_s \d B_s+
+        \frac{1}{2}\int_0^t \p_{xx}^2 g(s,X_s) f_s^2 \d s
+    \end{equation*}
+\end{theorem}
+
+以下是一些应用的例子。
+\begin{example}
+    设$X_t=B_t$，$f(t,x)=\frac{x^2}{2}$，
+    $Y_t=f(X_t)=\frac{1}{2}B_t^2$，则
+    \begin{align*}
+        \d Y_t&=\frac{\p f}{\p t}(X_t)\d t+\frac{\p f}{\p x}(X_t)\d X_t+\frac{1}{2}
+        \frac{\p^2 f}{\p x^2}(X_t)(\d X_t)^2\\
+        &=0+X_t\d X_t+\frac{1}{2}\d t\\
+        &=B_t\d B_t+\frac{1}{2}\d t
+    \end{align*}
+    所以
+    \begin{equation*}
+        \frac{1}{2}B_t^2=\int_0^t B_s \d B_s+\frac{1}{2}t
+    \end{equation*}
+\end{example}
+
+\begin{example}
+    证明：
+    \begin{equation*}
+        tB_t-\int_0^t B_s \d s=\int_0^t s\d B_s
+    \end{equation*}
+\end{example}
+\begin{solve}
+    思路：取$f(t,x)=tx$，$Y_t=f(t,B_t)$，代入公式计算即可。
+\end{solve}
+
+\begin{example}
+    设$S_t$满足下列随机微分方程：
+    \begin{equation*}
+        \d S_t=\sigma S_t \d B_t+r S_t\d t
+    \end{equation*}
+    其中$\sigma,r>0$，边界$S_0=1$，利用${\rm It\hat{o}}$公式求解$S_t$，
+    并验证${\rm e}^{-r t}S_t$为鞅。
+\end{example}
+\begin{solve}
+    设存在二阶可导连续$g(t,x)$使得$S_t=g(t,B_t)$，则
+    \begin{equation*}
+        \d S_t=\p_tg(t,B_t)\d t+\p_x g(t,B_t)\d B_t+\frac{1}{2}\p_{xx}^2 g(t,B_t)\d t
+    \end{equation*}
+    从而得到偏微分方程组：
+    \begin{equation*}
+        \left\{ \begin{array}{l}
+            \p_t g+\p_{xx}^2 g=rg\\
+            \p_xg=\sigma g
+        \end{array} \right.
+    \end{equation*}
+    以及边界$g(0,0)=1$，最后可解得
+    \begin{equation*}
+        S_t={\rm e}^{ (r-\frac{1}{2}\sigma^2)t+\sigma B_t }
+    \end{equation*}
+\end{solve}

@@ -1,0 +1,1678 @@
+\chapter{连续时间马氏过程}
+    本章节由两部分组成，不标注星号的内容来自研随课程，
+    标注星号的内容来自应随课程。
+    前者的内容标题应该叫做“\textbf{连续马氏过程的一般理论}”，
+    用比较基础的语言叙述了连续情形的马氏过程，
+    并以Levy过程等为例给出了详细介绍，
+    能够帮助我们更好地引入后续内容。
+    后者则着重分析了\textbf{离散状态空间连续时间马氏链（跳跃过程）}的性质。
+\section{马氏过程的定义}
+
+\subsection{转移核与转移半群}
+    \begin{definition}[转移核]
+        $(E,\mathcal{E})$是一个可测空间，映射$Q:E\times \mathcal{E}\rightarrow [0,1]$如果满足以下性质：
+        \begin{enumerate}[(1).]
+            \item $\forall x\in E$，$Q(x,\cdot)$作为$\mathcal{E}\rightarrow [0,1]$的映射是一个$(E,\mathcal{E})$上的概率测度。
+            \item $\forall A\in \mathcal{E}$，$Q(\cdot,A)$作为$E\rightarrow [0,1]$的映射是$\mathcal{E}$-可测的。
+        \end{enumerate}
+        那么就称$Q$是一个从$E$到$E$的马氏转移核(Markovian transition kernel)，以下简称转移核。
+    \end{definition}
+    转移核的概念类似于离散情形下的转移概率函数。
+
+    \begin{definition}[转移半群]
+        $(Q_t)_{t\geqslant 0}$是$E$上的转移核组成的集合，如果其满足：
+        \begin{enumerate}[(1).]
+            \item $\forall x\in E$，$Q_0(x,\d y)=\delta_x(\d y)$，这里$\delta_x$是$x$处的独点分布，即
+                \begin{equation*}
+                    \int I_A Q_0(x,\d y)=\left\{ \begin{array}{ll}
+                        1&,x\in A\\
+                        0&,x\notin A
+                    \end{array} \right.
+                \end{equation*}
+            \item $\forall s,t\geqslant 0$，$A\in \mathcal{E}$，
+                \begin{equation*}
+                    Q_{t+s}(x,A)=\int_E Q_t(x,\d y)Q_s(y,A)\tag*{Chapman-Kolmogorov identity}
+                \end{equation*}
+            \item $\forall A\in \mathcal{E}$，映射$(t,x)\mapsto Q_t(x,A)$是关于$\mathcal{B}(\R_+)\otimes \mathcal{E}$可测的。
+        \end{enumerate}
+        则称$(Q_t)_{t\geqslant 0}$是一个转移半群(transition semigroup).
+    \end{definition}
+    转移半群的概念类似于离散情形下的转移概率矩阵。
+
+    \begin{definition}[转移算子]
+        $Q$是一个转移核，
+        如果映射$f:E\rightarrow \R$有界可测（或者非负可测），
+        定义映射$Qf: E\rightarrow \R$为
+        \begin{equation*}
+            Qf(x)=\int Q(x,\d y)f(y)
+        \end{equation*}
+        那么$Qf$依然是有界可测（或者非负可测）的。
+        记$B(E)$为$E$上的有界可测实函数全体构成的向量空间，并给予范数
+        \begin{equation*}
+            ||f||=\fun{sup}{}\{ |f(x)|:x\in E \}
+        \end{equation*}
+        那么就可以把$Q$视为一个$B(E)\rightarrow B(E)$的线性算子。
+    \end{definition}
+    \begin{corollary}
+        根据$0\leqslant Q(x,A)\leqslant 1$可知，$Q$是一个压缩映射，
+        算子范数$\leqslant 1<+\infty$，从而是连续算子。
+    \end{corollary}
+
+    \begin{proposition}
+        从线性算子的观点来看，由Chapman-Kolmogorov identity可以得到
+        \begin{equation*}
+            Q_{s+t}=Q_tQ_s,\forall s,t\geqslant 0
+        \end{equation*}
+        这里$Q_tQ_s$是指$Q_t\circ Q_s$，即算子的复合。
+    \end{proposition}
+    \begin{proof}
+        $\forall f\in B(E),x\in E$，由Chapman-Kolmogorov identity，
+        \begin{align*}
+            Q_{s+t}f(x)
+            &=\int_E Q_{s+t}(x,\d z)f(z)\\
+            &=\int_E  \left(\int_E Q_t(x,\d y)Q_s(y,\d z)\right) f(z)\\
+            &\text{（交换积分顺序）}\\
+            &=\int_E Q_t(x,\d y)\int_E Q_s(y,\d z) f(z)\\
+            &=\int_E Q_t(x,\d y)Q_s f(y)\\
+            &=Q_tQ_sf(x)
+        \end{align*}
+    \end{proof}
+    这也表明$Q_tQ_s=Q_sQ_t$，即复合是可交换的。
+
+\subsection{马氏过程}
+    \begin{definition}[马氏过程]\label{Def of Cont-MarkovProcess}
+        $(Q_t)_{t\geqslant 0}$是$E$上的转移半群，
+        考虑滤流概率空间$(\Omega,\F,(\F_t)_{t\geqslant \infty},\P)$
+        上的一个在$E$上取值的$(\F_t)$-适应过程$X=(X_t)_{t\geqslant 0}$，
+        如果其满足$\forall s,t\geqslant 0,f\in B(E)$，
+        \begin{equation*}
+            \E[f(X_{s+t})|\F_s]=Q_t f(X_s)
+        \end{equation*}
+        那么就称$X$是（关于滤流$(\F_t)$的、转移半群为$(Q_t)$的连续时间）马氏过程。
+    \end{definition}
+    在本章的剩余内容中，如无特殊说明，默认马氏过程$X$是关于滤流$(\F_t^X)$的。
+
+    如果取$f=I_A$，我们得到
+    \begin{equation*}
+        \P( X_{s+t}\in A|\F_s )=Q_t(X_s,A)
+    \end{equation*}
+    特别地，
+    \begin{equation*}
+        \P( X_{s+t}\in A|X_r,0\leqslant r\leqslant s )=Q_t(X_s,A)
+    \end{equation*}
+    这表明，给定“过去”$(X_r,0\leqslant r\leqslant s)$的条件下，
+    $X_{s+t}$的条件分布只取决于“现在”的$X_s$，并由$Q_t(X_s,\cdot)$给出，这就是\textbf{马氏性}。
+    
+    \begin{theorem}[马氏过程的有限维分布]\label{Law of Cont-MarkovProcess}
+        设$X_0$的分布为$\gamma(\d y)$，对于任意的$0=t_0<t_1<t_2<\cdots<t_p$，我们有
+        \begin{equation*}
+            \P(X_{t_0}\in A_0,\cdots,X_{t_p}\in A_p)
+            =\int_{A_0} \gamma(\d x)\int_{A_1}Q_{t_1}(x,\d x_1)\int_{A_2} Q_{t_2-t_1}(x_1,\d x_2)
+            \cdots \int_{A_p}Q_{t_p-t_{p-1}}(x_{p-1},\d x_p)
+        \end{equation*}
+        更一般地，有：
+        \begin{equation*}
+            \E[ f_0(X_{t_0})\cdots f_p(X_{t_p}) ]
+            =\int_E f_0(x)\gamma (\d x)\int_E f_1(x_1)Q_{t_1}(x,\d x_1)
+            \cdots \int_E f_p(x_p)Q_{t_p-t_{p-1}}(x_{p-1},\d x_p)
+        \end{equation*}
+    \end{theorem}
+    \begin{proof}
+        归纳：先考虑$p=0$的情形，即
+        \begin{equation*}
+            \E[ f_0(X_{t_0}) ]=\int_E f_0(x)\gamma(\d x)
+        \end{equation*}
+        命题成立；再假设$p-1$时命题成立，考虑$p$时的情形：
+        \begin{align*}
+            &\E[ f_0(X_{t_p})\cdots f_{p-1}(X_{t_{p-1}})f_p(X_{t_p}) ]\\
+            &=\E[ \E[ f_0(X_{t_p})\cdots f_{p-1}(X_{t_{p-1}})f_p(X_{t_p}) |\F_{t_{p-1}}] ]\\
+            &=\E[ f_0(X_{t_p})\cdots f_{p-1}(X_{t_{p-1}})\E[ f_p(X_{t_p}) |\F_{t_{p-1}}] ]\\
+            &=\E[ f_0(X_{t_p})\cdots f_{p-1}(X_{t_{p-1}})Q_{t_p-t_{p-1}}f_p(X_{t_{p-1}}) ]\\
+            &=\int_E f_0(x)\gamma (\d x)\int_E f_1(x_1)Q_{t_1}(x,\d x_1)
+            \cdots \int_E f_{p-1}(x_{p-1})Q_{t_p-t_{p-1}}f_p(x_{p-1})Q_{t_{p-1}-t_{p-2},\d x_{p-1}}\\
+            &=\int_E f_0(x)\gamma (\d x)\int_E f_1(x_1)Q_{t_1}(x,\d x_1)
+            \cdots \int_E f_{p-1}(x_{p-1})Q_{t_{p-1}-t_{p-2},\d x_{p-1}}\int_E Q_{t_p-t_{p-1}}(x_{p-1},\d x_p)f_p(x_p)
+        \end{align*}
+        成立。综上结论得证。
+    \end{proof}
+    这个定理表明，马氏过程的有限维分布完全由其初始$X_0$的分布和转移半群决定。
+    那么，给定转移半群$(Q_t)_{t\geqslant 0}$之后，我们取
+    \begin{equation*}
+        X=\{ (X_t)_{t\geqslant 0}: (X_t)_{t\geqslant 0}\text{是关于转移半群$(Q_t)_{t\geqslant 0}$的马氏过程} \}
+    \end{equation*}
+    其中，记初值为固定值$X_0=x$ a.s.的过程为$(X_t^x)_{t\geqslant 0}$，可以发现：
+    \begin{equation*}
+        Q_t f(x)=Q_t f(X_0^x)
+        =\E[ f(X_t^x)|\F_0 ]=\E[ f(X_t^x) ]\defeq \E_x[ f(X_t) ]
+    \end{equation*}
+    由此，我们得到了转移算子的一个非常好用的表示方法。
+
+    注意，我们接下来考虑马氏过程$X=(X_t)_{t\geqslant 0}$的时候，
+    实际上考虑的是所有与转移半群$(Q_t)_{t\geqslant 0}$有关的马氏过程，
+    也就是\textbf{所有“给定初始分布和转移半群$(Q_t)_{t\geqslant 0}$之后唯一确定的马氏过程”}。
+    如无特殊说明，$X^x=(X_t^x)$就是指初值为固定值$x$的马氏过程；
+    而如果我们在某个结论中没有指明初始分布，而是表述为$X=(X_t)$，就代表
+    初始分布不影响此结论。
+
+    回忆离散马氏链时的情形，当时我们也并没有给出一个具体的随机过程，
+    而是重点分析了转移概率和状态分类。这是因为，时间齐次的马氏过程
+    的关键不在于某一时刻的具体数值，而是一个时间间隔内的行为。
+    \begin{example}
+        回顾布朗运动的定义，我们当时规定了初值$B_0=0$，但事实上，初值可以换成任何一个
+        固定的数值，甚至是一个分布。因为布朗运动的核心并不在于初始，
+        而是“给定过去的分布，一段时间后的变化”。
+
+        初值固定的布朗运动我们记作$\{ (B_t^x)_{t\geqslant 0}:x\in \R \}$，
+        那么我们可以推导出布朗运动的转移半群为：
+        \begin{equation*}
+            Q_tf(x)=\E[ f(B_t^x) ]
+            =\E[ f(B_t^0+x) ]
+            =\int_{\R} \frac{1}{\sqrt{2\pi t}}{\rm exp}\left\{ -\frac{ (y-x)^2 }{2t} \right\}f(y)\d y
+        \end{equation*}
+    \end{example}
+
+\section{马氏过程的构造}
+    事先给定一个马氏转移半群$(Q_t)_{t\geqslant0}$，
+    记
+    \begin{equation*}
+        \Omega^*=E^{\mathbb{R}_+}=\{\omega:\omega(\cdot):[0,\infty)\to E\}
+    \end{equation*}
+    可以定义$\Omega^*$上的坐标过程(Coordinate process)$X=(X_t)$，定义为
+    \begin{equation*}
+        X_t(\omega)=\omega(t):\Omega^*\to E
+    \end{equation*}
+    记$\mathcal{F}^*=\sigma(X_s,s\geqslant0),\mathcal{F}_t^X=\sigma(X_s,s\leqslant t)$，
+    我们需要找到一个可测空间$(\Omega^*,\mathcal{F}^*)$上面的概率测度$\P^*$.
+    
+    对任意的有限子集$U=\{0<t_1<t_2<\cdots<t_p\}\subset\mathbb{R}_+$，
+    定义一个在$E^U=\underbrace E\times E\times E\times\cdots\times E$上的概率
+    测度，如下：
+    \begin{equation*}
+        \mu^U(A_1\times A_2\times\cdots\times A_p)=\int_E\gamma(\mathrm dx)\int_{A_1}Q_{t_1}(x,\mathrm dx_1)\cdots\int_{A_p}Q_{t_p-t_{p-1}}(x_{p-1},\mathrm dx_p)
+    \end{equation*}
+    记为$\{\mu^U\}$，其中$U$是有限子集。
+
+    事实上，$\{\mu^U\}$具有相容性，即：对$U\subset V$，定义
+    \begin{equation*}
+        \pi_U^V:E^V\to E^U
+    \end{equation*}
+    其是一个投影（或限制），那么有
+    \begin{equation*}
+        \mu^U=\mu^V\circ(\pi_U^V)^{-1}
+    \end{equation*}
+    结合相容性和Kolmogorov扩张定理，一定存在一个$(\Omega^*,\mathcal{F}^*)$上的概率测度$\P^*$，
+    使得
+    \begin{equation*}
+        \P^*(X_{t_1}\in A_1,\cdots,X_{t_p}\in A_p)=\mu^U(A_1\times\cdots\times A_p)
+    \end{equation*}
+    在$\P^*$之下，$(X_t)_{t\geqslant 0}$
+    是一个与$\left(Q_t\right)$相联系的马氏过程，
+    因为\autoref{Law of Cont-MarkovProcess}中的等式成立，
+    而其可以推出马氏性。
+
+\section{马氏过程的其他要素}
+    本小节我们主要介绍三个工具概念：预解式、Feller半群、生成元，以及它们的性质与关系。
+    用于进一步表述与研究马氏过程的性质。
+\subsection{预解式}
+    \begin{definition}
+        设$\lambda>0$，半群$(Q_t)_{t\geqslant 0}$的$\lambda$-预解式(resolvent)是指线性算子$R_\lambda:\mathcal{B}(E)\rightarrow \mathcal{B}(E)$，
+        其满足
+        \begin{equation*}
+            R_\lambda f(x)=\int_0^\infty {\rm e}^{-\lambda t} Q_tf(x)\d t
+        \end{equation*}
+        预解式实际上是一个Laplace变换。
+    \end{definition}
+
+    \begin{theorem}[预解式的性质]
+        \begin{enumerate}[(1).]
+            \item $||R_\lambda f||\leqslant \lambda^{-1}||f||$，这里的$||f||$为
+                \begin{equation*}
+                    ||f||=\fun{sup}{x\in E}|f(x)|
+                \end{equation*}
+            \item 如果$0\leqslant f\leqslant 1$，则$0\leqslant \lambda R_\lambda f(x)\leqslant 1$.
+            \item 预解恒等式：$\lambda ,\mu>0$，则
+                \begin{equation*}
+                    R_\lambda -R_\mu+(\lambda-\mu)R_\lambda R_\mu=0
+                \end{equation*}
+        \end{enumerate}
+    \end{theorem}
+    \begin{proof}
+        前两个由定义显然，我们只说明(3)：$\forall f\in B(E),x\in E$，不妨$\lambda\neq \mu$，
+        \begin{align*}
+            R_\lambda R_\mu f(x)
+            &=\R_\lambda(R_\mu f)(x)\\
+            &=\int_0^{+\infty} {\rm e}^{-\lambda t}Q_t(R_\mu f)(x)\d t\\
+            &=\int_0^{+\infty} {\rm e}^{-\lambda t} \int_E Q_t(x,\d y)R_u f(y) \d t\\
+            &=\int_0^{+\infty} {\rm e}^{-\lambda t} \int_E Q_t(x,\d y) \int_0^{+\infty} {\rm e}^{-\mu s} \int_E Q_s(y,\d z)f(z)\d s \d t\\
+            &\text{现在的积分顺序是$\d z\rightarrow \d s \rightarrow \d y\rightarrow \d t$，我们交换$\d s$和$\d y$的顺序}\\
+            &=\int_0^{+\infty} \d t \int_0^{+\infty} \d s \int_E Q_t(x,\d y)\int_E Q_s(y,\d z)f(z){\rm e}^{-\lambda t-\mu s}\\
+            &=\int_0^{+\infty} \d t \int_0^{+\infty} \d s Q_{s+t}f(x)  {\rm e}^{-\lambda t-\mu s}\\
+            &\text{现在是我们熟悉的实数上的积分了，换元$r=s+t$，转化为区域$t\in (0,r),r\in (0,+\infty)$上的积分}\\
+            &=\int_0^{+\infty} \d r \int_0^{r} \d t {\rm e}^{-(\lambda-\mu)t}{\rm e}^{-\mu r}Q_r f(x)\\
+            &=\int_0^{+\infty} \frac{{\rm e}^{-\mu r}-{\rm e}^{-\lambda r}}{\lambda -\mu}Q_r f(x)d r\\
+            &=\frac{R_\mu-R_\lambda}{\lambda-\mu}f(x)
+        \end{align*}
+    \end{proof}
+
+
+    \begin{lemma}[一个积分]\label{a integration-20240531}
+        $\lambda,\mu>0$，
+        \begin{equation*}
+            \int_0^\infty {\rm exp}\left\{ -\lambda t-\frac{\mu}{t} \right\}\frac{1}{\sqrt{t}}  \d t={\rm e}^{-2\sqrt{\lambda\mu}}\sqrt{\frac{\pi}{\lambda}}
+        \end{equation*}
+    \end{lemma}
+    \begin{proof}
+        设原积分为$I$，
+        换元：
+        \begin{equation*}
+            t=\frac{\sqrt{\mu}}{\sqrt{\lambda}} s,\ \d t=\frac{\sqrt{\mu}}{\sqrt{\lambda}} \d s
+        \end{equation*}
+        则
+        \begin{equation*}
+            I=\int_0^\infty {\rm exp}\left\{ -\sqrt{\lambda\mu}(s+s^{-1}) \right\}\frac{1}{\sqrt{s}}  \sqrt{\frac{\sqrt{\mu}}{\sqrt{\lambda}}}\d s
+        \end{equation*}
+        整理一下得到
+        \begin{equation*}
+            \left( \frac{\lambda}{\mu} \right)^{\frac{1}{4}} I=\int_0^\infty {\rm exp}\left\{ -\sqrt{\lambda\mu}(s+s^{-1}) \right\}\frac{1}{\sqrt{s}}\d s
+        \end{equation*}
+        换元：
+        \begin{equation*}
+            s=u^2,\ \d s= 2u \d u
+        \end{equation*}
+        则
+        \begin{equation*}
+            \frac{1}{2}\left( \frac{\lambda}{\mu} \right)^{\frac{1}{4}} I
+            =\int_0^\infty {\rm exp}\left\{ -\sqrt{\lambda\mu}(u^2+u^{-2}) \right\}\d u
+        \end{equation*}
+        换元：
+        \begin{equation*}
+            u=\frac{1}{v}, \d u= -\frac{1}{v^2}\d v
+        \end{equation*}
+        则
+        \begin{equation*}
+            \frac{1}{2}\left( \frac{\lambda}{\mu} \right)^{\frac{1}{4}} I
+            =\int_0^\infty {\rm exp}\left\{ -\sqrt{\lambda\mu}(v^2+v^{-2}) \right\}\frac{1}{v^2}\d v
+        \end{equation*}
+        相加可得
+        \begin{align*}
+            \left( \frac{\lambda}{\mu} \right)^{\frac{1}{4}} I
+            &=
+            \int_0^\infty {\rm exp}\left\{ -\sqrt{\lambda\mu}(u^2+u^{-2}) \right\}(1+\frac{1}{u^2})\d u\\
+            &={\rm e}^{-2\sqrt{\lambda\mu}}
+            \int_0^\infty {\rm exp}\left\{ -\sqrt{\lambda\mu}(u-u^{-1})^2 \right\}(1+\frac{1}{u^2})\d u
+        \end{align*}
+        换元：
+        \begin{equation*}
+            w=u-\frac{1}{u},\ \d w=(1+\frac{1}{u^2})\d u
+        \end{equation*}
+        则
+        \begin{align*}
+            {\rm e}^{2\sqrt{\lambda\mu}}\left( \frac{\lambda}{\mu} \right)^{\frac{1}{4}} I
+            &=\int_{-\infty}^\infty {\rm exp}\left\{ -\sqrt{\lambda\mu}w^2 \right\}\d w\\
+            &=(\lambda \mu)^{-\frac{1}{4}}\sqrt{\pi}
+        \end{align*}
+        得到
+        \begin{equation*}
+            I={\rm e}^{-2\sqrt{\lambda\mu}}\sqrt{\frac{\pi}{\lambda}}
+        \end{equation*}
+    \end{proof}
+    \begin{example}
+        考虑布朗运动的转移半群：
+        \begin{equation*}
+            Q_t(x,A)=\int_A \frac{1}{\sqrt{2\pi t}}{\rm exp}\left\{ -\frac{(y-x)^2}{2t} \right\}\d y
+        \end{equation*}
+        $\lambda>0$，求其预解式$\R_\lambda$.
+    \end{example}
+    \begin{proof}
+        \begin{align*}
+            R_\lambda f(x)
+            &=\int_0^\infty {\rm e}^{-\lambda t}\int_E Q_t(x,\d y)f(y)\d t\\
+            &=\int_0^\infty {\rm e}^{-\lambda t} \int_{\R} \frac{1}{\sqrt{2\pi t}}{\rm exp}\left\{ -\frac{(y-x)^2}{2t} \right\}f(y)\d y\d t\\
+            &\text{（先对$\d t$积分）}\\
+            &=\int_{\R} f(y)\d y
+            \int_0^\infty {\rm e}^{-\lambda t}\frac{1}{\sqrt{2\pi t}}{\rm exp}\left\{ -\frac{(y-x)^2}{2t} \right\} \d t\\
+            &=\int_{\R} f(y)r_\lambda(y-x)\d y
+        \end{align*}
+        由\autoref{a integration-20240531}，其中
+        \begin{equation*}
+            r_\lambda(y-x)=\frac{1}{\sqrt{2\lambda}}{\rm exp}\{ -|y-x|\sqrt{2\lambda} \}
+        \end{equation*}
+    \end{proof}
+
+    \begin{example}
+        $(X_t)$是关于半群$(Q_t)$的马氏过程，如果$h\in \mathcal{B}(E),h\geqslant 0,\lambda \geqslant 0$，则
+        \begin{equation*}
+            M_t={\rm e}^{-\lambda t}R_\lambda h(X_t),\ t\geqslant 0
+        \end{equation*}
+        是一个上鞅。
+    \end{example}
+    \begin{proof}
+        $M_t$是关于$X_t$的函数，所以$M_t\in \F_t$，并且有界（从而可积）。
+        注意到$\forall h\in B(E),x\in E,s\geqslant 0$，
+        \begin{align*}
+            Q_s R_\lambda h(x)
+            &=Q_s(R_\lambda h)(x)\\
+            &=\int_E Q_s(x,\d y)R_\lambda h(y)\\
+            &=\int_E Q_s(x,\d y)\int_0^\infty {\rm e}^{-\lambda t}Q_t h(y)\d t\\
+            &=\int_0^\infty {\rm e}^{-\lambda t}Q_{s+t}h(x)\d t
+        \end{align*}
+        从而可得
+        \begin{equation*}
+            {\rm e}^{-\lambda s}Q_s R_\lambda h(x)
+            =\int_0^\infty {\rm e}^{-\lambda (s+t)}Q_{s+t}h(x)\d t
+            =\int_s^\infty {\rm e}^{-\lambda t}Q_t h(x) \d t
+            \leqslant R_\lambda h(x)
+        \end{equation*}
+        那么
+        \begin{equation*}
+            \E[ M_{s+t}|\F_t ]
+            =\E[ {\rm e}^{-\lambda (s+t)}R_\lambda h(X_{s+t})|\F_t ]
+            ={\rm e}^{-\lambda (s+t)}R_\lambda h(X_t)
+            \leqslant {\rm e}^{-\lambda t}R_\lambda h(X_t)=M_t
+        \end{equation*}
+        所以$M_t$是上鞅。
+    \end{proof}
+
+\subsection{Feller半群}
+    现在我们假设$E$是一个Polish空间，如果映射$f:E\rightarrow \R$满足：
+    $\forall \varepsilon>0$，存在紧集$K\subset E$使得
+    $|f(x)|\leqslant \varepsilon,\forall x\in E\backslash K$，
+    则称$f$在无穷远处趋于$0$，这样的$f$全体记作$C_0(E)$.
+
+    取范数
+    \begin{equation*}
+        ||f||=\fun{sup}{x\in E}|f(x)|
+    \end{equation*}
+    那么$(C_0(E),||\cdot ||)$成为一个Banach空间。
+    \begin{definition}\label{Feller semigroup}
+        $(Q_t)_{t\geqslant 0}$是转移半群，称之为Feller半群，如果：
+        \begin{enumerate}[(1).]
+            \item $\forall f\in C_0(E)$，$Q_t f\in C_0(E)$.
+            \item $\forall f\in C_0(E)$，$|| Q_tf-f ||\rightarrow 0$ as $t\rightarrow 0$.
+        \end{enumerate}
+        如果一个马氏过程$X$的转移半群是Feller半群，就称之为Feller过程。
+    \end{definition}
+
+    \begin{corollary}
+        $(Q_t)_{t\geqslant 0}$是Feller半群，固定$f\in C_0(E)$，映射
+        \begin{equation*}
+            \R_+\rightarrow C_0(E),\ t\mapsto Q_t f
+        \end{equation*}
+        是一致连续的。
+    \end{corollary}
+    \begin{proof}
+        由\autoref{Feller semigroup}(2)，$\forall s\geqslant 0$，
+        因为$Q_s$是压缩映射，
+        \begin{equation*}
+            \fun{lim}{t\rightarrow 0^+}|| Q_{s+t}f-Q_s f ||
+            =\fun{lim}{t\rightarrow 0^+}|| Q_s( Q_tf-f ) ||=0
+        \end{equation*}
+        并注意到上述极限关于$s\in \R_+$一致收敛。
+    \end{proof}
+
+    \begin{corollary}
+        $(Q_t)_{t\geqslant 0}$是Feller半群，
+        其预解式满足：$\forall \lambda >0$，$f\in C_0(E)$，都有$R_\lambda f\in C_0(E)$.
+    \end{corollary}
+    \begin{proof}
+        由\autoref{Feller semigroup}(1)和DCT即得。
+    \end{proof}
+    
+    \begin{theorem}
+        对于Feller半群$(Q_t)_{r\geqslant 0}$，任取$\lambda >0$，定义
+        \begin{equation*}
+            R=\{ R_\lambda f:f\in C_0(E) \}
+        \end{equation*}
+        则$R$不取决于$\lambda$的选取，并且是$C_0(E)$的稠密子集。
+    \end{theorem}
+    \begin{proof}
+        对于$\lambda \neq \mu$，由预解恒等式，
+        \begin{equation*}
+            R_\lambda f=R_\mu( f+(\mu-\lambda)R_\lambda f )
+        \end{equation*}
+        这说明$R_\lambda f\in \{  R_\mu f:f\in C_0(E)  \}$，
+        即$R$不取决于$\lambda$的选取。
+        
+        $R$是$C_0(E)$的线性子空间，注意到
+        \begin{equation*}
+            \lambda R_\lambda f=\lambda \int_0^\infty {\rm e}^{-\lambda t}Q_t f\d t
+            =\int_0^\infty {\rm e}^{-\lambda t}Q_{t\lambda^{-1}}f\d t\rightarrow f
+            {\rm\ as\ }\lambda\rightarrow\infty
+        \end{equation*}
+        所以稠密性得证。
+    \end{proof}
+
+\subsection{生成元}
+    本小节我们默认在Feller半群$(Q_t)_{t\geqslant 0}$上讨论。
+    \begin{definition}
+        令
+        \begin{equation*}
+            D(L)=\{ f\in C_0(E): t\rightarrow 0^+\text{时，}\frac{Q_tf-f}{t}\text{在$C_0(E)$中收敛}  \}
+        \end{equation*}
+        对于$f\in D(L)$，则定义
+        \begin{equation*}
+            Lf=\fun{lim}{t\rightarrow 0^+}\frac{Q_tf-f}{t}
+        \end{equation*}
+        于是$L$成为一个线性算子，称之为生成元(generator)，$D(L)$称为$L$的定义域。
+    \end{definition}
+
+    \begin{proposition}[生成元与转移算子可交换]
+        $f\in D(L)$，$s>0$，则$Q_sf\in D(L)$，并且$L(Q_s f)=Q_s(Lf)$.
+    \end{proposition}
+    \begin{proof}
+        由于$Q_tQ_s$可交换，
+        \begin{equation*}
+            \frac{Q_t( Q_sf )-Q_s f}{t}=Q_s\left(\frac{ Q_tf-f }{t}\right)
+        \end{equation*}
+        因为$Q_s$是一个连续算子，所以
+        \begin{equation*}
+            L(Q_s f)=
+            \fun{lim}{t\rightarrow 0^+}
+            \frac{Q_t( Q_sf )-Q_s f}{t}
+            =Q_s\left(\fun{lim}{t\rightarrow 0^+} \frac{ Q_tf-f }{t}\right)
+            =Q_s(L f)
+        \end{equation*}
+    \end{proof}
+
+    \begin{proposition}\label{integration of generator}
+        $f\in D(L)$，$\forall t\geqslant 0$，都有
+        \begin{equation*}
+            Q_t f=f+\int_0^t Q_s(Lf)\d s
+            =f+\int_0^t L(Q_sf)\d s
+        \end{equation*}
+    \end{proposition}
+    \begin{proof}
+        \begin{align*}
+            \fun{lim}{s\rightarrow 0}\frac{Q_{t+s}f-Q_tf}{s}
+            &=\fun{lim}{s\rightarrow 0}Q_t\left( \frac{Q_sf-f}{s} \right)\\
+            &=Q_t(Lf)
+        \end{align*}
+        积分可得。
+    \end{proof}
+
+    \begin{proposition}[生成元与预解式的关系]
+        $\lambda >0$，
+        \begin{enumerate}[(1).]
+            \item $\forall g\in C_0(E)$，有$R_\lambda g\in D(L)$且$(\lambda -L)R_\lambda g=g$.
+            \item $f\in D(L)$，则$R_\lambda (\lambda -L)f=f$.           
+        \end{enumerate}
+        结合上述结论，可知$R=D(L)$，$R_\lambda=(\lambda -L)^{-1}$.
+    \end{proposition}
+    \begin{proof}
+        \begin{enumerate}[(1).]
+            \item 对于$g\in C_0(E)$，考虑
+                \begin{align*}
+                    Q_s(R_\lambda g)-R_\lambda g
+                    &=Q_s\left( \int_0^\infty {\rm e}^{-\lambda t}Q_t g\d t \right)-R_\lambda g \\
+                    &=\int_0^\infty {\rm e}^{-\lambda t}Q_{s+t} g\d t -R_\lambda g \\
+                    &={\rm e}^{\lambda s}\int_0^\infty {\rm e}^{-\lambda (s+t)}Q_{s+t} g\d t -R_\lambda g \\
+                    &={\rm e}^{\lambda s}\int_s^\infty {\rm e}^{-\lambda t}Q_{t} g\d t -R_\lambda g \\
+                    &={\rm e}^{\lambda s}\left(R_\lambda g-\int_0^s {\rm e}^{-\lambda t}Q_{t} g\d t\right)-R_\lambda g \\
+                    &=({\rm e}^{\lambda s}-1)R_\lambda g-{\rm e}^{\lambda s}\int_0^s {\rm e}^{-\lambda t}Q_{t} g\d t
+                \end{align*}
+                从而可得
+                \begin{align*}
+                    L(R_\lambda g)=&\fun{lim}{s\rightarrow 0^+}\frac{1}{s}(Q_s(R_\lambda g)-R_\lambda g)\\
+                    =&\fun{lim}{s\rightarrow 0^+}\left(\frac{{\rm e}^{\lambda s}-1}{s}R_\lambda g-{\rm e}^{\lambda s}\frac{1}{s}\int_0^s {\rm e}^{-\lambda t}Q_{t} g\d t\right)\\
+                    =&\lambda R_\lambda g-g
+                \end{align*}
+            \item 对于$f\in D(L)$，考虑
+                \begin{align*}
+                    R_\lambda (Lf)
+                    &=\int_0^\infty {\rm e}^{-\lambda t}Q_t(Lf)\d t\\
+                    &=\int_0^\infty {\rm e}^{-\lambda t}L(Q_t f)\d t\\
+                    &=\int_0^\infty {\rm e}^{-\lambda t} \fun{lim}{s\rightarrow 0^+}\frac{Q_{s+t}f-Q_tf}{s} \d t\\
+                    &=\fun{lim}{s\rightarrow 0^+} \frac{1}{s}\int_0^\infty {\rm e}^{-\lambda t} (Q_{s+t}f-Q_tf) \d t\\
+                    &=\fun{lim}{s\rightarrow 0^+} \frac{1}{s}\left(\int_0^\infty {\rm e}^{-\lambda t} Q_{s+t}f \d t-R_\lambda f\right)\\
+                    &\text{（这里类似于(1)的证明）}\\
+                    &=\fun{lim}{s\rightarrow 0^+} \frac{1}{s}\left( {\rm e}^{\lambda s}\left( R_\lambda f-\int_0^s {\rm e}^{-\lambda t} Q_{t}f \d t \right) -R_\lambda f\right)\\
+                    &=\fun{lim}{s\rightarrow 0^+} \frac{1}{s}\left( ({\rm e}^{\lambda s}-1)R_\lambda f-{\rm e}^{\lambda s}\int_0^s {\rm e}^{-\lambda t} Q_{t}f \d t \right)\\
+                    &=\lambda R_\lambda f-f
+                \end{align*}
+        \end{enumerate}
+    \end{proof}
+
+    \begin{example}
+        布朗运动的转移半群由下式给出：
+        \begin{equation*}
+            Q_tf(x)=\int_{\R} f(y)\frac{1}{\sqrt{2\pi t}}{\rm exp}\left\{ -\frac{(y-x)^2}{2t} \right\}\d y
+            =\E[ f(B_t+x) ]
+        \end{equation*}
+        其中$f\in C_0(E)$，并设$f$光滑，证明：
+        \begin{equation*}
+            Lf(x)=\frac{1}{2}f''(x),\ x\in\R
+        \end{equation*}
+    \end{example}
+    \begin{proof}
+        我们先计算：
+        \begin{align*}
+            Q_tf(x)-f(x)
+            &=\E[ f( B_t^x )-f(x) ]\\
+            &=\int_{\R} [f(y)-f(x)]\frac{1}{\sqrt{2\pi t}}{\rm exp}\left\{ -\frac{(y-x)^2}{2t} \right\}\d y\\
+            &=\int_{\R} [ f'(x)(y-x)+f''(x)\frac{(y-x)^2}{2}+f'''(\theta_{x,y})\frac{(y-x)^3}{6} ]\frac{1}{\sqrt{2\pi t}}{\rm exp}\left\{ -\frac{(y-x)^2}{2t} \right\}\d y\\
+            &=f'(x)\E[ B_t^0 ]+\frac{1}{2}f''(x)\E[ (B_t^0)^2 ]+\int_{\R} [f'''(\theta_{x,y})\frac{(y-x)^3}{6} ]\frac{1}{\sqrt{2\pi t}}{\rm exp}\left\{ -\frac{(y-x)^2}{2t} \right\}\d y\\
+            &=\frac{1}{2}f''(x)t+\int_{\R} [f'''(\theta_{x,y})\frac{(y-x)^3}{6} ]\frac{1}{\sqrt{2\pi t}}{\rm exp}\left\{ -\frac{(y-x)^2}{2t} \right\}\d y
+        \end{align*}
+        因此，
+        \begin{align*}
+            Lf(x)-\frac{1}{2}f''(x)
+            &=\fun{lim}{t\rightarrow 0^+}\frac{Q_tf(x)-f(x)-\frac{1}{2}f''(x)}{t}\\
+            &=\fun{lim}{t\rightarrow 0^+}\frac{\int_{\R} [f'''(\theta_{x,y})\frac{(y-x)^3}{6} ]\frac{1}{\sqrt{2\pi t}}{\rm exp}\left\{ -\frac{(y-x)^2}{2t} \right\}\d y}{t}
+        \end{align*}
+        \begin{lemma}
+            $f\in C_0(E)$且$f$光滑，则$f'\in C_0(E)$，进而$f$的任意阶导数都满足此性质。
+            \begin{proof}
+                只需证明$f'$在无穷远处趋于零，假设不然：
+                $\exists \varepsilon_0>0$使得$\forall M>0$，存在$x_0$满足$|x_0|>M$且$f'(x_0)>\varepsilon_0$，
+                根据$f'$的连续性，存在$a>0$使得
+                \begin{equation*}
+                    f'(x)>\varepsilon_0,\ x\in (x_0,x_0+a)
+                \end{equation*}
+                从而得到
+                \begin{equation*}
+                    f(x_0+a)-f(x_0)>\varepsilon_0 a
+                \end{equation*}
+                同时，我们取$\varepsilon<\frac{1}{2}a \varepsilon_0$，由于$f$在无穷远处趋于零，
+                所以存在$M>0$，使得
+                \begin{equation*}
+                    \fun{sup}{|x|>M} |f(x)|<\varepsilon
+                \end{equation*}
+                从而
+                \begin{equation*}
+                    \fun{sup}{|x|,|y|>M} |f(x)-f(y)|<2\varepsilon<\varepsilon_0 a
+                \end{equation*}
+                矛盾。
+            \end{proof}
+        \end{lemma}
+        由引理可见，$f'''\in C_0(E)$，从而是有界的，这表明
+        \begin{align*}
+            \left|\int_{\R} [f'''(\theta_{x,y})\frac{(y-x)^3}{6} ]\frac{1}{\sqrt{2\pi t}}{\rm exp}\left\{ -\frac{(y-x)^2}{2t} \right\}\d y\right|
+            \leqslant 
+            C\E[ |B_t^0|^3 ]=C\cdot t^{ \frac{3}{2} }
+        \end{align*}
+        这说明
+        \begin{equation*}
+            \fun{lim}{t\rightarrow 0^+}\left|\int_{\R} [f'''(\theta_{x,y})\frac{(y-x)^3}{6} ]\frac{1}{\sqrt{2\pi t}}{\rm exp}\left\{ -\frac{(y-x)^2}{2t} \right\}\d y\right|
+            \leqslant \fun{lim}{t\rightarrow 0^+} Ct^{\frac{1}{2}}=0
+        \end{equation*}
+        结论得证。
+    \end{proof}
+
+    \begin{theorem}\label{Martingale about generator}
+        设$h,g\in C_0(E)$，以下命题等价：
+        \begin{enumerate}[(1).]
+            \item $h\in D(L)$，$Lh=g$.
+            \item $\forall x\in E$，
+                \begin{equation*}
+                    M_t^x=h(X_t^x)-\int_0^t g(X_s^x)\d s,\ t\geqslant 0
+                \end{equation*}
+                是一个鞅。
+        \end{enumerate}
+    \end{theorem}
+    \begin{proof}
+        $(1)\Rightarrow (2)$：适应性和可积性不再赘述，我们验证：
+        \begin{equation*}
+            \E[ M_{s+t}^x|\F_s ]=M_s^x
+        \end{equation*}
+        观察左式，
+        \begin{align*}
+            \E[ M_{s+t}^x|\F_s ]
+            &=\E\left[ \left. h(X_{s+t}^x)-\int_0^{s+t} g(X_u^x)\d u \right| \F_s \right]\\
+            &=\E[ h(X_{s+t}^x)|\F_s ]-\int_0^s g(X_u^x)\d u-\E\left[ \left. \int_s^{s+t} g(X_u^x)\d u \right| \F_s \right]\\
+            &=Q_th(X_s^x)-\int_0^s g(X_u^x)\d u-\E\left[ \left. \int_0^{t} g(X_{u+s}^x)\d u \right| \F_s \right]\\
+            &=Q_th(X_s^x)-\int_0^s g(X_u^x)\d u-\int_0^{t}\E\left[ \left. g(X_{u+s}^x) \right| \F_s \right]\d u\\
+            &=Q_th(X_s^x)-\int_0^s g(X_u^x)\d u-\int_0^{t} Q_u(g(X_s^x)) \d u
+        \end{align*}
+        由\autoref{integration of generator}可得
+        \begin{equation*}
+            \int_0^{t} Q_u(g(X_s^x)) \d u=\int_0^{t} Q_u(Lh(X_s^x)) \d u
+            =Q_th(X_s^x)-h(X_s^x)
+        \end{equation*}
+        这说明
+        \begin{align*}
+            \E[ M_{s+t}^x|\F_s ]&=Q_th(X_s^x)-\int_0^s g(X_u^x)\d u-Q_th(X_s^x)+h(X_s^x)\\
+            &=h(X_s^x)-\int_0^s g(X_u^x)\d u=M_s^x
+        \end{align*}
+
+        $(2)\Rightarrow (1)$：$M_t^x$是鞅，则
+        \begin{equation*}
+            \E[ M_t^x ]=\E[ M_0^x ]=h(x)
+        \end{equation*}
+        另一方面，
+        \begin{align*}
+            \E[ M_t^x ]
+            &=\E[ h(X_t^x) ]-\E\left[ \int_0^t g(X_s^x)\d s \right]\\
+            &=Q_th(x)-\int_0^t \E[g(X_s^x)] \d s\\
+            &=Q_th(x)-\int_0^t Q_tg(x) \d s
+        \end{align*}
+        所以
+        \begin{equation*}
+            Lh(x)=\fun{lim}{t\rightarrow 0^+}\frac{Q_th-h}{t}(x)=
+            \fun{lim}{t\rightarrow 0^+}\frac{1}{t}\int_0^t Q_t g(x)\d s=g(x)
+        \end{equation*}
+    \end{proof}
+
+\section{马氏性与强马氏性}
+    回顾一下之前的内容：
+    考虑过程$(X_t^x)$，半群：
+    \begin{equation*}
+        Q_tf(x)=\E[ f(X_t^x) ],\ t\geqslant 0
+    \end{equation*}
+    预解式：
+    \begin{equation*}
+        R_\lambda f(x)=\int_0^\infty {\rm e}^{-\lambda t}Q_tf(x)\d t,\ \lambda >0
+    \end{equation*}
+    生成元：
+    \begin{equation*}
+        Lf=\fun{lim}{t\rightarrow 0^+}\frac{Q_tf-f}{t}
+    \end{equation*}
+
+    \begin{theorem}
+        $(X_t)_{t\geqslant 0}$是马氏过程，$(Q_t)_{t\geqslant 0}$是相应的Feller半群，
+        那么一定存在$X$的一个修正$X'$，使得$(Q_t)_{t\geqslant 0}$也是$X'$的Feller半群，且具有RCLL轨道。
+    \end{theorem}
+    我们省略详细证明\footnote{大致思路为：考虑上鞅$\{ {\rm e}^{-pt}g(X_t) \}$，对其进行轨道修正。}
+    ，以下均不妨假设马氏过程有RCLL轨道。记
+    \begin{equation*}
+        D(E)=\{ f(t):[0,+\infty)\rightarrow E\text{是RCLL函数} \}
+    \end{equation*}
+    固定$\omega\in\Omega$，
+    $t\mapsto \omega(t)\defeq X_t(\omega)$是RCLL函数a.s.，
+    所以不妨认为$D(E)$就是$\Omega$，其上的$\sigma$-域就是：
+    \begin{equation*}
+        \mathcal{B}( D(E) )=\sigma(X_t(\omega)=\omega(t)\in D(E),0\leqslant t<+\infty)
+    \end{equation*}
+    \begin{definition}[时间平移算子]
+        对于随机过程$(Y_t)_{t\geqslant 0}$，定义算子：
+        \begin{equation*}
+            Y_t\circ \theta_s=Y_{t+s},\ s\geqslant 0
+        \end{equation*}
+    \end{definition}
+
+    \begin{theorem}[马氏性的一般表述]
+        $(Q_t)_{t\geqslant 0}$为转移半群，
+        $X=(X_t)_{t\geqslant 0}$是相应的马氏过程，
+        且具有RCLL轨道。
+        设$\Phi:D(E)\rightarrow \R$有界可测，
+        那么对于$\forall s\geqslant 0$，
+        \begin{equation*}
+            \E[ \Phi(X\circ \theta_s)|\F_s ]=\E_{X_s} [ \Phi(X) ]
+        \end{equation*}
+    \end{theorem}
+    \begin{remark}
+        其中，$X$视为一个把$\omega\in\Omega$映为样本轨道的映射，那么
+        $\Phi(X)$就是一个随机变量，相当于：
+        \begin{equation*}
+            \omega\mapsto \Phi\left( u\mapsto X_u(\omega) \right)
+        \end{equation*}
+
+        不难看出，如果令
+        \begin{equation*}
+            \Phi(X(\omega))=\Phi\left( u\mapsto X_u(\omega) \right)=f(X_t(\omega))
+        \end{equation*}
+        其中$t\geqslant 0$是一个固定的常数，$f$是一个固定的有界可测实函数，
+        带入到本定理的结论中就得到
+        \begin{equation*}
+            \E[ f(X_{t+s})|\F_s ]=\E_{X_s}[f(X_t)]
+            =Q_t f(X_s)
+        \end{equation*}
+        这正是我们在\autoref{Def of Cont-MarkovProcess}中的表述，
+        这说明本定理给出的表述是更一般化的马氏性表述。
+    \end{remark}
+    \begin{proof}
+        根据单调类定理，我们只需证明对以下形式的$\Phi$成立即可：
+        \begin{equation*}
+            \Phi(X(\omega))=\varphi_1(X_{t_1})\varphi_2(X_{t_2})\cdots \varphi_p(X_{t_p})
+        \end{equation*}
+        其中$t_1<t_2<\cdots,t_p$，$\forall \varphi_i\in B(E)$，也就是证明：
+        \begin{equation*}
+            \E[ \varphi_1(X_{t_1+s})\varphi_2(X_{t_2+s})\cdots \varphi_p(X_{t_p+s})|\F_s ]
+            =\E_{X_s}[ \varphi_1(X_{t_1})\varphi_2(X_{t_2})\cdots \varphi_p(X_{t_p}) ]
+        \end{equation*}
+        归纳：$p=1$时由定义即得，设$p-1$时成立，考虑$p$的情形：
+        \begin{align*}
+            {\rm LHS}
+            &=\E[ \varphi_1(X_{t_1+s})\varphi_2(X_{t_2+s})\cdots \varphi_p(X_{t_p+s})|\F_s ]\\
+            &=\E[ \E[ \varphi_1(X_{t_1+s})\varphi_2(X_{t_2+s})\cdots \varphi_p(X_{t_p+s})|\F_{t_{p-1}+s} ]  |\F_s ]\\
+            &=\E[ \varphi_1(X_{t_1+s})\varphi_2(X_{t_2+s})\cdots \varphi_{p-1}(X_{t_{p-1+s}})\E[ \varphi_p(X_{t_p+s})|\F_{t_{p-1}+s} ]  |\F_s ]\\
+            &=\E[ \varphi_1(X_{t_1+s})\varphi_2(X_{t_2+s})\cdots \varphi_{p-1}(X_{t_{p-1+s}})Q_{t_p-t_{p-1}}\varphi_p(X_{ t_{p-1}+s })  |\F_s ]\\
+            &=\E_{X_s}[ \varphi_1(X_{t_1})\varphi_2(X_{t_2})\cdots \varphi_{p-1}(X_{t_{p-1}}) Q_{t_p-t_{p-1}}\varphi_p(X_{t_{p-1}})]\\
+            {\rm RHS}
+            &=\E_{X_s}[ \varphi_1(X_{t_1})\varphi_2(X_{t_2})\cdots \varphi_{p}(X_{t_{p}}) ]\\
+            &=\E_{X_s}[ \E[\varphi_1(X_{t_1})\varphi_2(X_{t_2})\cdots \varphi_{p}(X_{t_{p}})|\F_{t_p-1}] ]\\
+            &=\E_{X_s}[ \varphi_1(X_{t_1})\varphi_2(X_{t_2})\cdots \varphi_{p-1}(X_{t_{p-1}})Q_{t_p-t_{p-1}}\varphi_p(X_{t_{p-1}}) ]
+        \end{align*}
+        二者相等。综上结论得证。
+    \end{proof}
+
+    \begin{theorem}[强马氏性]
+        $(Q_t)_{t\geqslant 0}$为Feller半群，
+        $X=(X_t)_{t\geqslant 0}$是相应的马氏过程，
+        且具有RCLL轨道。设$\Phi:D(E)\rightarrow \R$有界可测，$T$是停时，则
+        \begin{equation*}
+            \E[ \Phi(X\circ \theta_T)\cdot I_{ \{T<+\infty\}} |\F_T ]=I_{ \{T<+\infty\}}\cdot \E_{X_T}[ \Phi(X) ]
+        \end{equation*}
+    \end{theorem}
+    \begin{proof}
+        根据单调类定理，我们只需证明对以下形式的$\Phi$成立即可：
+        \begin{equation*}
+            \Phi(X(\omega))=\varphi_1(X_{t_1})\varphi_2(X_{t_2})\cdots \varphi_p(X_{t_p})
+        \end{equation*}
+        其中$t_1<t_2<\cdots,t_p$，$\forall \varphi_i\in C_0(E)$，也就是证明：
+        \begin{equation*}
+            \E[ \varphi_1(X_{t_1+T})\varphi_2(X_{t_2+T})\cdots \varphi_p(X_{t_p+T}) I_{ \{ T<+\infty \} } |\F_T ]
+            =I_{ \{ T<+\infty \}}\E_{X_T}[ \varphi_1(X_{t_1})\varphi_2(X_{t_2})\cdots \varphi_p(X_{t_p}) ]
+        \end{equation*}
+        由于$I\{T<\infty\}E_{X_T}[\Phi(X)]$关于$\mathcal{F}_T$可测，
+        由条件期望的定义，只需证明：对$A\in\mathcal{F}_T$，有
+        \begin{equation*}
+            E\begin{bmatrix}I_{A\cap\{T<\infty\}}\Phi(X\circ\theta_T)\end{bmatrix}=E\begin{bmatrix}I_{A\cap\{T<\infty\}}E_{X_T}[\Phi(X)]\end{bmatrix}
+        \end{equation*}
+        归纳：先证明其对$p=1$的情况成立，此时$\Phi(X(\omega))=\phi_1(X_{t_1}(\omega))$，
+        \begin{equation*}
+            \text{LHS}
+            =E\left[I_{A\cap\{T<\infty\}}\Phi(X\circ\theta_T)\right]=E\left[I_{A\cap\{T<\infty\}}\phi_1(X_{t_1+T})\right]
+        \end{equation*}
+        定义
+        \begin{equation*}
+            [T]_n=\frac k{2^n},\text{ 如果 }\frac{k-1}{2^n}\leqslant T<\frac k{2^n},\:k=0,1,\cdots 
+        \end{equation*}
+        那么有$[T]_n\searrow T$。进而，
+        \begin{align*}
+            \text{LHS}& =\lim_{n\to\infty}E\left[I_{A\cap\{T<\infty\}}\phi_{1}(X_{t_{1}+[T]_{n}})\right]  \\
+            &=\lim_{n\to\infty}\sum_{k=1}^nE\left[I_{A\cap\{\frac{k-1}{2^n}\leqslant T<\frac{k}{2^n}\}}\phi_1(X_{t_1+\frac{k}{2^n}})\right] \\
+            &=\lim_{n\to\infty}\sum_{k=1}^nE\left[I_{A\cap\{\frac{k-1}{2^n}\leqslant T<\frac{k}{2^n}\}}E\left[\phi_1(X_{t_1+\frac{k}{2^n}})\Big|\mathcal{F}_{\frac{k}{2^n}}\right]\right]\quad(A\in\mathcal{F}_T) \\
+            &=\lim_{n\to\infty}\sum_{k=1}^nE\left[I_{A\cap\{\frac{k-1}{2^n}\leqslant T<\frac{k}{2^n}\}}Q_{t_1}\phi_1(X_{\frac{k}{2^n}})\right]\quad\text{(马氏性)} \\
+            &=\lim_{n\to\infty}E\begin{bmatrix}I_{A\cap\{T<\infty\}}Q_{t_1}\phi_1(X_{[T]_n})\end{bmatrix} \\
+            &=E\begin{bmatrix}I_{A\cap\{T<\infty\}}Q_{t_1}\phi_1(X_T)\end{bmatrix}\quad\text{(Feller 性质)}
+        \end{align*}
+        另一方面，
+        \begin{equation*}
+            \mathrm{RHS}=E\left[I_{A\cap\{T<\infty\}}E_{X_{T}}[\phi_{1}(X_{t_{1}})]\right]
+            =E\begin{bmatrix}I_{A\cap\{T<\infty\}}Q_{t_1}\phi_1(X_{t_1})\end{bmatrix}
+        \end{equation*}
+        二者相等，于是得证。$p-1$到$p$的递推的证明和之前类似，不再赘述。
+    \end{proof}
+
+\section{两个例子：跳跃过程与Levy过程}
+\subsection{跳跃过程}
+    如果状态空间$E$是至多可数集，我们采用离散度量诱导的拓扑：
+    \begin{equation*}
+        d(x,y)=\delta_{x,y},\ \forall x,y,\in E
+    \end{equation*}
+    $E$的子集全体作为其$\sigma$-域。
+    容易验证任意$\varphi:E\rightarrow\R$都是连续的，
+    所以$C_0(E)=B(E)$. 
+    
+    用$D(E)$代表$E$上的RCLL函数全体，
+    注意到$\forall f\in D(E)$，右连续$\Rightarrow f(0+)=f(0)$，
+    故存在$t_1>0$使得
+    \begin{equation*}
+        f(t)=f(0),\ \forall t\in [0,t_1)
+    \end{equation*}
+    那么，我们就令
+    \begin{equation*}
+        \gamma_1^f\defeq \fun{sup}{}\{ t_1\geqslant 0:f(t)=f(0),\ \forall t\in [0,t_1) \}
+    \end{equation*}
+    即$f$第一次改变初始状态的时刻（可以取$+\infty$），
+    如果$\gamma_1^f<+\infty$，以此类推：
+    \begin{align*}
+        \gamma_2^f&\defeq \fun{sup}{}\{ t_2\geqslant \gamma_1^f:f(t_2)=f(\gamma_1^f),\ \forall t\in [\gamma_1^f,t_2) \}\\
+        \gamma_3^f&\defeq \fun{sup}{}\{ t_3\geqslant \gamma_1^f:f(t_3)=f(\gamma_2^f),\ \forall t\in [\gamma_2^f,t_3) \}\\
+        \vdots&
+    \end{align*}
+    一个简单的推论是：$\gamma_n^f\nearrow+\infty$，否则，
+    假设$\gamma_n^f\nearrow \gamma^f<+\infty$，则
+    \begin{equation*}
+        \fun{lim}{n\rightarrow\infty} f(\gamma_n^f)=f(\gamma^f-) 
+    \end{equation*}
+    从而存在$N$使得$n>N$时$f(\gamma_n^f)=f(\gamma^f-)$，矛盾。
+
+    现在我们考虑$E$上的Feller半群$(Q_t)_{t\geqslant 0}$，
+    $X$是相应的（轨道RCLL的）马氏过程，我们记概率测度$\P_x$是满足$\P_x(X_0=x)=1$的测度，
+    $\E_x$是$\P_x$下的期望。
+    那么，固定$\omega\in \Omega$，得到RCLL的样本轨道
+    $t\mapsto X_t(\omega)$，根据前文中的分析，存在一系列
+    \begin{equation*}
+        0=T_0(\omega)\leqslant T_1(\omega)\leqslant T_2(\omega)\leqslant \cdots \leqslant +\infty
+    \end{equation*}
+    满足：如果$T_i(\omega)<+\infty$，那么
+    \begin{equation*}
+        X_t(\omega)=X_{T_i}(\omega),\ \forall t\in [T_i(\omega),T_{i+1}(\omega))
+    \end{equation*}
+    不难验证$T_i$都是停时。
+
+    \begin{theorem}[指数时间]\label{Exponential Times}
+        对于固定的$x\in E$，存在常数$q(x)\geqslant 0$，使得$\P_x$测度下，
+        $T_1$服从参数为$q(x)$的指数分布\footnote{参数为$0$的指数分布定义为$=+\infty $a.s.}。
+        如果$q(x)>0$，则$T_1$与$X_{T_1}$在$\P_x$测度下独立。
+    \end{theorem}
+    \begin{proof}
+        任取$s,t\geqslant 0$，
+        \begin{align*}
+            \P_x( T_1>s+t )
+            &=\E_x[ I_{ \{ T_1>s+t \} } ]\\
+            &=\E_x[ I_{ \{ \omega:X_u(\omega)=X_0(\omega),\forall u\in [0,s+t] \} } ]\\
+            &=\E_x[ I_{ \{ \omega:X_u(\omega)=X_0(\omega),\forall u\in [0,s] \} }I_{ \{ \omega:X_u(\omega)=X_s(\omega),\forall u\in [s,s+t] \} } ]\\
+            &\text{（我们定义：$\Phi(f)=I_{ \{ f(u)=f(0),\forall u\in [0,t] \} }$）}\\
+            &=\E_x[ I_{ \{T_1>s\} }\cdot \Phi( X\circ \theta_s ) ]\\
+            &=\E_x[ \E[ I_{ \{T_1>s\} }\cdot \Phi( X\circ \theta_s )|\F_s ] ]\\
+            &=\E_x[ I_{ \{T_1>s\} }\cdot\E[\Phi( X\circ \theta_s )|\F_s ] ]\\
+            &=\E_x[ I_{ \{T_1>s\} }\cdot\E_{X_s}[\Phi(X)] ]\\
+            &=\E_x[ I_{ \{T_1>s\} }\cdot\E_{X_s}[I_{ \{T_1>t\} }] ]\\
+            &\text{（注意$T_1>s$时$X_s=x$）}\\
+            &=\E_x[ I_{ \{T_1>s\} }\cdot\E_{x}[I_{ \{T_1>t\} }] ]\\
+            &=\P_x(T_1>s)\P_x(T_1>t)
+        \end{align*}
+        此即无记忆性，可得$T_1$服从$\P_x$下的指数分布。
+
+        如果$q(x)>0$，即$T_1<+\infty$ $\P_x$-a.s.，于是$\forall t\geqslant 0,y\in E$有
+        \begin{align*}
+            \P_x(T_1>t,X_{T_1}=y)
+            &=\E_x[ I_{ \{T_1>t\} }I_{ \{X_{T_1}=y\} } ]\\
+            &\text{（我们定义：$\Psi(f)=I_{ \{ \gamma_1^f<+\infty,f( \gamma_1^f)=y \} }$）}\\
+            &=\E_x[ I_{ \{T_1>t\} }\Psi(X\circ \theta_{t}) ]\\
+            &=\E_x[ \E[I_{ \{T_1>t\} }\Psi(X\circ \theta_{t})|\F_t] ]\\
+            &=\E_x[ I_{ \{T_1>t\} }\cdot \E[\Psi(X\circ \theta_{t})|\F_t] ]\\
+            &=\E_x[ I_{ \{T_1>t\} }\cdot \E_{X_t}[\Psi(X)] ]\\
+            &=\E_x[ I_{ \{T_1>t\} }\cdot \E_{x}[ I_{ \{ X_{T_1}=y \} } ] ]\\
+            &=\P_x( T_1>t )\P_x( X_{T_1}=y )
+        \end{align*}
+        独立性得证。
+    \end{proof}
+
+    接下来，如果$q(x)>0$，记$\pi(x,y)=\P_x(X_{T_1}=y)$，即从$x$出发第一次跳跃到$y$，
+    不难验证：
+    \begin{equation*}
+        \sum_{y\in E}\pi(x,y)=1,\ \pi(x,x)=0
+    \end{equation*}
+    \begin{theorem}[生成元的表述]\label{Generator of Jumping Process}
+        $(Q_t)_{t\geqslant 0}$的生成元为$L$，定义域
+        $D(L)=C_0(E)=B(E)$，那么对于$\varphi\in B(E)$，
+        \begin{equation*}
+            L\varphi(x)=q(x)\sum_{y\neq x}\pi(x,y)( \varphi(y)-\varphi(x) )
+        \end{equation*}
+    \end{theorem}
+    \begin{proof}
+        如果$q(x)=0$，则
+        \begin{equation*}
+            Q_t\varphi(x)=\E_x[ \varphi(X_t) ]
+            =\E_x[\varphi(x)]=\varphi(x)
+        \end{equation*}
+        从而$L\varphi(x)=0$.
+
+        如果$q(x)>0$，
+        \begin{lemma}
+            $\P_x(T_2\leqslant t)=O(t^2)$，即存在$C>0$使得$\P_x(T_2\leqslant t)\leqslant Ct^2$.
+            \begin{proof}
+                \begin{align*}
+                    \P_{x}(T_{2}\leqslant t)& \leqslant \P_{x}(T_{1}\leqslant t,\:T_{2}\leqslant T_{1}+t)  \\
+                    &=\P_{x}(T_{1}\leqslant t,\:T_{1}+T_{1}\circ\theta_{T_{1}}\leqslant T_{1}+t) \\
+                    &=\P_{x}(T_{1}\leqslant t,\:T_{1}\circ\theta_{T_{1}}\leqslant t) \\
+                    &=\E_{x}[\E_{x}[I_{\{T_{1}\leqslant t\}}I_{\{T_{1}\circ\theta_{T_{1}}\leqslant t\}}|\mathcal{F}_{T_{1}}]] \\
+                    &=\E_{x}[I_{\{T_{1}\leqslant t\}}\E_{X_{T_{1}}}[I_{\{T_{1}\leqslant t\}}]]\quad\text{(强马氏性)} \\
+                    &\leqslant \E_x[I_{\{T_1\leqslant t\}}\sup_{y\in E}\P_y(T_1\leqslant t)] \\
+                    &\leqslant\sup_{y\in E}\P_y(T_1\leqslant t)\P_x(T_1\leqslant t) \\
+                    &=\sup_{y\in E}(1-e^{-q(y)t})(1-e^{-q(x)t}) \\
+                    &\leqslant Ct^{2},\quad\text{当}t\to0
+                \end{align*}
+            \end{proof}
+        \end{lemma}
+        那么
+        \begin{align*}
+            Q_{t}\varphi(x)
+            &=\E_{x}[\varphi(X_{t})]  \\
+            &=\E_x[\varphi(X_t);\:t<T_1]+\E_x[\varphi(X_t);\:t\geqslant T_1] \\
+            &=\E_x[\varphi(X_t);\:t<T_1]+\E_x[\varphi(X_t);\:T_1\leqslant t<T_2]+\E_x[\varphi(X_t);\:t>T_2] \\
+            &=\E_x[\varphi(x);\:t<T_1]+\E_x[\varphi(X_{T_1});\:T_1\leqslant t<T_2]+\E_x[\varphi(X_t);\:t>T_2] \\
+            &=\varphi(x)\P_x(t<T_1)+\E_x[\varphi(X_{T_1});\:t\geqslant T_1]+O(t^2) \\
+            &=\varphi(x)e^{-q(x)t}+\E_x[\varphi(X_{T_1})]\P_x(t\geqslant T_1)+O(t^2) \\
+            &=\varphi(x)e^{-q(x)t}+\sum_{y\neq x}\pi(x,y)\varphi(y)(1-e^{-q(x)t})+O(t^{2}) \\
+            &=\varphi(x)e^{-q(x)t}+(1-e^{-q(x)t})\sum_{y\neq x}\pi(x,y)\varphi(y)+O(t^{2})
+        \end{align*}
+        因此
+        \begin{equation*}
+            \frac{Q_t\varphi(x)-\varphi(x)}{t}=\frac{\varphi(x)(e^{-q(x)t}-1)+(1-e^{-q(x)t})\sum_{y\ne x}\pi(x,y)\varphi(y)+O(t^2)}{t}
+            \rightarrow q(x)\sum_{y\neq x}\pi(x,y)(\varphi(y)-\varphi(x))
+        \end{equation*}
+    \end{proof}
+
+    \begin{theorem}[跳链]\label{Jumping Chain}
+        如果$\forall q(y)>0$，
+        那么固定$x\in E$，$T_1(\omega)<T_2(\omega)<\cdots$都是$\P_x$-a.s.有限的，
+        此时，$\{ X_{T_n},n\in \N_+ \}$构成了一个（离散时间、离散状态）马氏链，
+        其一步转移概率$p(x,y)$就是$\pi(x,y)$.
+    \end{theorem}
+    \begin{proof}
+        \begin{align*}
+            \P_{x}(X_{T_{1}}=z_{1},\:X_{T_{2}}=z_{2})
+            &=\P_{x}(X_{T_{1}}=z_{1},\:X_{T_{1}+T_{1}\circ\theta_{T_{1}}}=z_{2})  \\
+            &=\P_{x}(X_{T_{1}}=z_{1},\:X_{T_{1}}\circ\theta_{T_{1}}=z_{2}) \\
+            &=\P_x(X_{T_1}=z_1,E_{X_{T_1}}[X_{T_1}=z_2])& \text{(强马氏性)}  \\
+            &=\P_{x}(X_{T_{1}}=z_{1},\:E_{z_{1}}[X_{T_{1}}=z_{2}]) \\
+            &=\P_{x}(X_{T_{1}}=z_{1})P_{z_{1}}(X_{T_{1}}=z_{2}) \\
+            &=\pi(x,z_1)\pi(z_1,z_2)
+        \end{align*}
+        归纳可证
+        \begin{equation*}
+            P_x(X_{T_1}=z_1,\:X_{T_2}=z_2,\cdots,\:X_{T_n}=z_n)=\pi(x,z_1)\pi(z_1,z_2)\cdots\pi(z_{n-1},z_n)
+        \end{equation*}
+    \end{proof}
+
+\subsection{Levy过程}
+    \begin{definition}
+        $Y=(Y_t)_{t\geqslant 0}$是一个在$\R$上取值的随机过程，
+        如果：
+        \begin{enumerate}[(1).]
+            \item $Y_0=0$ a.s.
+            \item $Y$有独立平稳增量：对于$\forall s\leqslant t$，$Y_t-Y_s$与$(Y_r,r\leqslant s)$独立，并且与$Y_{t-s}$同分布。
+            \item 当$t\rightarrow 0$时，$Y_t$依概率收敛到$0$.
+        \end{enumerate}
+    \end{definition}
+
+    \begin{theorem}
+        定义$B(\R)$上的算子如下：固定$t\geqslant 0$，
+        \begin{equation*}
+            Q_tf(x)=\E[ f(Y_t+x) ]
+        \end{equation*}
+        那么，$(Q_t)_{t\geqslant 0}$是$C_0(\R)$上的一个Feller半群，
+        并且$Y$是关于$(Q_t)_{t\geqslant 0}$的马氏过程。
+    \end{theorem}
+
+\section{习题}
+    \begin{ex}[le gall(Exercise6.26)][le gall(Exercise6.26)]
+        (Feynman-Kac formula)设$v\in C_0(E)$非负，
+        对于$\varphi\in B(E)$，我们定义
+        \begin{equation*}
+            Q_t^* \varphi(x)=\E_x\left[ \varphi(X_t){\rm exp}\left\{ -\int_0^t v(X_s)\d s \right\} \right],\ 
+            \forall x\in E,\forall t\geqslant 0
+        \end{equation*}
+        \begin{enumerate}
+            \item 证明：对于$\forall \varphi\in B(E),s,t\geqslant 0$有$Q_{t+s}^* \varphi=Q_t^*(Q_s^*\varphi)$.
+            \item 根据下面这个恒等式：
+                \begin{equation*}
+                    1-{\rm exp}\left\{ -\int_0^t v(X_s)\d s \right\}=\int_0^t v(X_s){\rm exp}\left\{ -\int_s^t v(X_r)\d r \right\}\d s
+                \end{equation*}
+                证明：$\forall \varphi\in B(E)$，都有
+                \begin{equation*}
+                    Q_t\varphi-Q_t^*\varphi=\int_0^t Q_s( vQ_{t-s}^* \varphi )\d s
+                \end{equation*}
+            \item 设$\varphi\in D(L)$，证明：
+                \begin{equation*}
+                    \frac{\d}{\d t}Q_t^* \varphi|_{t=0}=L\varphi-v\varphi
+                \end{equation*}
+        \end{enumerate}
+    \end{ex}
+    \begin{solve}
+        本题没什么难度，用的都是很简单的马氏性变换技巧。
+        \begin{enumerate}
+            \item 
+                \begin{align*}
+                    Q_{t+s}^* \varphi(x)
+                    &=\E_x\left[ \varphi(X_{t+s}){\rm exp}\left\{ -\int_0^{t+s} v(X_u)\d u \right\} \right]\\
+                    &=\E_x\left[ \E\left[ \left. \varphi(X_{t+s}){\rm exp}\left\{ -\int_0^{t+s} v(X_u)\d u \right\} \right| \F_t\right] \right]\\
+                    &=\E_x\left[ {\rm exp}\left\{ -\int_0^{t} v(X_u)\d u \right\}\cdot \E\left[ \left. \varphi(X_{t+s}){\rm exp}\left\{ -\int_t^{t+s} v(X_u)\d u \right\} \right| \F_t\right] \right]\\
+                    &=\E_x\left[ {\rm exp}\left\{ -\int_0^{t} v(X_u)\d u \right\}\cdot \E_{X_t}\left[ \varphi(X_{s}){\rm exp}\left\{ -\int_0^{s} v(X_u)\d u \right\} \right] \right]\tag*{（由马氏性）}\\
+                    &=\E_x\left[ {\rm exp}\left\{ -\int_0^{t} v(X_u)\d u \right\}\cdot Q_s^*(X_t) \right]\\
+                    &=Q_t^*(Q_s^*)(x)
+                \end{align*}
+            \item
+                \begin{align*}
+                    Q_t\varphi(x)-Q_t^*\varphi(x)
+                    &=\E_x\left[ \varphi(X_t)\cdot \left(1-{\rm exp}\left\{ -\int_0^t v(X_s)\d s \right\}\right) \right]\\
+                    &=\E_x\left[ \varphi(X_t)\cdot \int_0^t v(X_s){\rm exp}\left\{ -\int_s^t v(X_r)\d r \right\}\d s \right]\\
+                    &=\int_0^t \E_x\left[ \varphi(X_t)\cdot v(X_s){\rm exp}\left\{ -\int_s^t v(X_r)\d r \right\} \right]\d s\\
+                    &=\int_0^t \E_x\left[ \E\left[ \left.  \varphi(X_t)\cdot v(X_s){\rm exp}\left\{ -\int_s^t v(X_r)\d r \right\} \right|\F_s \right] \right]\d s\\
+                    &=\int_0^t \E_x\left[ v(X_s)\E\left[ \left.  \varphi(X_t)\cdot {\rm exp}\left\{ -\int_s^t v(X_r)\d r \right\} \right|\F_s \right] \right]\d s\\
+                    &=\int_0^t \E_x\left[ v(X_s)\E_{X_s}\left[ \varphi(X_{t-s})\cdot {\rm exp}\left\{ -\int_0^{t-s} v(X_r)\d r \right\} \right] \right]\d s\\
+                    &=\int_0^t \E_x\left[ v(X_s) Q_{t-s}^*\varphi(X_s) \right]\d s\\
+                    &=Q_s( v(Q_{t-s}^*\varphi) )(x)
+                \end{align*}
+            \item 易证$Q_0^*\varphi=\varphi$，所以
+                \begin{equation*}
+                    \left.\frac{\d}{\d t}Q_t^*\varphi\right|_{t=0}
+                    =\fun{lim}{t\rightarrow 0^+}\frac{ Q_t^*\varphi-\varphi }{ t }
+                    =\fun{lim}{t\rightarrow 0^+}\frac{ Q_t^*\varphi-Q_t\varphi+Q_t\varphi-\varphi }{ t }
+                    =L\varphi-\fun{lim}{t\rightarrow 0^+}\frac{ \int_0^t Q_s(vQ_{t-s}^*\varphi)\d s }{t}
+                    =L\varphi-v\varphi
+                \end{equation*}
+        \end{enumerate}
+    \end{solve}
+    \if{0}{
+    \begin{ex}[le gall(Exercise6.28)][le gall(Exercise6.28)]
+        (Killing operation)以下假设$X$有连续轨道。设$A\subset E$为紧集，
+        \begin{equation*}
+            T_A=\fun{inf}{}\{ t\geqslant 0:X_t\in A \}
+        \end{equation*}
+        \begin{enumerate}
+            \item 对于$\forall t\geqslant 0$，任意$E$上的有界可测函数$\varphi$，定义：
+                \begin{equation*}
+                    Q_t^* \varphi(x)=\E_x[ \varphi(X_t)I_{ \{t<T_A\} } ],\ \forall x\in E
+                \end{equation*}
+                证明：对于$\forall s,t\geqslant 0$有$Q_{t+s}^* \varphi=Q_t^*(Q_s^*\varphi)$.
+            \item 令$\overline{E}=(E\backslash A)\cup\{\Delta\}$，其中$\Delta$是相对于$E\backslash A$的一个孤立点。
+            对于$\forall t\geqslant 0$，任意$E$上的有界可测函数$\varphi$，定义：
+            \begin{equation*}
+                \overline{Q}_t \varphi(x)=\E_x[ \varphi(X_t)I_{ \{ t<T_A \} } ]
+                +\P_x[ T_A\leqslant t ]\varphi(\Delta),\ {\rm if\ }x\in E\backslash A
+            \end{equation*}
+            并且$\overline{Q}_t \varphi(\Delta)=\varphi(\Delta)$. 证明：
+            $(\overline{Q}_t)_{t\geqslant 0}$是$\overline{E}$上的一个转移半群（不必证明映射$(t,x)\mapsto \overline{Q}_t\varphi(x)$的可测性。）
+            \item 概率测度$\P_x$下，定义过程$\overline{X}=(\overline{X}_t)_{t\geqslant 0}$：
+                \begin{equation*}
+                    \overline{X}_t=\left\{ \begin{array}{ll}
+                        X_t&,t<T_A\\
+                        \Delta&,t\geqslant T_A
+                    \end{array} \right.
+                \end{equation*}
+                证明$\overline{X}$是（关于$X$的正规滤流的）马氏过程，且半群为$(\overline{Q}_t)$.
+            \item 我们承认$(\overline{Q}_t)$是一个Feller半群，并记其生成元为$\overline{L}$，
+                设$f\in D(L)$满足$f$和$Lf$在一个包含$A$的开集上vanish（应该是取值为零的意思），
+                记$\overline{f}$是$f$在$E\backslash A$上的限制，并定义$\overline{f}(\Delta)=0$，
+                那么$\overline{f}$是$\overline{E}$上的函数，证明：
+                $\overline{f}\in D(\overline{L})$，$\overline{L}\overline{f}(x)=Lf(x)$，$\forall x\in E\backslash A$.
+        \end{enumerate}
+    \end{ex}
+    \begin{solve}
+        这个题先放着吧。
+    \end{solve}
+    }\fi
+    
+    \begin{ex}[le gall(Exercise6.29.1-4)][le gall(Exercise6.29.1-4)]
+        \begin{enumerate}
+            \item $g\in C_0(E)$，$x\in E$，$T$为停时，证明：
+                \begin{equation*}
+                    \E_x\left[ I_{ \{ T<+\infty \} }{\rm e}^{-\lambda T}\int_{\R} {\rm e}^{-\lambda t}g(X_{T+t})\d t \right]
+                    =\E_x[ I_{ \{ T<+\infty \} }{\rm e}^{-\lambda T}R_\lambda g(X_T) ]
+                \end{equation*}
+            \item 证明：
+                \begin{equation*}
+                    R_\lambda g(x)=\E_x\left[ \int_0^T {\rm e}^{-\lambda t}g(X_t)\d t \right]
+                    +\E_x[ I_{ \{ T<+\infty \} }{\rm e}^{-\lambda T}R_\lambda g(X_T) ]
+                \end{equation*}
+            \item 如果$f\in D(L)$，证明：
+                \begin{equation*}
+                    f(x)=\E_x\left[ \int_0^T {\rm e}^{-\lambda t}(\lambda f-Lf)(X_t)\d t \right]
+                    +\E_x[ I_{\{ T<+\infty \}}{\rm e}^{-\lambda T}f(X_T) ]
+                \end{equation*}
+            \item 设$\E_x[T]<+\infty$，利用3.中结论证明：
+                \begin{equation*}
+                    \E_x\left[ \int_0^T Lf(X_t)\d t \right]
+                    =\E_x[ f(X_T) ]-f(x)
+                \end{equation*}
+        \end{enumerate}
+    \end{ex}
+    \begin{solve}
+        \begin{enumerate}
+            \item \begin{align*}
+                {\rm LHS}
+                &=\E_x\left[ I_{ \{ T<+\infty \} }{\rm e}^{-\lambda T}\int_{\R} {\rm e}^{-\lambda t}g(X_{T+t})\d t \right]\\
+                &=\E_x\left[ \E\left[ \left. I_{ \{ T<+\infty \} }{\rm e}^{-\lambda T}\int_{\R} {\rm e}^{-\lambda t}g(X_{T+t})\d t \right|\F_T \right] \right]\\
+                &=\E_x\left[ {\rm e}^{-\lambda T}\E\left[ \left. I_{ \{ T<+\infty \} }\int_{\R} {\rm e}^{-\lambda t}g(X_{T+t})\d t \right|\F_T \right] \right]\\
+                &=\E_x\left[ {\rm e}^{-\lambda T}I_{ \{ T<+\infty \} }\E_{X_T}\left[ \int_{\R} {\rm e}^{-\lambda t}g(X_{t})\d t \right] \right]\\
+                &=\E_x\left[ {\rm e}^{-\lambda T}I_{ \{ T<+\infty \} }\int_{\R} \E_{X_T}\left[ {\rm e}^{-\lambda t}g(X_{t}) \right]\d t \right]\\
+                &=\E_x\left[ {\rm e}^{-\lambda T}I_{ \{ T<+\infty \} }\int_{\R} {\rm e}^{-\lambda t}Q_tg(X_T)\d t \right]\\
+                &=\E_x\left[ {\rm e}^{-\lambda T}I_{ \{ T<+\infty \} }R_\lambda g(X_T) \right]\\
+                &={\rm RHS}
+            \end{align*}
+            \item \begin{align*}
+                R_\lambda g(x)
+                &=\int_0^\infty {\rm e}^{-\lambda t}Q_tg(x)\d t\\
+                &=\int_0^\infty {\rm e}^{-\lambda t}\E_x[ g(X_t) ]\d t\\
+                &=\E_x\left[ \int_0^\infty {\rm e}^{-\lambda t}g(X_t)\d t \right]\\
+                &=\E_x\left[ \int_0^T {\rm e}^{-\lambda t}g(X_t)\d t \right]+\E_x\left[ \int_T^\infty {\rm e}^{-\lambda t}g(X_t)\d t \right]\\
+                &=\E_x\left[ \int_0^T {\rm e}^{-\lambda t}g(X_t)\d t \right]+\E_x\left[ I_{ \{ T<+\infty \} }\int_T^\infty {\rm e}^{-\lambda t}g(X_t)\d t \right]\\
+                &=\E_x\left[ \int_0^T {\rm e}^{-\lambda t}g(X_t)\d t \right]+\E_x\left[ {\rm e}^{-\lambda T}I_{ \{ T<+\infty \} }\int_0^\infty {\rm e}^{-\lambda t}g(X_{t+T})\d t \right]\\
+                &=\E_x\left[ \int_0^T {\rm e}^{-\lambda t}g(X_t)\d t \right]+\E_x[ I_{ \{ T<+\infty \} }{\rm e}^{-\lambda T}R_\lambda g(X_T) ]\tag*{（由1.中结论）}
+            \end{align*}
+            \item 注意到$R_\lambda=(\lambda -L)^{-1}$，考虑$g=(\lambda-L)f$，代入2.中结论即可。
+            \item $\E_x[T]<+\infty$说明$T<+\infty$ $\P_x$-a.s.，以下不再特殊说明。
+            由于$f,L(f)$有界，$\E_x[T]<+\infty$，令3.中的$\lambda\rightarrow 0$，根据控制收敛定理，
+            \begin{align*}
+                f(x)
+                &=\fun{lim}{\lambda\rightarrow 0}\E_x\left[ \int_0^T {\rm e}^{-\lambda t}(\lambda f-Lf)(X_t)\d t \right]+\fun{lim}{\lambda\rightarrow 0}\E_x[ I_{\{ T<+\infty \}}{\rm e}^{-\lambda T}f(X_T) ]\\
+                &=\E_x\left[ \int_0^T \fun{lim}{\lambda\rightarrow 0}{\rm e}^{-\lambda t}(\lambda f-Lf)(X_t)\d t \right]+\E_x[ \fun{lim}{\lambda\rightarrow 0}{\rm e}^{-\lambda T}f(X_T) ]\\
+                &=-\E_x\left[ \int_0^T Lf(X_t)\d t \right]+\E_x[ f(X_T) ]
+            \end{align*}
+        \end{enumerate}
+        关于本题4.的结论，有一种更直接的证法：
+        回顾\autoref{Martingale about generator}，可知
+        \begin{equation*}
+            M_t=f(X_t)-\int_0^t Lf(X_s)\d s
+        \end{equation*}
+        是一个鞅，固定$K>0$，$M_{t\wedge K}$为一致可积鞅，
+        由择停定理可知
+        \begin{equation*}
+            f(x)=\E_x[M_0]=\E_x[ f(X_{T\wedge K})-\int_0^{T\wedge K} Lf(X_s)\d s ]
+        \end{equation*}
+        由$\E_x[T]<+\infty$可知
+        \begin{equation*}
+            \fun{lim}{K\rightarrow\infty}f(X_{T\wedge K})=f(X_T){\rm\ }\P_x{\rm -a.s.}
+        \end{equation*}
+        由控制收敛定理即得
+        \begin{equation*}
+            f(x)=\E_x[ f(X_T) ]-\E_x\left[ \int_0^T Lf(X_t)\d t \right]
+        \end{equation*}
+    \end{solve}
+    
+    最后放一道去年期末题，比较简单，甚至都不需要用到马氏性。
+    \begin{ex}[2023SPFinal.6]
+        $(X_t^x)$为马氏过程，$(Q_t)_{t\geqslant 0}$为Feller半群，
+        生成元为$L$，$X_0^x=x$，$v,h\in C_0(E)$，求证：如果
+        \begin{equation*}
+            M_t^x={\rm e}^{ -\int_0^t v(X_s^x)\d s }h(X_t^x)
+        \end{equation*}
+        是鞅，则$h\in D(L)$，并且$Lh=vh$.
+    \end{ex}
+    \begin{solve}
+        任取$t,u\geqslant 0$，
+        $\E[ M_{t+u}^x|\F_t ]=M_t^x$，左边等于
+        \begin{equation*}
+            \E\left[ \left.{\rm e}^{ -\int_0^{t+u} v(X_s^x)\d s }h(X_{t+u}^x)\right|\F_t \right]
+            =
+            {\rm e}^{ -\int_0^{t} v(X_s^x)\d s }\E\left[ \left.{\rm e}^{ -\int_t^{t+u} v(X_s^x)\d s }h(X_{t+u}^x)\right|\F_t \right]
+        \end{equation*}
+        因此
+        \begin{equation*}
+            \E\left[ \left.{\rm e}^{ -\int_t^{t+u} v(X_s^x)\d s }h(X_{t+u}^x)\right|\F_t \right]=h(M_t^x)
+        \end{equation*}
+        令$t=0$，得到
+        \begin{equation*}
+            h(x)=\E_x[ {\rm e}^{ -\int_0^{u} v(X_s)\d s }h(X_{u}) ]
+        \end{equation*}
+        所以
+        \begin{align*}
+            Lh(x)
+            &=\fun{lim}{u\rightarrow 0^+}\frac{Q_uh(x)-h(x)}{u}\\
+            &=\fun{lim}{u\rightarrow 0^+}\frac{\E_x[h(X_u)]-h(x)}{u}\\
+            &=\fun{lim}{u\rightarrow 0^+}\frac{\E_x\left[  \left( 1-{\rm e}^{-\int_0^u v(X_s)\d s} \right)h(X_u)  \right]}{u}\\
+            &=\E_x\left[ \fun{lim}{u\rightarrow 0^+}\frac{1-{\rm e}^{-\int_0^u v(X_s)\d s}}{u}h(X_u) \right]\\
+            &=\E_x\left[ h(x)\fun{lim}{u\rightarrow 0^+}\frac{\int_0^u v(X_s){\rm exp}\left\{ -\int_s^u v(X_r)\d r \right\}\d s}{u} \right]\\
+            &=\E_x\left[ h(x)\fun{lim}{u\rightarrow 0^+}v(X_0){\rm exp}\left\{ -\int_0^u v(X_r)\d r \right\} \right]\tag*{（洛必达）}\\
+            &=\E_x\left[ h(x)v(x) \right]\\
+            &=h(x)v(x)
+        \end{align*}
+        中间用到了\autoref{le gall(Exercise6.26)}.2里面的那个恒等式。
+    \end{solve}
+    
+\clearpage
+\section{关于跳跃过程的更多内容*}
+    此部分来源于应随课程，
+    主要内容为离散状态、连续时间马氏过程（即跳跃过程，也称之为连续时间马氏链）
+    的更多性质和应用。
+
+\subsection{基本概念}
+    \begin{definition}[连续时间马氏链]
+        概率空间$(\Omega,\F,\P)$上的随机过程$X=\{ X(t),t\geqslant 0 \}$的状态空间
+        $S$为至多可数集。如果$X$满足马氏性：
+        $\forall j,i_{1},\cdots,i_{n-1}\in S,0\leqslant t_1<\cdots<t_n$，都有
+        \begin{equation*}
+            \P( X(t_n)=j|X(t_{n-1})=i_{n-1},\cdots,X(t_1)=i_1 )=\P( X(t_n)=j|X(t_{n-1})=i_{n-1} )
+        \end{equation*}
+        并且$X$是右连续的，则称$X$为连续时间马氏链。
+
+        其转移概率定义为
+        \begin{equation*}
+            p_{ij}(s,t)=\P( X(t)=j|X(s)=i )
+        \end{equation*}
+        如果$p_{ij}(s,t)=p_{ij}(0,t-s)$，则称$X$为时间齐次的，以下我们总假设时间齐次，并
+        把$p_{ij}(0,t)$简记为$p_{ij}(t)$.
+
+        记矩阵$\mathbf{P}_t=( p_{ij}(t) )_{ |S|\times |S| }$，
+        $\{ \mathbf{P}_t,t\geqslant 0 \}$称为$X$的转移半群。
+    \end{definition}
+
+    \begin{theorem}
+        $\{ \mathbf{P}_t,t\geqslant 0 \}$的性质：
+        \begin{enumerate}[(1).]
+            \item $\mathbf{P}_0=I$.
+            \item $\forall p_{ij}(t)\geqslant 0$，$\sum_{j} p_{ij}(t)=1$.
+            \item CK方程：$\mathbf{P}_{s+t}=\mathbf{P}_{s}+\mathbf{P}_{t}$.
+        \end{enumerate}
+    \end{theorem}
+    所以，$X$的分布由$X(0)$和$\{ \mathbf{P}_t,t\geqslant 0 \}$决定。
+
+    \begin{definition}[马氏性更一般化的定义]
+        对于$A\in \F$，如果$A\in \sigma( \{ X(s),s<t \} )$，
+        则称$A$ is $t$-historical；
+        如果如果$A\in \sigma( \{ X(s),s>t \} )$，
+        则称$A$ is $t$-future.
+
+        马氏性：$\forall t>0$，设$H$ is $t$-historical，$F$ is $t$-future，则
+        \begin{equation*}
+            \P( F| X(t)=j,H  )=\P(F|X(t)=j),\ \forall j\in S
+        \end{equation*}
+    \end{definition}
+
+    \begin{definition}[停时]
+        称随机变量$T$为关于$X$的停时，如果$\forall t\geqslant 0$，
+        $\{ T\leqslant t \}\in \sigma( \{ X(s),s\leqslant t \} )$.
+    \end{definition}
+
+    定义$T_0=0$，
+    \begin{equation*}
+        T_n=\fun{inf}{}\{ t>T_{n-1}:X(t)\neq X(T_{n-1}) \},\ n\geqslant 1
+    \end{equation*}
+    代表$X$第$n$次跳跃的时刻，
+    记$U_m=T_{m+1}-T_m$为$X$在第$m$个状态下的停留时间。这些都是停时。
+    令
+    \begin{equation*}
+        T_\infty\defeq \fun{lim}{n\rightarrow\infty}T_{n}
+    \end{equation*}
+
+    \begin{theorem}[强马氏性]
+        $T$为关于$X$的停时，给定$I=\{ T<T_\infty \}\cap \{ X(T)=i \}$的条件下，
+        $X^*=\{ X^*(u)=X(T+u),u\geqslant 0 \}$与给定$X(0)=i$条件下的$X$同分布，且与
+        $\{ X(s),s<T \}$独立。
+    \end{theorem}
+
+    \begin{theorem}[指数时间]
+        $U_0$服从参数为$g_i$的指数分布，$g_i$只与初始状态$X(0)=i$有关。
+        给定$X(0)=i$的条件下，若$g_i>0$，则$X(U_0)$与$U_0$独立。
+    \end{theorem}
+    这是我们已经证明过的结论，参见\autoref{Exponential Times}.
+
+    \begin{definition}[跳链与生成元]
+        对于连续时间马氏链$X$，取离散时间马氏链$Y=\{ Y_n,n\in \N \}$，状态空间为$S$，转移概率为：
+        \begin{equation*}
+            y_{ij}=\left\{ \begin{array}{ll}
+                \delta_{ij}&,g_i=0\\
+                \P(X(U_0)=j|X(0)=i)&,g_i>0
+            \end{array} \right.
+        \end{equation*}
+        $Y$称为$X$的跳链。
+
+        令
+        \begin{equation*}
+            g_{ij}=g_i(y_{ij}-\delta_{ij})=\left\{ \begin{array}{ll}
+                g_i y_{ij}&,i\neq j\\
+                -g_i&,i=j
+            \end{array} \right.
+        \end{equation*}
+        矩阵$G=(g_{ij})_{|S|\times |S|}$，称为$X$的生成元。
+        生成元的行之和为$0$，这点与转移矩阵略有不同。
+    \end{definition}
+
+    一个连续时间马氏链$X=\{ X_t(\omega),t\geqslant 0 \}$
+    可以由跳链$Y$和生成元$G$来描述：注意到
+    \begin{equation*}
+        \sum_{j\neq i} g_{ij}=g_i
+    \end{equation*}
+    我们取与$Y$独立的一系列随机变量$U_0,U_1,\cdots$，其中$U_i$服从参数为$g_i$的指数分布，
+    并设$T_n=U_0+\cdots+U_{n-1}$，那么
+    \begin{equation*}
+        X_t(\omega)\defeq Y_n(\omega),{\rm\ where\ }t\in [ T_n(\omega),T_{n+1}(\omega) )
+    \end{equation*}
+
+    有一个问题：如果$\P(T_{\infty}<+\infty)>0$，对于$\omega\in \{T_\infty<+\infty\}$，
+    $t>T_\infty$无定义。解决办法是：令$S'=S\cup \{+\infty\}$，且令$X(t)=+\infty,t\geqslant T_\infty$，
+    此时我们称$X$是minimal markov process.
+
+    跳链是很重要的工具概念，我们接下来会利用跳链对连续时间马氏链进行详细的分析。
+\subsection{状态分类、状态之间的关系}
+    我们先考虑$X$的跳链$Y$.
+    \begin{theorem}
+        $X$是连续时间马氏链，$Y$是$X$的跳链，给定$X(0)=i$条件下，$X$不爆炸的充分条件为以下任意之一：
+        \begin{enumerate}[(1).]
+            \item $S$有限。
+            \item $\fun{sup}{j}g_j<+\infty$.
+            \item $i$是$Y$的常返态。
+        \end{enumerate}
+    \end{theorem}
+    \begin{proof}
+        $(1)\Rightarrow (2)$.
+
+        $(2)$：设$r=\fun{sup}{j}g_j<+\infty$，$U_n\sim {\rm exp}\{ g_{Y_n} \}$，
+        如果存在某个$g_{Y_n}=0$，则$U_n=+\infty\Rightarrow T_\infty=\infty$ a.s.
+        如果$g_{Y_n}>0$，则令$V_n=g_{Y_n}\cdot U_n\sim {\rm exp}\{1\}$，
+        于是
+        \begin{equation*}
+            r\cdot T_\infty
+            =\sum_{n=1}^\infty r U_n
+            \geqslant \sum_{n=1}^\infty V_n=\infty{\rm\ a.s.}
+        \end{equation*}
+
+        $(3)$：$g_i=0$则不爆炸；$g_i>0$时，$i$是$Y$的常返态，$Y_0=i$，说明
+        存在$0=N_0<N_1<\cdots$使得$Y_{N_j}=i$，从而
+        \begin{equation*}
+            g_iT_\infty=\sum_{j=0}^\infty g_iU_j
+            \geqslant \sum_{j=0}^\infty g_iU_{N_j}=\infty{\rm\ a.s.}
+        \end{equation*}
+    \end{proof}
+
+    \begin{example}
+        设离散时间马氏链$Y=\{  T_n,n\in\N\}$，状态空间为$S$，转移矩阵
+        $\mathbf{P}_Y=(y_{ij})_{|S|\times |S|}$，并且$\forall y_{ii}=0$，
+        设$N$是参数为$\lambda$的Poisson过程，并设
+        \begin{equation*}
+            T_0=0,\ T_n=\fun{inf}{}\{ t\geqslant 0:N(t)=n \}
+        \end{equation*}
+
+        然后，我们定义$X(t)=Y_n$，其中$T_n\leqslant t<T_{n+1}$，则$X$是连续时间马氏链，转移概率为：
+        \begin{align*}
+            p_{ij}(t)
+            &=\P(X(t)=j|X(0)=i)\\
+            &=\sum_{n=0}^\infty \P(X(t)=j,N(t)=n|X(0)=i)\\
+            &=\sum_{n=0}^\infty \P(Y_n=j,N(t)=n|Y(0)=i)\\
+            &=\sum_{n=0}^\infty \P(N(t)=n)\cdot \P(Y_n=j|Y(0)=i)\\
+            &=\sum_{n=0}^\infty {\rm e}^{-\lambda t}\frac{(\lambda t)^n (\mathbf{P}_Y)^n_{ij}}{n!}\\
+            \Rightarrow\mathbf{P_X(t)}&=(p_{ij}(t))_{|S|\times |S|}={\rm e}^{\lambda t(\mathbf{P}_Y-I)}
+        \end{align*}
+        这里矩阵指数是指：
+        \begin{equation*}
+            {\rm e}^A=\sum_{n=0}^\infty \frac{A^n}{n!}
+        \end{equation*}
+    \end{example}
+
+    \begin{definition}
+        对于连续时间马氏链$X$，如果$\forall i,j\in S$，都存在$t>0$使得$p_{ij}(t)>0$，则称$X$不可约。
+    \end{definition}
+    \begin{corollary}
+        $|S|=1$则显然$X$不可约，$|S|>1$时$X$不可约$\Rightarrow \forall g_i>0$.
+    \end{corollary}
+
+    \begin{theorem}
+        连续时间马氏链$X$的跳链为$Y$，以下命题等价：
+        \begin{enumerate}[(1).]
+            \item $X$不可约。
+            \item $\forall i,j\in S,\forall t>0,p_{ij}(t)>0$.
+            \item $Y$不可约，且$\forall g_i>0$.
+        \end{enumerate}
+    \end{theorem}
+
+    类似于离散时间马氏链，我们可以定义连续情形下的常返态：
+    \begin{definition}[常返与瞬时]
+        对于连续时间马氏链$X$，如果状态$i$满足
+        \begin{equation*}
+            \P( \{t\geqslant 0:X(t)=i\}\text{无界}|X(0)=i )=1
+        \end{equation*}
+        则称$i$是$X$的常返态；如果状态$i$满足
+        \begin{equation*}
+            \P( \{t\geqslant 0:X(t)=i\}\text{无界}|X(0)=i )=0
+        \end{equation*}
+        则称$i$是$X$的瞬时态。
+    \end{definition}
+
+    \begin{definition}[正常返与零常返]
+        对于连续时间马氏链$X$的常返态$i$，定义最早返回时间：
+        \begin{equation*}
+            R_i=\fun{inf}{}\{ t>U_0:X(t)=i \}
+        \end{equation*}
+        如果$m_i=\E[ R_i|X(0)=i ]<+\infty$，则称状态$i$正常返，否则称其零常返。
+    \end{definition}
+
+    \begin{theorem}
+        连续时间马氏链$X$的跳链为$Y$，
+        \begin{enumerate}[(1).]
+            \item 若$g_i=0$，则$i$为$X$的常返态。
+            \item 若$g_i>0$，则$i$在$X$、$Y$中的常返/瞬时状态一致。
+            \item 若$X$不可约，则所有状态要么常返，要么瞬时。
+        \end{enumerate}
+    \end{theorem}
+
+\subsection{Kolmogorov方程}
+    回顾连续时间马氏链$X$和其跳链$Y$的关系，
+    得到转移概率的估计：
+    \begin{theorem}
+        连续时间马氏链$X$的生成元为$G=(g_{ij})$，那么
+        \begin{equation*}
+            p_{ij}(t+h)\defeq \P( X(t+h)=j|X(t)=i )
+            =\delta_{ij}+g_{ij}h+o(h) \tag*{$(\star)$}
+        \end{equation*}
+    \end{theorem}
+    \begin{proof}
+        作业。
+    \end{proof}
+
+    我们借此尝试推导Kolmogorov方程。
+    \begin{theorem}[Kolmogorov]
+        连续时间马氏链$X$的状态空间$S$有限，转移半群为$\{\mathbf{P}_t,t\geqslant 0\}$，
+        生成元为$G=(g_{ij})$，则：
+        \begin{equation*}
+            \frac{\d}{\d t}\mathbf{P}_t=\mathbf{P}_t\cdot G\tag*{向前方程}
+        \end{equation*}
+        \begin{equation*}
+            \frac{\d}{\d t}\mathbf{P}_t=G\cdot \mathbf{P}_t\tag*{向后方程}
+        \end{equation*}
+        边界条件：$\mathbf{P}_0=I$.
+    \end{theorem}
+    \begin{proof}
+        对于$p_{ij}(t+h)$，考虑用$i\ra{t}k\ra{h}j$拆分：
+        \begin{align*}
+            p_{ij}(t+h)
+            &=\P( X(t+h)=j|X(0)=i )\\
+            &=\sum_{k\in S}\P( X(t+h)=j|X(t)=k )\cdot \P( X(t)=k|X(0)=i )\\
+            &=\sum_{k\in S}p_{kj}(h)p_{ik}(t)\\
+            &=\sum_{k\in S}( \delta_{kj}+g_{kj}h+o(h) )p_{ik}(t)\\
+            &=p_{ij}(t)+\sum_{k\in S}p_{ik}(t)g_{kj}h+o(h)\\ 
+        \end{align*}
+        整理一下得到：
+        \begin{equation*}
+            \frac{p_{ij}(t+h)-p_{ij}(t)}{h}=\sum_{k\in S}p_{ik}(t)g_{kj} +\frac{o(h)}{h}
+        \end{equation*}
+        令$h\rightarrow 0$则得到向前方程。类似的，
+        考虑用$i\ra{h}k\ra{t}j$，就得到向后方程。
+    \end{proof}
+
+    \begin{corollary}
+        连续时间马氏链$X$的状态空间$S$有限，转移半群为$\{\mathbf{P}_t,t\geqslant 0\}$，
+        生成元为$G=(g_{ij})$，则求解Kolmogorov方程，得到唯一解：
+        \begin{equation*}
+            \mathbf{P}_t={\rm e}^{ t\cdot G }
+            =\sum_{n=0}^\infty \frac{G^n}{n!}t^n
+        \end{equation*}
+    \end{corollary}
+
+    现在的问题是：如果$|S|=\infty$，$\sum_{k\in S}$变为无穷求和，
+    能否直接与$\fun{lim}{h\rightarrow 0}$交换？这会导致向后方程
+    \begin{theorem}
+        $|S|=\infty$，$G$为$S$上的生成元（即满足非负、行和为$0$的矩阵），
+        令$X$为以$G$为生成元的minimal markov process，那么：
+        \begin{enumerate}[(1).]
+            \item $X$的转移半群$\{\mathbf{P}_t\}$为向后方程的最小非负解。即任何一个满足向后方程的其他解$\pi_{ij}(t)$，
+                都有$p_{ij}(t)\leqslant \pi_{ij}(t)$.
+            \item $X$的转移半群$\{\mathbf{P}_t\}$也是向前方程的最小非负解。
+        \end{enumerate}
+    \end{theorem}
+    \begin{proof}
+        我们只说明(1)，(2)见(Norris 1997.p.100).
+
+        设$T_1$是$X$第一次改变初始状态的时刻，即
+        \begin{equation*}
+            T_1=\fun{inf}{}\{ t>0:X(t)\neq X(0) \}
+        \end{equation*}
+        那么，
+        \begin{align*}
+            p_{ij}(t)
+            &=\P(T_1>t,X(t)=j|X(0)=i)+\P(T_1\leqslant t,X(t)=j|X(0)=i)\\
+            &=\P(T_1>t,X(t)=j|X(0)=i)+\sum_{k\neq i}\P(T_1\leqslant t,X(t)=j,X(T_1)=k|X(0)=i)\\
+            &=\delta_{ij}{\rm e}^{-g_it}+\sum_{k\neq i}\int_0^t g_i{\rm e}^{-g_i s}y_{ik}p_{kj}(t-s)\d s \tag*{$(\star)$}
+        \end{align*}
+        这里利用Fubini定理交换求和与积分顺序，并换元$u=t-s$，得到：
+        \begin{equation*}
+            {\rm e}^{g_i t}p_{ij}(t)=\delta_{ij}+\int_0^t \sum_{k\neq i}
+            g_i{\rm e}^{g_i u}y_{ik}p_{kj}(u)\d u
+        \end{equation*}
+        两边对$t$求导，就得到
+        \begin{equation*}
+            \frac{\d}{\d t}p_{ij}(t)=\sum_{k\in S}g_{ik}p_{kj}(t),\ i\in S
+        \end{equation*}
+        这就验证了$\mathbf{P}_t$符合向后方程。下面证明它是最小非负解，假设另一个非负解$\pi_{ij}(t)$满足向后方程，
+        它同样满足$(\star)$式。如果设$T_n$为第$n$次改变初始状态的时刻，接下来我们利用归纳法证明：
+        \begin{equation*}
+            \pi_{ij}(t)\geqslant \P( X(t)=j,T_n>t|X(0)=i ),\ \forall i,j\in S,t>0,n\geqslant 1
+        \end{equation*}
+        当$n=1$时，
+        \begin{equation*}
+            \pi_{ij}(t)\geqslant \delta_{ij}{\rm e}^{-g_i t}=\P( X(t)=j,T_1>t|X(0)=i )
+        \end{equation*}
+        假设$1\leqslant n\leqslant N$都成立，考虑$n=N+1$的情形，
+        \begin{align*}
+            &\P( X(t)=j,T_{N+1}>t|X(0)=i )\\
+            &=\P( X(t)=j,T_{N+1}>t,T_1>t|X(0)=i )+\P( X(t)=j,T_{N+1}>t,T_1\leqslant t|X(0)=i )\\
+            &=\P( X(t)=j,T_1>t|X(0)=i )+\sum_{k\neq i}\P( X(t)=j,T_{N+1}>t,T_1\leqslant t,X(T_1)=k|X(0)=i )\\
+            &=\delta_{ij}{\rm e}^{-g_i t}
+            +\sum_{k\neq i}\P( X(t)=j,T_{N+1}>t,T_1\leqslant t|X(T_1)=k )\P(X(T_1)=k|X(0)=i)\\
+            &=\delta_{ij}{\rm e}^{-g_i t}
+            +\sum_{k\neq i}\int_0^t g_i{\rm e}^{-g_i s}\P( X(t-s)=j,T_{N}>t|X(0)=k )y_{ik}\d s
+        \end{align*}
+        从而由递推可得$n=N+1$的情形成立。
+
+        那么，令$n\rightarrow +\infty$，$T_n\rightarrow T_\infty$，
+        \begin{equation*}
+            \pi_{ij}(t)\geqslant \fun{lim}{n\rightarrow \infty}
+            \P( X(t)=j,T_n>t|X(0)=i )
+            =\P( X(t)=j,T_\infty>t|X(0)=i )=p_{ij}(t)
+        \end{equation*}
+    \end{proof}
+\subsection{平稳分布}
+    \begin{definition}
+        类似于离散情形，对于不可约、不爆炸的连续时间马氏链$X$，
+        其转移半群为$\{ \mathbf{P}_t \}$，若$S$上的测度$\pi$满足
+        \begin{equation*}
+            \pi \mathbf{P}_t=\pi ,\ \forall t\geqslant 0
+        \end{equation*}
+        则称$\pi$为$X$的平稳测度。
+        上述$\pi$如果是概率测度，则称其为平稳分布。
+    \end{definition}
+
+    回忆：关于常返态$i$，记
+    \begin{equation*}
+        R_i=\fun{inf}{}\{ t>T_1:X(t)=i \}
+    \end{equation*}
+    那么$R_i|X(0)=i$就是首次回到$i$的时刻，其期望记作
+    \begin{equation*}
+        m_i=\E[R_i|X(0)=i]
+    \end{equation*}
+    如果有限，则称正常返。
+
+    \begin{theorem}
+        不可约的连续时间马氏链$X$的状态空间$S$满足$|S|\geqslant 2$，若存在$k\in S$正常返，
+        则存在唯一平稳分布$\pi$，并且$\pi$还是唯一满足$\pi G=0$的概率测度。
+
+        若$X$不爆炸，且存在概率测度$\pi$满足$\pi G=0$，则：
+        \begin{enumerate}[(1).]
+            \item 所有状态都正常返；
+            \item $\pi$为平稳分布；
+            \item $\pi_k^{-1}=m_k g_k$.
+        \end{enumerate}
+    \end{theorem}
+
+    \begin{lemma}
+        不可约的连续时间马氏链$X$的跳链为$Y$，
+        \begin{enumerate}[(1).]
+            \item 测度$a$满足$aG=0$当且仅当测度$v=(v_i=a_ig_i,i\in S)$满足$v\mathbf{P}^Y=v$.进一步地若$X$常返，则$a$唯一。
+            \item 若测度$a$满足$aG=0$，则$\forall a_j>0$.
+            \item 假设$X$常返，任取$k\in S$，则令
+                \begin{equation*}
+                    \mu_j(k)=\E\left[ \left.\int_0^{R_k} I_{ \{ X(s)=j \} }\d s \right|X(0)=k  \right]
+                \end{equation*}
+                则$\mu(k)=(\mu_j(k),j\in S)$是$X$的平稳测度并且$\mu(k)G=0$.
+        \end{enumerate}
+    \end{lemma}
+
+    \begin{example}
+        连续时间马氏链$X$的状态空间为$\Z$，生成元$G=(g_{ij})$为：
+        \begin{equation*}
+            g_{m,m+1}=\left\{ \begin{array}{ll}
+                4^m&,m\geqslant 0\\
+                \frac{1}{2}4^{-m}&,m\leqslant -1
+            \end{array} \right.
+            ,\ 
+            g_{m,m-1}=\left\{ \begin{array}{ll}
+                \frac{1}{2}4^m&,m\geqslant 1\\
+                4^{-m}&,m\leqslant 0
+            \end{array} \right.
+        \end{equation*}
+        \begin{equation*}
+            g_{m,m}=-g_{m,m+1}-g_{m,m-1}=
+            \left\{ \begin{array}{ll}
+                -\frac{3}{2}4^{|m|}&,m\neq 0\\
+                -1&,m=0
+            \end{array} \right.
+        \end{equation*}
+        其余为$0$.
+
+        注意到$\forall g_{m,m}<0\Rightarrow \forall g_m>0$，$X$不可约。
+        方程$\pi G=0$有两组解：
+        \begin{equation*}
+            \pi^{(1)}(m)=\frac{1}{3}2^{-|m|}
+        \end{equation*}
+        \begin{equation*}
+            \pi^{(2)}(m)=\left\{ \begin{array}{ll}
+                \frac{1}{3}4^{-m}&,m\geqslant 0\\
+                \frac{1}{3}\frac{2^{-m+1}-1}{4^m}&,m\leqslant -1
+            \end{array} \right.
+        \end{equation*}
+        这说明$X$爆炸。（如果$X$不爆炸，$\pi G=0$的解应当存在唯一。）
+    \end{example}
+
+    \begin{theorem}
+        $X$是连续时间马氏链，不可约、不爆炸，
+        \begin{enumerate}[(1).]
+            \item 若存在平稳分布$\pi$，则唯一。且$\forall i,j\in S$，有$\fun{lim}{t\rightarrow\infty}p_{ij}(t)=\pi_j$.
+            \item 若不存在平稳分布，则$\forall i,j\in S$，有$\fun{lim}{t\rightarrow\infty}p_{ij}(t)=0$.
+        \end{enumerate}
+    \end{theorem}
+
+    \begin{example}
+        生灭过程：状态空间为$\N$，生成元为：
+        \begin{equation*}
+            G=\begin{pmatrix}
+                -\lambda_0&\lambda_0& & & \\
+                \mu_1&-(\lambda_1+\mu_1)&\lambda_1& & \\
+                 &\mu_2&-(\lambda_2+\mu_2)&\lambda_2& \\
+                 & &\ddots&\ddots&\ddots
+            \end{pmatrix}
+        \end{equation*}
+        其中$\lambda_{\cdot},\mu_{\cdot}>0$.
+    \end{example}
+
+    \begin{theorem}[Detailed Balance Condition]
+        分布$\pi$满足$\forall j\neq k$有$\pi_j g_{jk}=\pi_k g_{kj}$，
+        则$\pi$是平稳分布。
+    \end{theorem}
+\subsection{终止分布问题(Exit Distributions)}
+\begin{theorem}[Exit Distributions, ED]
+    $X$是连续时间马氏链，$Z$是其跳链，状态空间为$S$，
+    $A,B\subset S$，$C=S-(A\cup B)$，
+    令：
+    \begin{equation*}
+        V_A=\fun{inf}{}\{ t\geqslant 0:X_t\in A \}
+    \end{equation*}
+    \begin{equation*}
+        V_A^Z=\fun{min}{}\{n\geqslant 0:Z_n\in A\}
+    \end{equation*}
+    $V_B,V_B^Z$类似。令$T=V_A\wedge V_B$，且$\forall i\in C$，$\P(T<+\infty|X_0=i)>0$.
+
+    如果函数$h:S\rightarrow [0,1]$满足：$h(A)=1$，$h(B)=0$，
+    \begin{equation*}
+        \sum_{j\in S}g_{ij}h(j)=0,\ \forall i\in C
+    \end{equation*}
+    则$h(i)=\P(V_A<V_B|X_0=i)$.
+\end{theorem}
+
+\begin{theorem}[Exit Times, ET]
+    $X$是连续时间马氏链，$Z$是其跳链，状态空间为$S$，$A\subset S$，
+    $C=S-A$是有限集，并且$\forall i\in C$，$\P(V_A<+\infty|X_0=i)>0$，
+    如果函数$h:S\rightarrow [0,1]$满足：$h(A)=0$，
+    \begin{equation*}
+        \sum_{j\in S}g_{ij}g(j)=-1,\ \forall i\in C
+    \end{equation*}
+    则$h(i)=\E[ V_A|X_0=i ]$.
+\end{theorem}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

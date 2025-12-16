@@ -1,18 +1,45 @@
-# LaTeX auxiliary files
+# ===== LaTeX core =====
 *.aux
 *.log
 *.out
 *.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
 *.synctex.gz
+*.nav
+*.snm
+*.vrb
+
+# ===== Bib / index =====
 *.bbl
+*.blg
 *.bcf
 *.run.xml
-*.blg
+*.idx
+*.ilg
+*.ind
 
-# latexmk
-*.fdb_latexmk
-*.fls
+# ===== LaTeX packages =====
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.ist
 
-# OS / editor
+# ===== PDF (本地生成的，不提交) =====
+*.pdf
+
+# ===== Temporary / editor =====
+*.tmp
+*.bak
+*~
 .DS_Store
 Thumbs.db
+
+# ===== Build dirs (if any) =====
+build/
+out/

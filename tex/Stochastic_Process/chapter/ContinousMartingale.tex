@@ -1,0 +1,1592 @@
+\chapter{连续时间鞅}
+    本章内容主要来自Le gall chapter3，有些英文术语我也找不到很合适的翻译，就按照自己顺口的习惯翻译了，并且标注了原文。
+\section{滤流}
+    开始这一章之前，我们先阐明滤流和随机过程的详细定义。
+    我们以下默认在概率空间$(\Omega,\F,\P)$上讨论，并且取指标集$I=[0,+\infty]$.
+    \begin{definition}[滤流]
+        一族$\sigma$-域$(\F_t)_{t\geqslant 0}$满足：
+        \begin{equation*}
+            \forall t\in [0,+\infty],\F_t\subset \F
+        \end{equation*}
+        \begin{equation*}
+            \forall 0\leqslant s\leqslant t,\F_0\subset \F_s\subset \F_t\subset \F_\infty
+        \end{equation*}
+        则称$(\F_t)_{t\geqslant 0}$是一个\textbf{滤流}(filtration)，也称$(\Omega,\F,(\F_t),\P)$为滤流概率空间(filtered probability space).
+    \end{definition}
+
+    \begin{example}
+        对于随机过程$X=(X_t)_{t\geqslant 0}$，我们取
+        \begin{equation*}
+            \F_t^X= \sigma(X_s,0\leqslant s\leqslant t)
+        \end{equation*}
+        且$\F_\infty^X=\sigma(X_s,s\geqslant 0)$，那么$(\F_t^X)_{t\geqslant 0}$就是一个滤流，被称为$X$的正规滤流(canonical filtration).
+    \end{example}
+
+    \begin{definition}[右连续的滤流]
+        对于滤流$(\F_t)_{t\geqslant 0}$，定义：
+        \begin{equation*}
+            \F_{t+}=\bigcap_{s>t}\F_s,\ \F_{\infty+}=\F_\infty
+        \end{equation*}
+        如果$\forall t\geqslant 0$，$\F_{t+}=\F_t$，称滤流$(\F_t)_{t\geqslant 0}$是\textbf{右连续}的。
+    \end{definition}
+    $(\F_t+)_{t\geqslant 0}$就是一个右连续的滤流。
+
+    \begin{definition}[完备的滤流]
+        对于滤流$(\F_t)_{t\geqslant 0}$，记$N$为测度空间$(\Omega,\F_\infty,\P)$上的所有零测集的子集，即
+        \begin{equation*}
+            N=\{ A\subset \Omega:\exists A'\in \F_\infty{\rm\ s.t.\ }A\subset A',\P(A')=0 \}
+        \end{equation*}
+        如果$N\subset \F_0$，则称$(\F_t)_{t\geqslant 0}$是\textbf{完备}的。
+    \end{definition}
+    如果滤流$(\F_t)_{t\geqslant 0}$不完备，我们可以定义$\F_t'$为包含$\F_t$和$\sigma(N)$
+    的最小$\sigma$-域，记作
+    \begin{equation*}
+        \F_t'=\F_t\vee \sigma(N),\forall t\geqslant 0
+    \end{equation*}
+    则$(\F_t')_{t\geqslant 0}$是完备的，称为
+    滤流$(\F_t)_{t\geqslant 0}$的完备化。
+
+    \begin{definition}[可测、适应、循序]
+        对于随机过程$X=(X_t)_{t\geqslant 0}$，$X_t$在可测空间$(E,\mathcal{E})$上取值，如果映射
+        \begin{align*}
+            f:( \Omega\times \R_+,\F\otimes \mathcal{B}(\R_+) )&\rightarrow (E,\mathcal{E})\\
+            (\omega,t)&\mapsto X_t(w)
+        \end{align*}
+        是可测的，则称随机过程$X$是\textbf{可测}的(measurable).
+
+        对于随机过程$X=(X_t)_{t\geqslant 0}$，滤流$(\F_t)_{t\geqslant 0}$，如果$\forall t\geqslant 0$，
+        $X_t$是$\F_t$-可测的，那么称$X$是（关于$(\F_t)_{t\geqslant 0}$的）\textbf{适应}的(adapted).
+
+        如果映射
+        \begin{align*}
+            g:( \Omega\times [0,t],\F_t\otimes \mathcal{B}([0,t]) )&\rightarrow (E,\mathcal{E})\\
+            (\omega,s)&\mapsto X_s(w)
+        \end{align*}
+        是可测的，则称$X$是\textbf{循序}的(progressive).
+    \end{definition}
+    
+    \begin{proposition}\label{progressive from right-continous}
+        随机过程$X=(X_t)_{t\geqslant 0}$在度量空间$(E,d)$
+        （取Borel $\sigma$-域得到可测空间）上取值，
+        $X$关于滤流$(\F_t)_{t\geqslant 0}$适应，
+        并且$X$的样本轨道是右连续或者左连续的，则$X$是循序的。
+    \end{proposition}
+    \begin{proof}
+        只说明一下右连续的情况，左连续类似。固定$t>0$，$\forall n\geqslant 1,s\in [0,t]$，取r.v.
+        \begin{equation*}
+            X_s^n\defeq X_{ \frac{kt}{n} },{\rm\ where\ }t{\rm\ s.t.\ }s\in \left[ \frac{(k-1)t}{n},\frac{kt}{n} \right),k\in \{1,2,\cdots,n\}
+        \end{equation*}
+        并且$X_t^n=X_t$，样本轨道右连续确保了：$\forall s\in [0,t],\omega\in\Omega$，
+        \begin{equation*}
+            X_s(\omega)\fun{lim}{n\rightarrow\infty} X_s^n(\omega)
+        \end{equation*}
+        那么任取Borel集$A\subset E$，
+        \begin{align*}
+             &\{ (\omega,s)\in \Omega\times[0,t]:X_s^n(\omega)\in A \}\\
+            =&( \{X_t\in A\}\times\{t\} )\bigcup
+            \left( \bigcup_{k=1}^n \left( \{ X_{\frac{kt}{n}}\in A \}\times \left[ \frac{(k-1)t}{n},\frac{kt}{n} \right) \right) \right)
+        \end{align*}
+        后者属于$\F_t\otimes \mathcal{B}( [0,t] )$，因此$\forall n\geqslant 1$，映射：
+        \begin{align*}
+            ( \Omega\times [0,t],\F_t\otimes \mathcal{B}( [0,t] ) )&\rightarrow (E,\mathcal{B}(E))\\
+            (\omega,s)&\mapsto X_s^n(\omega)
+        \end{align*}
+        是可测的。由于可测函数的逐点极限也是可测的，这就说明$X$是渐进的。
+    \end{proof}
+
+    \begin{definition}[循序$\sigma$-域]
+        固定$A\in \F\otimes \mathcal{B}(\R_+)$，并令$X_t^A(\omega)=I_A(\omega,t)$，
+        所有使得随机过程$X=(X_t^A)_{t\geqslant 0}$是循序过程的集合$A$，
+        组成了一个$\sigma$-域，记作$\mathcal{P}$，称之为循序$\sigma$-域。
+    \end{definition}
+
+\section{停时}
+    先来回顾一下停时相关的定义。
+    \begin{definition}[停时]
+        对于滤流$(\F_t)_{t\geqslant 0}$，随机变量$T$在$[0,+\infty]$上取值，如果
+        $\forall t\geqslant 0$，$\{ T\leqslant t \}\in \F_t$，则称$T$是一个（关于滤流$(\F_t)_{t\geqslant 0}$）的停时。
+    \end{definition}
+    在本章的剩余内容中，如无特殊说明，默认停时$T$都是关于滤流$(\F_t)_{t\geqslant 0}$的。
+    \begin{corollary}
+        $T$是关于滤流$(\F_t)_{t\geqslant 0}$的停时，则有
+        \begin{equation*}
+            \{ T<t \}=\bigcap_{q\in \Q,q<t}\{ T\leqslant q \}\in \F_t
+        \end{equation*}
+        \begin{equation*}
+            \{ T<+\infty \}=\bigcup_{q\in \Q,q\geqslant 0} \{ T\leqslant q \}\in \F_\infty
+        \end{equation*}
+    \end{corollary}
+
+    \begin{definition}[停时前$\sigma$-域]
+        $T$是关于滤流$(\F_t)_{t\geqslant 0}$的停时，
+        \begin{equation*}
+            \F_T=\{ A\in \F_\infty:\forall t\geqslant 0,A\cap \{T\leqslant t\}\in \F_t \}
+        \end{equation*}
+        则$\F_T$是一个$\sigma$-域，称为$T$前$\sigma$-域。
+    \end{definition}
+
+    \begin{theorem}\label{le gall prop3.6(1)}
+        $T:\Omega\rightarrow [0,+\infty]$是随机变量，则以下结论等价：
+        \begin{enumerate}[(1).]
+            \item $T$关于$(\F_{t+})_{t\geqslant 0}$是停时。
+            \item $\forall t>0$，$\{T<t\}\in \F_t$.
+            \item $\forall t>0$，$T\wedge t$是$\F_t$可测的。
+        \end{enumerate}
+    \end{theorem}
+    \begin{proof}
+        $(1)\Rightarrow (2)$：$\forall t\geqslant 0$，
+        \begin{equation*}
+            \{ T<t \}=\bigcup_{q\in Q,q>0} \{ T\leqslant t-q \}\in \F_t
+        \end{equation*}
+
+        $(2)\Rightarrow (1)$：$\forall t\geqslant 0$，$\forall s>t$，
+        \begin{equation*}
+            \{ T>t \}=\bigcap_{q\in \Q,q>0} \{ T\geqslant t+q \}\in \F_{t+}
+        \end{equation*}
+
+        $(2)\Rightarrow (3)$：$\forall s<t$，
+        \begin{equation*}
+            \{ T\wedge t\leqslant s \}=\{ T\leqslant s\}\cup\{ t\leqslant s \}
+            =\{ T\leqslant s \}\in \F_s\subset \F_t
+        \end{equation*}
+
+        $(3)\Rightarrow (2)$：$\forall t\geqslant 0$，
+        \begin{equation*}
+            \{ T<t \}=\bigcap_{q\in [0,t]\cap \Q} \{ T\leqslant t-q \}
+            =\bigcap_{q\in [0,t]\cap \Q} \{ T\wedge t\leqslant t-q \}\in \F_t
+        \end{equation*}        
+    \end{proof}
+
+    \begin{corollary}
+        $T$是关于滤流$(\F_t)_{t\geqslant 0}$的停时，则$T$也是关于滤流$(\F_{t+})_{t\geqslant 0}$的停时。
+    \end{corollary}
+
+    \begin{theorem}\label{le gall prop3.6(2)}
+        $T$是关于滤流$(\F_t)_{t\geqslant 0}$的停时，则
+        \begin{equation*}
+            \{ A\in \F_\infty:\forall t\geqslant 0,A\cap \{ T\leqslant t \}\in \F_{t+} \}
+            =
+            \{ A\in \F_\infty:\forall t\geqslant 0,A\cap \{ T<t \}\in \F_{t} \}
+        \end{equation*}
+        我们将上述$\sigma$-域记作$\F_{T+}$.
+    \end{theorem}
+    \begin{proof}
+        设$A\in \mathcal{G}_T$，则
+        \begin{equation*}
+            A\cap \{ T<t \}=A\cap \left(\bigcup_{q\in \Q,q>0} \{ T\leqslant t-q \}\right)
+            =\bigcup_{q\in \Q,q>0}( A\cap \{ T\leqslant t-q \})\in \F_t
+        \end{equation*}
+        所以$\mathcal{G}_T\subset \F_{T+}$；反之，设$A\in \F_{T+}$，
+        \begin{align*}
+            A\cap \{ T\leqslant t \}
+            =A\cap \left( \bigcap_{q\in \Q,q>0}\{ T<t+q \} \right)
+            =\bigcap_{q\in \Q,q>0}\left( A\cap \{ T<t+q \} \right)
+            \in \F_{t+}
+        \end{align*}
+        所以$\F_{T+}\subset \mathcal{G}_T$.
+    \end{proof}
+
+    \begin{proposition}[停时的性质总结]
+        $T$是关于滤流$(\F_t)_{t\geqslant 0}$的停时，
+        下文中出现的停时如无特殊说明，默认是关于滤流$(\F_t)_{t\geqslant 0}$的停时。
+        \begin{enumerate}[(1).]
+            \item $\F_T\subset \F_{T+}$，如果$(\F_{t})$右连续，则$\F_{T+}=\F_T$.
+            \item 如果$T=t$为常数，则$\F_T=\F_t$，且$\F_{T+}=\F_{t+}$.
+            \item $T$是$\F_T$-可测的。
+            \item 如果$A\in \F_\infty$，令
+                \begin{equation*}
+                    T^A(\omega)=\left\{ \begin{array}{ll}
+                        T(\omega)&,\omega\in A\\
+                        +\infty&,\omega\notin A
+                    \end{array} \right.
+                \end{equation*}
+                则$A$是$\F_T$可测的当且仅当$T^A$是停时。
+            \item $S$也是停时，且$S\leqslant T$，那么$\F_S\subset \F_T$，且$\F_{S+}\subset \F_{T+}$.
+            \item $S$也是停时，则$S\wedge T$和$S\vee T$都是停时，并且$\F_{S\wedge T}=\F_S\cap \F_T$，$\{ S\leqslant T \}\in \F_{S\wedge T}$，$\{S=T\}\in \F_{S\wedge T}$.
+            \item $\{S_n\}_{n\geqslant 1}$是一列单调递增的停时，则$S=\fun{lim}{n\rightarrow\infty}S_n$也是停时。
+            \item $\{S_n\}_{n\geqslant 1}$是一列单调递减的停时，则$S=\fun{lim}{n\rightarrow\infty}S_n$是关于$(\F_{t+})$的停时，并且
+                \begin{equation*}
+                    \F_{S+}=\bigcap_{n=1}^\infty \F_{S_n+}
+                \end{equation*}
+            \item $\{S_n\}_{n\geqslant 1}$是一列单调递减的停时，$S=\fun{lim}{n\rightarrow\infty}S_n$，而且$\forall \omega$，都存在$N(\omega)$使得$\forall n>N(\omega)$有$S_n(\omega)=S$，则
+                \begin{equation*}
+                    \F_{S}=\bigcap_{n=1}^\infty \F_{S_n}
+                \end{equation*}
+            \item $(E,\mathcal{E})$是一个可测空间，对于映射
+                \begin{equation*}
+                    Y:\{ T<+\infty \}\rightarrow E,\omega\mapsto Y(\omega)
+                \end{equation*}
+                定义
+                \begin{equation*}
+                    Y_t:\{ T\leqslant t \}\rightarrow E,\omega\mapsto Y(\omega)
+                \end{equation*}
+                为$Y$在$\{ T\leqslant t \}$上的限制。那么，
+                $Y$是$\F_T$-可测的当且仅当$\forall t\geqslant 0$，$Y_t$是$\F_t$-可测的。
+        \end{enumerate}
+    \end{proposition}
+    \begin{proof}
+        基本上都是验证定义以及利用\autoref{le gall prop3.6(1)}和\autoref{le gall prop3.6(2)}得到的。
+        \begin{enumerate}[(1).]
+            \item 我们熟知$\F_{t}\subset \F_{t+}$，那么
+                \begin{equation*}
+                    \F_{T+}=\{ A\in \F_\infty:\forall t\geqslant 0,A\cap \{ T\leqslant t \}\in \F_{t+} \}
+                    \supset 
+                    \{ A\in \F_\infty:\forall t\geqslant 0,A\cap \{ T\leqslant t \}\in \F_{t} \}=\F_T
+                \end{equation*}
+                如果$\F_{t+}=\F_t$，则上式中两个集合相等。
+            \item 如果$T=t$是常数，
+                则$A\in \F_T\Leftrightarrow \forall s\geqslant t,A\in \F_s\Leftrightarrow A\in \F_t$，
+                所以$\F_T=\F_t$；
+                $A\in \F_T\Leftarrow \forall s>t,A\in \F_s\Leftrightarrow A\in \F_{t+}$.
+            \item $\forall s\geqslant 0$，$\forall t\geqslant 0$，
+                \begin{equation*}
+                    \{ T\leqslant s \}\cap 
+                    \{ T\leqslant t \}=\{ T\leqslant s\wedge t \}
+                    \in \F_t
+                \end{equation*}
+                所以$\{ T\leqslant s \}\in \F_T$，故$T$是$\F_T$-可测的。
+            \item 注意到$\{ T^A\leqslant t \}=A\cap \{ T\leqslant t \}$.
+            \item 注意到$\{ T\leqslant t \}\subset \{ S\leqslant t \}$，所以
+                \begin{equation*}
+                    A\cap \{ T\leqslant t \}=A\cap \{ S\leqslant t \}\cap \{ T\leqslant t \}
+                \end{equation*}
+                如果$A\in \F_S$，则$A\cap \{ S\leqslant t \}\in \F_t$，$\{ T\leqslant t \}\in \F_t$；
+                如果$A\in \F_{S+}$，则$A\cap \{ S\leqslant t \}\in \F_{t+}$，
+                $\{T\leqslant t\}\in \F_t\subset \F_{t+}$.
+            \item $\forall t\geqslant 0$，
+            \begin{equation*}
+                \{S\wedge T\leqslant t\}=\{ S\leqslant t \}\cup\{ T\leqslant t \}\in \F_t
+            \end{equation*}
+            \begin{equation*}
+                \{S\vee T\leqslant t\}=\{ S\leqslant t \}\cap\{ T\leqslant t \}\in \F_t
+            \end{equation*}
+            所以这俩是停时；由(5)可知$\F_{S\wedge T}\subset \F_S\cap \F_T$，另一方面。如果$A\in \F_S\cap \F_T$，
+            则
+            \begin{equation*}
+                A\cap \{ S\wedge T\leqslant t \}
+                =(A\cap \{S\leqslant t\})\cap (A\cap \{T\leqslant t\})\in \F_t
+            \end{equation*}
+            所以$\F_S\cap \F_T\subset \F_{S\wedge T}$；（待补充）
+            \item $S_n\nearrow S$，则\begin{equation*}
+                \{S\leqslant t\}=\bigcap_{n=1}^\infty \{S_n\leqslant t\}\in \F_t
+            \end{equation*}
+            \item $S_n\searrow S$，则
+                \begin{equation*}
+                    \{S<t\}=\bigcup_{n=1}^\infty \{ S_n<t \}\in \F_t
+                \end{equation*}
+                所以$S\in \F_{t+}$；因为$\F_{S+}\subset \F_{S_n+}$，所以
+                \begin{equation*}
+                    \F_{S+}\subset \bigcap_{n=1}^\infty \F_{S_n+}
+                \end{equation*}
+                另一方面，如果$A\in \F_{S_n+},\forall n$，则$\forall t$，
+                \begin{equation*}
+                    A\cap{S<t}=\bigcup_{n=1}^\infty (A\cap \{S_n<t\})\in \F_t 
+                \end{equation*}
+            \item 如果$A\in \F_S$，
+                \begin{equation*}
+                    \{S\leqslant t\}=\bigcup_{n=1}^\infty \{ S_n\leqslant t \}
+                    \in \F_t
+                \end{equation*}
+                则$S$关于$(\F_t)$是停时；$\F_S\subset \F_{S_n}$，所以
+                \begin{equation*}
+                    \F_{S}\subset \bigcap_{n=1}^\infty \F_{S_n}
+                \end{equation*}
+                反之，如果$A\in \F_{S_n}$，则
+                \begin{equation*}
+                    A\cap \{S\leqslant t\}=\bigcup_{n=1}^\infty (A\cap \{S_n\leqslant t\})\in \F_t
+                \end{equation*}
+            \item 假设$Y$限制在集合$\{ T\leqslant t \}$上是关于$\F_t$-可测的，则对于$A\in \mathcal{B}(E)$，
+                \begin{equation*}
+                    \{ Y\in A \}\cap \{ T\leqslant t \}\in \F_t,\ \forall t\geqslant 0
+                \end{equation*}
+                此即$\{ Y\in A \}\in \F_T$.
+                反之类似。
+        \end{enumerate}
+    \end{proof}
+
+    \if{0}{
+    \begin{theorem}
+        $X=(X_t)_{t\geqslant 0}$是渐进过程，在可测空间$(E,\mathcal{E})$上取值，$T$是停时，那么映射
+        \begin{equation*}
+            Y:\{ T<+\infty \}\rightarrow E,
+            \omega\mapsto X_{T(\omega)}(\omega)
+        \end{equation*}
+        是$\F_T$-可测的。
+    \end{theorem}
+    \begin{proof}
+        
+    \end{proof}
+    }\fi
+
+    \begin{theorem}\label{le gall prop3.8}
+        $T$是停时，随机变量$S:\Omega\rightarrow [0,+\infty]$是$\F_T$-可测的，
+        且满足$S\geqslant T$，则$S$也是停时。
+    \end{theorem}
+    \begin{proof}
+        利用
+        \begin{equation*}
+            \{ S\leqslant t \}=\{ S\leqslant t \}\cup \{ T\leqslant t \}
+        \end{equation*}
+        其中$\{ S\leqslant t \}\in \F_T$，所以右式$\in \F_t$.
+    \end{proof}
+
+    \begin{corollary}\label{cor of order S.T.}
+        $T$是停时，那么$\forall n\in\N_+$，
+        \begin{equation*}
+            T_n=\sum_{k=0}^\infty \frac{k+1}{2^n}I_{ \{ k\cdot 2^{-n}<T\leqslant (k+1)\cdot 2^{-n} \} }+\infty \cdot I_{ \{ T=+\infty \} }
+        \end{equation*}
+        也是停时，而且$T_n\searrow T$.
+    \end{corollary}
+
+    \begin{example}
+        随机过程$X=(X_t)_{t\geqslant 0}$适应$(\F_t)_{t\geqslant 0}$，
+        在度量空间$(E,d)$上取值，$X$的轨道连续，$F\subset E$为闭集，则
+        \begin{equation*}
+            T_F=\fun{inf}{}\{ t\geqslant 0:X_t\in F \}
+        \end{equation*}
+        是一个停时。
+    \end{example}
+    \begin{proof}
+        只需注意到
+        \begin{align*}
+            \{ T_F\leqslant t \}&=\bigcup_{s\in [0,t]}\{ X_s\in F \}\\
+            &=\{ \fun{inf}{s\in [0,t]} d(X_s,F)=0 \}\\
+            &=\{ \fun{inf}{s\in [0,t]\cap Q} d(X_s,F)=0 \}\in \F_t
+        \end{align*}
+        这里利用了轨道和度量函数$d$的连续性，将不可数并转化为了可数并。
+    \end{proof}
+
+    \begin{example}
+        随机过程$X=(X_t)_{t\geqslant 0}$适应$(\F_t)_{t\geqslant 0}$，
+        在度量空间$(E,d)$上取值，$X$的轨道\textbf{右}连续，$O\subset E$为开集，则
+        \begin{equation*}
+            T_O=\fun{inf}{}\{ t\geqslant 0:X_t\in O \}
+        \end{equation*}
+        是一个关于$(\F_{t+})$的停时。
+    \end{example}
+    \begin{proof}
+        只需注意到
+        \begin{equation*}
+            \{ T_O<t \}=\bigcup_{s\in [0,t)\cap \Q} \{X_s\in O\}\in \F_t
+        \end{equation*}
+        再利用\autoref{le gall prop3.6(1)}即可。
+    \end{proof}
+
+\section{鞅的定义与基本性质}
+    在本章的是剩余内容中，默认随机过程在$\R$上取值。
+    \begin{definition}
+        $X=(X_t)_{t\geqslant 0}$适应$(\F_t)_{t\geqslant 0}$，
+        且$\forall t,X_t\in L^1$，如果
+        \begin{equation*}
+            \forall 0\leqslant s<t,\E[X_t|\F_s]=X_s
+        \end{equation*}
+        则称$X$是（连续时间）鞅。如果把上式中的等号替换为小于等于号、大于等于号，则称之为
+        上鞅、下鞅。
+    \end{definition}
+
+    \begin{example}[][Martingale generated by Independent Increment]
+        随机过程$Z=(Z_t)_{t\geqslant 0}$在$\R$上取值，适应$(\F_t)$，并且有独立增量，即：
+        $\forall 0\leqslant s<t$，$Z_t-Z_s$独立于$\F_s$. 那么
+        \begin{enumerate}[(1).]
+            \item 如果$\forall t\geqslant 0,Z_t\in L^1$，则$\tilde{Z}_t=Z_t-\E[Z_t]$是鞅。
+            \item 如果$\forall t\geqslant 0,Z_t\in L^2$，则$\tilde{Y}_t=\tilde{Z}_t^2-\E[\tilde{Z}_t^2]$是鞅。
+            \item 如果存在$\theta\in \R$使得$\forall t\geqslant 0,\E[{\rm e}^{\theta Z_t}]<+\infty$，则
+                \begin{equation*}
+                    X_t=\frac{{\rm e}^{\theta Z_t}}{\E[{\rm e}^{\theta Z_t}]}
+                \end{equation*}
+                是鞅。
+        \end{enumerate}
+    \end{example}
+    \begin{proof}
+        可积性和适应性显然，不再赘述，我们直接验证鞅的最后一条定义。
+        对于$\forall t\geqslant 0$，我们记$\mu_t=\E[Z_t]$，那么对于$\forall s>0$，
+        \begin{align*}
+            \E[ \tilde{Z}_{t+s}|\F_t ]
+            &=\E[ Z_{t+s}|\F_t ]-\mu_{t+s}\\
+            &=\E[ Z_{t+s}-Z_t|\F_t ]+\E[Z_t|\F_t]-\mu_{t+s}\\
+            &=\E[ Z_{t+s}-Z_t ]+Z_t-\mu_{t+s}\\
+            &=\mu_{t+s}-\mu_t+Z_t-\mu_{t+s}=Z_t-\mu_t=\tilde{Z}_t
+        \end{align*}
+        \begin{align*}
+            \E[ \tilde{Y}_{t+s}|\F_t ]
+            &=\E[ (Z_{t+s}-\mu_{t+s})^2|\F_t ]-\E[(Z_{t+s}-\mu_{t+s})^2]\\
+            &=\E[ (Z_{t+s}-Z_t+Z_t-\mu_{t+s})^2|\F_t ]-\E[Z_{t+s}^2]+\mu_{t+s}^2\\
+            &=\E[ (Z_{t+s}-Z_t)^2+(Z_t-\mu_{t+s})^2+2(Z_{t+s}-Z_t)(Z_t-\mu_{t+s})|\F_t ]-\E[Z_{t+s}^2]+\mu_{t+s}^2\\
+            &=\E[(Z_{t+s}-Z_t)^2]+(Z_t-\mu_{t+s})^2+2(Z_t-\mu_{t+s})\E[(Z_{t+s}-Z_t)]-\E[Z_{t+s}^2]+\mu_{t+s}^2\\
+            &=\E[-2(Z_{t+s}-Z_t)Z_t-Z_t^2+Z_{t+s}^2]+(Z_t-\mu_{t+s})^2+2(Z_t-\mu_{t+s})(\mu_{t+s}-\mu_t)-\E[Z_{t+s}^2]+\mu_{t+s}^2\\
+            &=-2(\mu_{t+s}-\mu_t)\mu_t-\E[Z_t^2]+\E[Z_{t+s}^2]+(Z_t-\mu_{t+s})^2+2(Z_t-\mu_{t+s})(\mu_{t+s}-\mu_t)-\E[Z_{t+s}^2]+\mu_{t+s}^2\\
+            &\text{（全拆开之后消了很多项）}\\
+            &=Z_t^2-2\mu_tZ_t-\E[Z_t^2]\\
+            &=(Z_t-\mu_t)^2+\E[Z_t^2]-\mu_t^2=\tilde{Y}_t
+        \end{align*}
+        \begin{align*}
+            \E[X_{t+s}|\F_t]
+            &=\frac{ \E[ {\rm e}^{\theta Z_{t+s}}|\F_t ] }{\E[ {\rm e}^{\theta Z_{t+s}} ]}\\
+            &=\frac{ \E[ {\rm e}^{\theta (Z_{t+s}-Z_t)}{\rm e}^{\theta Z_t}|\F_t ] }{\E[ {\rm e}^{\theta Z_{t+s}} ]}\\
+            &=\frac{ \E[ {\rm e}^{\theta (Z_{t+s}-Z_t)} ]{\rm e}^{\theta Z_t} }{\E[ {\rm e}^{\theta Z_{t+s}} ]}\\
+            &=\frac{ \E[ {\rm e}^{\theta (Z_{t+s}-Z_t)} ]\E[{\rm e}^{\theta Z_t}]{\rm e}^{\theta Z_t} }{\E[ {\rm e}^{\theta Z_{t+s}} ]\E[{\rm e}^{\theta Z_t}]}\\
+            &=\frac{ \E[ {\rm e}^{\theta Z_{t+s}} ]{\rm e}^{\theta Z_t} }{\E[ {\rm e}^{\theta Z_{t+s}} ]\E[{\rm e}^{\theta Z_t}]}\\
+            &=\frac{ {\rm e}^{\theta Z_t} }{\E[{\rm e}^{\theta Z_t}]}=X_t
+        \end{align*}
+    \end{proof}
+
+    我们之前介绍过的Poisson过程和布朗运动就具有独立增量，因此我们得到了如下例子。
+    \begin{example}[由Poisson过程生成的鞅]
+        $N=(N_t)_{t\geqslant 0}$是一个参数为$\lambda$的Poisson过程，并设
+        \begin{equation*}
+            \F_t=\sigma(N_s,0\leqslant s\leqslant t),\ t\geqslant 0
+        \end{equation*}
+        那么：
+        \begin{enumerate}[(1).]
+            \item $M_t=N_t-\lambda t$是一个鞅。
+            \item $Z_t=(N_t-\lambda t)^2-\lambda t$是一个鞅。
+            \item 对于$\alpha>0$，设$\beta=({\rm e}^\alpha-1)\lambda$，则
+                \begin{equation*}
+                    L_t={\rm exp}\{ \alpha N_t-\beta t \},t\geqslant 0
+                \end{equation*}
+                是一个鞅。
+        \end{enumerate}
+    \end{example}
+    \begin{proof}
+        \begin{equation*}
+            \E[ {\rm e}^{\alpha N_t} ]
+            =\sum_{k=0}^\infty {\rm e}^{-\lambda}{\rm e}^{\alpha k}\frac{\lambda^k}{k!}={\rm e}^{\lambda({\rm e}^\alpha-1)}
+        \end{equation*}
+    \end{proof}
+
+    \begin{example}[由布朗运动生成的鞅][Martingale generated from B.M.]
+        $B=(B_t)_{t\geqslant 0}$是一个布朗运动，并设
+        \begin{equation*}
+            \F_t=\sigma(B_s,0\leqslant s\leqslant t),\ t\geqslant 0
+        \end{equation*}
+        那么$\forall \theta\in \R$，
+        \begin{equation*}
+            X_t={\rm exp}\left\{ \theta B_t-\frac{1}{2}\theta^2 t \right\}
+        \end{equation*}
+        是一个鞅。
+    \end{example}
+    \begin{proof}
+        \begin{equation*}
+            \E[{\rm e}^{\theta B_t}]=
+            \int_{-\infty}^{+\infty} \frac{1}{\sqrt{2\pi t}}{\rm e}^{\frac{1}{2}t\theta^2}{\rm e}^{ \frac{1}{2t}(x-t\theta)^2 }\d x={\rm e}^{\frac{1}{2}\theta^2t}
+        \end{equation*}
+    \end{proof}
+    \begin{theorem}[关于凸函数]\label{Cont-Martingale about convex}
+        $f:\R\rightarrow \R$是一个有界凸函数，则
+        \begin{enumerate}[(1).]
+            \item $X=(X_t)_{t\geqslant 0}$是一个鞅，则$f(X_t)$是一个下鞅。
+            \item $X=(X_t)_{t\geqslant 0}$是一个下鞅，且$f$单调递增，则$f(X_t)$是一个下鞅。
+        \end{enumerate}
+    \end{theorem}
+    \begin{proof}
+        琴生不等式易证。
+    \end{proof}
+    我们经常取凸函数$f(x)=|x|^p$和$f(x)=x^+$.
+
+    \begin{theorem}
+        $X=(X_t)_{t\geqslant 0}$是一个下鞅，那么$\forall t\geqslant 0$，
+        \begin{equation*}
+            \fun{sup}{0\leqslant s\leqslant t} \E[ |X_s| ]<+\infty
+        \end{equation*}
+        上鞅也有同样的结论。
+    \end{theorem}
+    \begin{proof}
+        我们分别考虑$X_s$的正部和负部，
+        根据\autoref{Cont-Martingale about convex}，$(X_s^+)_{s\geqslant 0}$
+        是一个下鞅，所以$\forall s\leqslant t$，
+        \begin{equation*}
+            \E[X_s^+]\leqslant \E[X_t^+]
+        \end{equation*}
+        另一方面，
+        \begin{equation*}
+            \E[X_s^-]=\E[X_s^+]-\E[X_s]\leqslant \E[X_t^+]-\E[X_0]
+        \end{equation*}
+        于是
+        \begin{equation*}
+            \fun{sup}{0\leqslant s\leqslant t}\E[|X_s|]
+            =\fun{sup}{0\leqslant s\leqslant t}( \E[X_s^+]+\E[X_s^-] )
+            \leqslant 2\E[X_t^+]-\E[X_0]<+\infty
+        \end{equation*}
+    \end{proof}
+
+    \begin{theorem}[两个不等式]
+        $X=(X_t)_{t\geqslant 0}$为上鞅，且其轨道右连续，则我们有以下结论：
+        \begin{enumerate}[(1).]
+            \item 最大值不等式：对于$\forall \lambda>0$，有
+            \begin{equation*}
+                \P\left( \fun{sup}{0\leqslant s\leqslant t}|X_s|>\lambda \right)
+                \leqslant 
+                \frac{1}{\lambda} \left( 2\E[ |X_t| ]+\E[ |X_0| ] \right)
+            \end{equation*}
+            \item Doob不等式：对于$p>1$和$t>0$，有
+            \begin{equation*}
+                \E\left[ \fun{sup}{0\leqslant s\leqslant t}|X_s|^p \right]\leqslant 
+                \left( \frac{p}{p-1} \right)^p\E[ |X_t|^p ]
+            \end{equation*}    
+        \end{enumerate}
+    \end{theorem}
+    \begin{proof}
+        我们的思路是用离散鞅来逼近连续鞅。
+        首先，固定$t>0$，取$D$是$[0,t]$的可数稠密子集，
+        并且满足$0\in D,t\in D$，设有一列集合$D_m\nearrow D$，
+        其中$D_m$具有以下形式：
+        \begin{equation*}
+            D_m=\{ 0=t_0^m<t_1^m<\cdots<t_m^m=t \}
+        \end{equation*}
+        固定$m$，我们考虑$\{Y_n=X_{t_{n\wedge m}},n\in\N_+\}$，
+        这是一个关于$(\mathcal{G}_t=\F_{t_{n\wedge m}})$的上鞅，
+        利用离散鞅的\autoref{Doob's Inquality}，
+        \begin{equation*}
+            \lambda \P( \fun{sup}{s\in D_m}|X_s|>\lambda )\leqslant \E[ |X_0| ]+2\E[|X_t|]
+        \end{equation*}
+        由概率测度的上连续性，
+        \begin{equation*}
+            \P( \fun{sup}{s\in D}|X_s|>\lambda )
+            =
+            \fun{lim}{m\rightarrow\infty}
+            \P( \fun{sup}{s\in D_m}|X_s|>\lambda )\leqslant \frac{1}{\lambda}(\E[|X_0|]+2\E[|X_t|])
+        \end{equation*}
+        $X_s$的轨道右连续，所以
+        \begin{equation*}
+            \P( \fun{sup}{s\in [0,t]}|X_s|>\lambda )=\P( \fun{sup}{s\in D}|X_s|>\lambda )\leqslant \frac{1}{\lambda}(\E[|X_0|]+2\E[|X_t|])
+        \end{equation*}
+
+        第二个结论类似，利用离散情形的\autoref{Lp Maximum Inquality}即可。
+    \end{proof}    
+
+\clearpage
+\section{鞅的收敛性}
+\subsection{轨道修正}
+    在鞅的定义中，我们没有对轨道$t\mapsto X_t(\omega)$的连续性作任何要求，
+    这导致我们无法从“离散”来逼近“连续”（在布朗运动那一章我们经常使用这个技巧）。
+    本小节的目的在于介绍某些情况下可以对鞅的轨道进行修正，从而使得其具有良好的
+    轨道性质。
+    \begin{definition}[上穿次数]
+        对于函数$f:I\rightarrow \R$，其中$I\subset \R_+$，$a<b$为常数，
+        定义$f$在$I$上关于区间$(a,b)$的上穿次数：
+        \begin{equation*}
+            M_{a,b}^f(I)\defeq{\rm sup}\{ k\in \N_+: \exists \{s_1<t_1<s_2<t_2<\cdots<s_k<t_k\}\subset I{\rm\ s.t.\ }f(s_i)\leqslant a,f(t_i)\geqslant b,\forall i\in [k] \}
+        \end{equation*}
+        如果右侧集合为空集，就取$M_{a,b}^f(I)=0$，即没有穿越出区间$(a,b)$.
+    \end{definition}
+
+    下面是一个分析的结论。
+    \begin{lemma}\label{analysis of continous}
+        $D\mathop{\subset}\limits^{\rm dense} \R_+$，$f:D\rightarrow \R$，设对于任意的$t\in D$，都有：
+        \begin{enumerate}[$1^\circ$]
+            \item $f$在$D\cap [0,t]$上有界；
+            \item 任取有理数$a<b$，都有：
+                \begin{equation*}
+                    M_{a,b}^f( D\cap [0,t] )<+\infty
+                \end{equation*}
+        \end{enumerate}
+        那么如下左、右极限存在：
+        \begin{equation*}
+            f(t-)=\fun{lim}{D\ni s\nearrow t}f(s),\ \forall t>0
+        \end{equation*}
+        \begin{equation*}
+            f(t+)=\fun{lim}{D\ni s\searrow t}f(s),\ \forall t\leqslant 0
+        \end{equation*}
+        进一步地，定义$g(t)=f(t+)$，则$g(t)$右连续且左极限存在，简称右连左极(càdlàg，RCLL)。
+    \end{lemma}
+    \begin{proof}
+        （反证）假设对于某个$t>0$，左极限不存在，那么存在有理数$a<b$使得
+        \begin{equation*}
+            \fun{liminf}{D\ni s\nearrow f} f(s)<a<b<\fun{limsup}{D\ni s\nearrow f}f(s)
+        \end{equation*}
+        这表明$M_{a,b}^f(D\cap [0,t])=\infty$，矛盾。
+
+        右极限的情形类似。
+    \end{proof}
+    \begin{theorem}
+        $X=(X_t)_{t\geqslant 0}$为一个关于$(\F_t)_{t\geqslant 0}$的（上）鞅，$D\mathop{\subset}\limits^{\rm dense} \R_+$，那么
+        \begin{enumerate}[(1).]
+            \item 以下极限a.s.存在：
+            \begin{equation*}
+                f(t-)=\fun{lim}{D\ni s\nearrow t}f(s),\ \forall t>0
+            \end{equation*}
+            \begin{equation*}
+                f(t+)=\fun{lim}{D\ni s\searrow t}f(s),\ \forall t\leqslant 0
+            \end{equation*}
+            \item 对于$t\geqslant 0$，$X_{t+}\in L^1$且
+                \begin{equation*}
+                    X_t\geqslant \E[ X_{t+}|\F_t ]
+                \end{equation*}
+                其中等号成立当且仅当$t\mapsto \E[X_t]$右连续。
+        \end{enumerate}
+        因此，$(X_{t+})_{t\geqslant 0}$是一个关于$(\F_{t+})_{t\geqslant 0}$的（上）鞅。
+    \end{theorem}
+    \begin{proof}
+        (1).固定$t\in D$，由最大值不等式可得
+        \begin{equation*}
+            \P( \fun{sup}{s\in D\cap [0,t]} |X_s|>\lambda )\leqslant \frac{1}{\lambda}( 2\E[ |X_T| ]+\E[ |X_0| ] )
+        \end{equation*}
+        令$\lambda \rightarrow \infty$可得
+        \begin{equation*}
+            \fun{sup}{s\in D\cap [0,t]}|X_s|<+\infty
+        \end{equation*}
+        选择$D$的一列有限子集$D_m$，满足：
+        \begin{equation*}
+            0,t\in D_m,\ D_m\nearrow D,\ D\cap [0,t]=\bigcup_{m} D_m
+        \end{equation*}
+        而$(X_t)$限制在$D_m$上是离散时间鞅，由离散时间鞅的上穿不等式（\autoref{thm3.4}），有
+        \begin{equation*}
+            \E[ M_{a,b}^X(D_m) ]\leqslant \frac{1}{b-a}\E[ (X_T-a)^- ]
+        \end{equation*}
+        令$m\rightarrow\infty$，由Fatou引理可得
+        \begin{equation*}
+            \E[ M_{a,b}^X(D\cap [0,t]) ]\leqslant \fun{liminf}{m\rightarrow\infty}\E[ M_{a,b}^X(D_m) ]\leqslant \frac{1}{b-a}\E[ (X_T-a)^- ]<+\infty
+        \end{equation*}
+        于是由\autoref{analysis of continous}则得证。
+
+        (2).定义：
+        \begin{equation*}
+            X_{t+}(\omega)=\left\{ \begin{array}{ll}
+                \fun{lim}{D\ni s\searrow t}X_s(\omega)&,\text{如果此极限存在}\\
+                0&,\text{其他情况}
+            \end{array} \right.
+        \end{equation*}
+        那么，其他情况的集合（是个零测集）可以记作
+        \begin{equation*}
+            N=\bigcup_{t\in D}\left( \left\{ \fun{sup}{t\in D\cap [0,t]}|X_t|=+\infty \right\}\cup \left\{ \bigcup_{a<b,a,b\in \Q} \{ M_{a,b}^X(D\cap [0,t])=+\infty \} \right\} \right)
+        \end{equation*}
+        \begin{enumerate}[{\rm Step1.}]
+            \item 选取$D\ni t_n\searrow t,t_n>t$，由构造可知
+                \begin{equation*}
+                    X_{t+}=\fun{lim}{n\rightarrow\infty} X_{t_n}
+                \end{equation*}
+                记$Y_k=X_{t_{-k}},k\leqslant 0$，那么$(Y_k)$是一个向后鞅，而且
+                \begin{equation*}
+                    \fun{sup}{k\leqslant 0}\E[ |Y_k| ]
+                    =
+                    \fun{sup}{k\geqslant 0}\E[ |X_{t_k}| ]<+\infty
+                \end{equation*}
+                那么
+                \begin{equation*}
+                    Y_k\ra{L^1}Y_{-\infty}=X_{t+}\in L^1
+                \end{equation*}
+            \item 由$t_n>t$，
+                \begin{equation*}
+                    X_t\geqslant \E[ X_{t_n}|\F_t ]
+                \end{equation*}
+                令$n\rightarrow\infty$，可得
+                \begin{equation*}
+                    X_t\geqslant \E[X_{t+}|\F+t]
+                \end{equation*}
+                我们希望证明等号成立，那么只需证明：
+                \begin{equation*}
+                    \E[X_t]=\E[ \E[X_{t+}|\F+t] ]=\E[X_{t+}]
+                \end{equation*}
+                而
+                \begin{equation*}
+                    \E[X_{t+}]=\E[ \fun{lim}{n\rightarrow\infty} X_{t_n} ]
+                    =\fun{lim}{n\rightarrow \infty}\E[ X_{t_n} ]
+                    =\E[X_t]
+                \end{equation*}
+            \item 最后我们说明$(X_{t+})$是$(\F_{t+})$的上鞅，对于$s<t$，
+                取$D$中序列$s_n\searrow s,t_n\searrow t,s_n\leqslant t_n$，取
+                \begin{equation*}
+                    A\in \F_{s+}\bigcap_{s_n}\F_{s_n}
+                \end{equation*}
+                那么
+                \begin{equation*}
+                    A\in \F_{s_n},\ \forall n\geqslant 1
+                \end{equation*}
+                于是
+                \begin{align*}
+                    \E[X_{s+}I_A]=\E[ \fun{lim}{n\rightarrow\infty}X_{s_n}I_A ]
+                    &=\fun{lim}{n\rightarrow\infty} \E[ X_{s_n}I_A ]\\
+                    &\geqslant \fun{lim}{n\rightarrow\infty} \E[ X_{t_n}I_A ]\\
+                    &=\E[ X_{t+}I_A ]\\
+                    &=\E[ \E[X_{t+}I_A\F_{s+}] ]
+                    &=\E[\E[ X_{t+}\F_{s+} ]I_A]
+                \end{align*}
+                由此可得：
+                \begin{equation*}
+                    \E[ X_{t+}|\F_{s+} ]\leqslant X_{s+}
+                \end{equation*}
+                鞅的情形类似。
+        \end{enumerate}
+        这里利用了一个结论：$X,Y$关于$\F$可测，
+        那么$X\leqslant Y$当且仅当$\E[ XI_A ]\leqslant \E[ YI_A ],\forall A\in \F$.
+    \end{proof}
+
+    \begin{theorem}[轨道修正]
+        $(\F_t)_{t\geqslant 0}$右连续且完备，$X=(X_t)_{t\geqslant 0}$是
+        关于$(\F_t)_{t\geqslant 0}$的上鞅，且$t\mapsto \E[X_t]$右连续，那么
+        存在一个$(X_t)$的修改$(Y_t)$，其也是一个上鞅，且具有RCLL轨道。
+    \end{theorem}
+    \begin{proof}
+        只需定义$Y_t=X_{t+}(\omega)I_{ \{ \fun{lim}{D\ni s\searrow t}X_s(\omega)\text{存在} \} }$，
+        则$(Y_t)$是关于$(\F_{t+})=(\F_t)$的上鞅，
+        那么
+        \begin{equation*}
+            X_t=\E[ X_{t+}|\F_t ]=\E[ X_{t+}|\F_{t+} ]=X_{t+}=Y_t{\rm\ a.s.}
+        \end{equation*}
+    \end{proof}
+\subsection{右连续鞅的收敛性}
+    \begin{theorem}[鞅收敛定理]\label{Cont-Martingale Convergence Theorem}
+        $X$是上鞅，且有右连续轨道，如果
+        \begin{equation*}
+            \fun{sup}{0\leqslant t<\infty} \E[ |X_t| ]<+\infty
+        \end{equation*}
+        那么存在一个随机变量$X_\infty\in L^1$，使得
+        \begin{equation*}
+            \fun{lim}{t\rightarrow\infty}X_t(\omega)=X_\infty(\omega){\rm\ a.s.}
+        \end{equation*}
+    \end{theorem}
+    \begin{proof}
+        设$D$是$\R_+$的一个可数稠密子集，对于任意的$t\in D$，有理数$a<b$，有
+        \begin{equation*}
+            \E[ M_{a,b}^X(D\cap [0,t]) ]
+            \leqslant \frac{1}{b-a}\E[ (X_T-a)^- ]
+            \leqslant \frac{1}{b-a}\left( \fun{sup}{0\leqslant t<\infty}\E[|X_t|]+a \right)<+\infty
+        \end{equation*}
+        令$t\rightarrow\infty$可得
+        \begin{equation*}
+            \E[ M_{a,b}^X(D) ]<+\infty
+        \end{equation*}
+        从而可得
+        \begin{equation*}
+            M_{a,b}^X(D)<+\infty\ a.s.
+        \end{equation*}
+        所以存在
+        \begin{equation*}
+            X_\infty=\fun{lim}{D\ni t\rightarrow\infty}{\rm\ a.s.}
+        \end{equation*}
+        由Fatou引理，
+        \begin{equation*}
+            \E[ |X_\infty| ]=\E[ | \fun{lim}{D\ni t\rightarrow\infty} X_t | ]
+            =\E[ \fun{lim}{D\ni t\rightarrow\infty}|X_t| ]
+            \leqslant 
+            \fun{liminf}{D\ni t\rightarrow\infty} \E[|X_t|]<+\infty
+        \end{equation*}
+        因此$X_\infty\in L^1$.
+
+        我们目前只说明了$D$上的收敛性，下面将其扩充到$\R_+$上。对于$\forall \varepsilon>0$，
+        存在$N$，当$D\ni t\geqslant N$时，
+        \begin{equation*}
+            |X_t-X_\infty|\leqslant \varepsilon
+        \end{equation*}
+        那么对于任意的$s\geqslant N$，存在一系列$s_n\in D$使得$s_n\searrow s$，
+        因此
+        \begin{equation*}
+            |X_{s_n}-X_\infty|\leqslant \varepsilon
+        \end{equation*}
+        令$n\rightarrow\infty$得到
+        \begin{equation*}
+            |X_{s}-X_\infty|\leqslant \varepsilon
+        \end{equation*}
+    \end{proof}
+    注意，相比于离散时间鞅的收敛定理（\autoref{Martingale Convergence Theorem}），此处多了一个结论：$X_\infty\in L^1$.
+
+    \begin{definition}
+        称一个鞅$(X_t)_{t\geqslant 0}$是闭的(closed)，如果存在一个随机变量$Z\in L^1$，使得
+        \begin{equation*}
+            X_t=\E[Z|\F_t],\forall t\geqslant 0
+        \end{equation*}
+    \end{definition}
+    \begin{theorem}
+        $X=(X_t)_{t\geqslant 0}$是一个鞅，且具有右连续轨道，那么以下结论等价：
+        \begin{enumerate}[(1).]
+            \item $X$闭。
+            \item $\{X_t,t\geqslant 0\}$一致可积。
+            \item $t\rightarrow\infty$时，$X_t$几乎处处收敛，且依$L^1$收敛。
+        \end{enumerate}
+    \end{theorem}
+    \begin{proof}
+        $(1)\Rightarrow (2)$：由于
+        \begin{equation*}
+            X_t=\E[Z|\F_t],\ t\geqslant 0
+        \end{equation*}
+        是$Z$生成的“条件期望列”，所以是一致可积的，见\autoref{Integrability of Conditional Expectation}.
+
+        $(2)\Rightarrow (3)$：一致可积可得
+        \begin{equation*}
+            \fun{sup}{t\geqslant 0}\E[ |X_t| ]<+\infty0
+        \end{equation*}
+        由\autoref{Cont-Martingale Convergence Theorem}可知$X_t\ra{\rm a.s.} X_\infty$，
+        结合一致可积性可知$X_t\ra{L^1} X_\infty$
+
+        $(3)\Rightarrow (1)$：对于$\forall s>t$，
+        \begin{equation*}
+            X_t=\E[X_s|\F_t]
+        \end{equation*}
+        令$s\rightarrow\infty$，
+        \begin{equation*}
+            X_t=\E[X_\infty|\F_t]
+        \end{equation*}
+        这说明$X$闭。
+    \end{proof}
+
+\clearpage
+\section{鞅的择停定理}
+    这一小节中，我们承认以下命题成立。
+    \begin{proposition}
+        $X=(X_t)_{t\geqslant 0}$是循序过程，适应$(\F_{t})_{t\geqslant 0}$，
+        $T$是关于$(\F_{t})_{t\geqslant 0}$的停时，
+        则
+        \begin{equation*}
+            X_T\cdot I_{T<+\infty}
+        \end{equation*}
+        是$\F_T$-可测的。
+        
+        进一步地，如果$\fun{lim}{t\rightarrow\infty}X_t=X_\infty\in \F_\infty$ a.s.，
+        定义
+        \begin{equation*}
+            X_T(\omega)=X_\infty(\omega)I_{ \{T(\omega)=+\infty\} }+X_{T(\omega)}(\omega)I_{ \{T<+\infty\} }
+        \end{equation*}
+        那么，$X_T$是$\F_T$-可测的。
+    \end{proposition}
+    本节内容中我们大部分情况下假设鞅是在实数（度量）空间上取值、轨道右连续的，
+    而我们在\autoref{progressive from right-continous}说明过，
+    具有右连续轨道的适应过程是循序过程，
+    所以我们可以直接使用$X_T\in \F_T$这个结论，
+    以下不再作特殊说明。    
+
+    Doob择停定理首先给出了一致可积、右连续情形下的结论。
+    \begin{theorem}[Doob择停定理]\label{Doob's Cont-Martingale Optional Stopping Time Theorem}
+        $X=(X_t)_{t\geqslant 0}$是一致可积鞅，且具有右连续轨道，
+        那么对于任意停时$S\leqslant T$，有$X_S,X_T\in L^1$，且
+        \begin{equation*}
+            X_S=\E[X_T|\F_S]
+        \end{equation*}
+        特别地，取$T=\infty$，那么
+        \begin{equation*}
+            X_S=\E[X_\infty|\F_S]
+        \end{equation*}
+        \begin{equation*}
+            \E[X_0]=\E[X_S]=\E[X_\infty]
+        \end{equation*}
+    \end{theorem}
+    \begin{proof}
+        对于任意的$n\in\N$，记
+        \begin{equation*}
+            T_n=\sum_{k=0}^\infty \frac{k+1}{2^n}I_{ \{ \frac{k}{2^n}<T\leqslant \frac{k+1}{2^n} \} }+(+\infty)\cdot I_{ \{T=+\infty\} }
+        \end{equation*}
+        \begin{equation*}
+            S_n=\sum_{k=0}^\infty \frac{k+1}{2^n}I_{ \{ \frac{k}{2^n}<S\leqslant \frac{k+1}{2^n} \} }+(+\infty)\cdot I_{ \{S=+\infty\} }
+        \end{equation*}
+        这是我们在\autoref{cor of order S.T.}提到的构造，$T_n,S_n$都是停时，
+        并且$T_n\searrow T,S_n\searrow S$.
+
+        记
+        \begin{equation*}
+            Y_k^{(n)}=X_{k\cdot 2^{-n}},\ k\geqslant 0
+        \end{equation*}
+        \begin{equation*}
+            \mathcal{H}_k^{(n)}=\F_{k\cdot 2^{-n}}
+        \end{equation*}
+        那么$\{Y_k^{(n)}\}$是一致可积的，由离散鞅的择停定理：
+        \begin{equation*}
+            X_{S_n}=T_{2^n\cdot S_n}^{(n)}
+            =\E[ Y_{2^n\cdot T_n}^{(n)}|\mathcal{H}_{2^n\cdot S_n}^{(n)} ]
+            =\E[X_{T_n}|\F_{S_n}]
+        \end{equation*}
+        任取$A\in \F_S\subset \F_{S_n}$，由条件期望的定义，
+        \begin{equation*}
+            \E[X_{S_n}I_A]=\E[X_{T_n}I_A]
+        \end{equation*}
+        结合轨道的右连续性，我们知道
+        \begin{equation*}
+            X_S=\fun{lim}{n\rightarrow\infty}X_{S_n},X_T=\fun{lim}{n\rightarrow\infty}X_{T_n}{\rm\ a.s.}
+        \end{equation*}
+        再结合一致可积性，可知上述收敛在$L^1$也成立，因此当$n\rightarrow\infty$时可得
+        \begin{equation*}
+            \E[X_SI_A]=\E[X_TI_A],\ \forall A\in \F_S
+        \end{equation*}
+        所以$X_S=\E[X_T|\F_S]$，然后我们接下来证明$X_S,X_T\in L^1$，
+        注意到
+        \begin{equation*}
+            X_{S_n}=\E[X_\infty|\F_{S_n}],\forall n\in\N_+
+        \end{equation*}
+        所以$X_{S_n}\in L^1$，因此$X_S\in L^1$.
+    \end{proof}
+
+    如果我们不假设一致可积性，而假设停时有界，也有一样的结论。
+    \begin{theorem}\label{Cont-Martingale Optional Stopping Time Theorem with Bounded S.T.}
+        $X=(X_t)_{t\geqslant 0}$是一个鞅，且具有右连续轨道，
+        如果$S\leqslant T$是两个有界的停时，那么
+        \begin{equation*}
+            X_S,X_T\in L^1
+        \end{equation*}
+        \begin{equation*}
+            X_S=\E[X_T|\F_S]
+        \end{equation*}
+    \end{theorem}
+    \begin{proof}
+        不妨设$S\leqslant T\leqslant a$，
+        考虑如下的鞅：$Y_t=\E[X_a|\F_t]=X_{t\wedge a}$，
+        所以$Y_t$是闭的，进而是一致可积的，可得
+        \begin{equation*}
+            Y_S=\E[Y_T|\F_S]
+            \Leftrightarrow
+            X_{S\wedge a}=\E[X_{T\wedge a}|\F_S]
+            \Leftrightarrow
+            X_S=\E[X_T|\F_S]
+        \end{equation*}
+        同时，由于$Y_S,Y_T\in L^1$，所以$X_S,X_T\in L^1$.
+    \end{proof}
+
+    下面这个定理给出了停止鞅$(X_{t\wedge T})$和原来的鞅之间的关系。
+    \begin{theorem}\label{Relationship between Martingale and Stoped-Martingale}
+        $(X_t)_{t\geqslant 0}$是一个鞅，且具有右连续轨道，$T$是停时，那么
+        \begin{enumerate}[(1).]
+            \item $(X_{t\wedge T})_{t\geqslant 0}$也是一个鞅。
+            \item 如果$(X_t)$一致可积，那么$(X_{t\wedge T})$一致可积，因此对于$\forall t\geqslant 0$，
+                \begin{equation*}
+                    X_{t\wedge T}=\E[X_{\infty\wedge T}|\F_t]=\E[ X_T|\F_t ]
+                \end{equation*}
+        \end{enumerate}
+    \end{theorem}
+    \begin{proof}
+        我们先说明(2)，希望证明：
+        \begin{equation*}
+            X_{t\wedge T}=\E[ X_T|\F_t ]
+        \end{equation*}
+        对于停时$T$，任取常数$t\geqslant 0$，$T\wedge t$也是一个停时，因此$X_{t\wedge T}\in \F_{t\wedge T}\subset \F_t$，
+        接下来只需证明对于$\forall A\in \F_t$都有
+        \begin{equation*}
+            \E[ X_{t\wedge T}I_A ]=\E[ X_TI_A ]
+        \end{equation*}
+        注意到
+        \begin{align*}
+            \E[ X_{t\wedge T}I_A ]
+            &=\E[ X_{t\wedge T}I_{A\cap \{T\geqslant t\}} ]+\E[ X_{t\wedge T}I_{A\cap \{T< t\}} ]\\
+            &=\E[ X_{t\wedge T}I_{A\cap \{T\geqslant t\}} ]+\E[ X_{T}I_{A\cap \{T<t\}} ]
+        \end{align*}
+        所以我们只需证明
+        \begin{equation*}
+            \E[ X_{t\wedge T}I_{A\cap \{T\geqslant t\}} ]=\E[ X_{T}I_{A\cap \{T\geqslant t\}} ]
+        \end{equation*}
+        因为$(X_t)_{t\geqslant 0}$是一致可积鞅，我们对$t\wedge T\leqslant T$这两个停时应用择停定理，可得
+        \begin{equation*}
+            X_{t\wedge T}=\E[ X_T|\F_{w\wedge T} ]\tag*{$(\star)$}
+        \end{equation*}
+        而对于$A\in \F_t$，
+        因为$\{ T\geqslant t \}\in \F_t$，
+        因此$A\cap \{ T\geqslant t \}\in \F_t$，同时$\forall s\geqslant 0$，
+        \begin{equation*}
+            A\cap \{ T\geqslant t \}\cap \{ T\leqslant s \}=\left\{ \begin{array}{ll}
+                \varnothing&,t>s\\
+                \mathop{A\cap \{ T\geqslant t \}}\limits_{\in \F_t\subset \F_s}\cap \{ T\leqslant s \}&,t\leqslant s
+            \end{array} \right.\ \in \F_s
+        \end{equation*}
+        因此$A\cap \{ T\geqslant t \}\in \F_{T}$，
+        从而$A\cap \{ T\geqslant t \}\in \F_{t\wedge T}$，
+        于是由$(\star)$式可知
+        \begin{equation*}
+            \E[ X_{t\wedge T}I_{A\cap\{ T\geqslant t \} } ]=\E[X_TI_{A\cap\{ T\geqslant t \} }]
+        \end{equation*}
+        于是得证。
+
+        再来说明(1)，任取常数$a>0$，那么$X_{t\wedge a}=\E[X_a|\F_t]$是一致可积鞅，进而由(2)可知$X_{t\wedge a\wedge T}$是一致可积鞅，
+        也就是说，在$t\in [0,a]$时，$X_{t\wedge T}$是鞅，令$a\rightarrow\infty$即可。
+    \end{proof}
+
+    最后，我们给出非负上鞅的择停定理，它也不需要一致可积性的条件。
+    \begin{theorem}\label{Non-negative Supermartingale Optional S.T. Theorem}
+        $Z=(Z_t)_{t\geqslant 0}$是非负上鞅，且具有右连续轨道，
+        如果$U\leqslant V$是两个停时，那么$Z_U,Z_V\in L^1$，且
+        \begin{equation*}
+            Z_U\geqslant \E[Z_V|\F_U]
+        \end{equation*}
+    \end{theorem}
+    \begin{proof}
+        先假设$U,V$都是有界停时，即$U\leqslant V\leqslant P$，$P$为常数，对于$n\in\N$，定义
+        \begin{equation*}
+            U_n=\sum_{k=0}^{ \lfloor P\cdot 2^n-1 \rfloor }\frac{k+1}{2^n}I_{ \{ \frac{k}{2^n}<U\leqslant \frac{k+1}{2^n} \} }
+        \end{equation*}
+        \begin{equation*}
+            V_n=\sum_{k=0}^{ \lfloor P\cdot 2^n-1 \rfloor }\frac{k+1}{2^n}I_{ \{ \frac{k}{2^n}<V\leqslant \frac{k+1}{2^n} \} }
+        \end{equation*}
+        那么$U_n\searrow U,V_n\searrow V$，结合$(Z_t)$的有连续性，有
+        \begin{equation*}
+            Z_{U_n}\rightarrow Z_U,\ Z_{V_n}\rightarrow Z_V
+        \end{equation*}
+        由离散时间上鞅的Doob择停定理（有界停时），
+        \begin{equation*}
+            Z_{U_{n+1}}\geqslant \E[ Z_{U_n}|\F_{U_{n+1}} ]
+        \end{equation*}
+        此时，令
+        $Y_n=Z_{U_{-n}}$，以及$\mathcal{H}_n=\F_{U_{-n}}$，那么$(Y_n)$是一个向后上鞅，所以
+        \begin{equation*}
+            \E[Y_n]=\E[Z_{U_{-n}}]\leqslant \E[Z_0]<+\infty
+        \end{equation*}
+        所以$\fun{sup}{n}\E[Y_n]<+\infty$，
+        结合鞅收敛定理，可得
+        $Z_{U_n}\ra{L^1}Z_U$和$Z_{V_n}\ra{L^1}Z_V$，
+        由离散时间上鞅的Doob择停定理，
+        \begin{equation*}
+            \E[Z_{U_n}]\geqslant \E[Z_{V_n}]
+        \end{equation*}
+        令$n\rightarrow\infty$可得$\E[Z_n]=\E[U_n]$.
+
+        现在考虑$U,V$不有界的情况，对于$P\geqslant 1$，考虑$U\wedge p$和$V\wedge p$
+        是两个有界的停时，那么
+        \begin{equation*}
+            \E[Z_{U\wedge P}]\leqslant \E[Z_0],\ 
+            \E[Z_{V\wedge P}]\leqslant \E[Z_0]
+        \end{equation*}
+        令$P\rightarrow\infty$，由Fatou引理，可得
+        \begin{equation*}
+            \E[Z_U],\E[Z_V]\leqslant \E[Z_0]<+\infty,
+        \end{equation*}
+        由此可知$Z_U,Z_V\in L^1$.
+
+        接下来我们证明$Z_U\geqslant \E[Z_V|\F_U]$，其等价于证明$\forall A\in \F_U$，
+        \begin{equation*}
+            \E[Z_UI_A]\geqslant \E[Z_VI_A]
+        \end{equation*}
+        对 $A\in\mathcal{F}_U\subset\mathcal{F}_V$, 定义：
+        \begin{equation*}
+            U^A=\begin{cases}U,&\omega\in A\\[2ex]\infty,&\omega\in A^c\end{cases},\quad V^A=\begin{cases}V,&\omega\in A\\[2ex]\infty,&\omega\in A^c\end{cases}
+        \end{equation*}
+        那么$U^A$和$V^A$都是停时且其满足$U^A\leqslant V^A$.
+
+        对任意的$P\geqslant 1$，有
+        \begin{equation*}
+            U^A\wedge P\leqslant V^A\wedge P
+        \end{equation*}
+        因此
+        \begin{equation*}
+            E[Z_{U^A\wedge P}]\geqslant E[Z_{V^A\wedge P}]
+        \end{equation*}
+        事实上，
+        \begin{align*}
+            \mathrm{LHS}
+            &=E[Z_{U^{A}\wedge P}I_{A^{c}}]+E[Z_{U^{A}\wedge P}I_{A}]\\
+            &=E[Z_{P}I_{A^{c}}]+E[Z_{U}I_{A}I\{U\leqslant P\}]+E[Z_{P}I_{A}I\{U>P\}]
+        \end{align*}
+        同理，
+        \begin{align*}
+            \mathrm{RHS}&=E[Z_{P}I_{A^{c}}]+E[Z_{V\wedge P}I_{A}I\{U\leqslant P\}]\\
+            &+E[Z_{P}I_{A}I\{U>P\}]
+        \end{align*}
+        所以有
+        \begin{equation*}
+            E[Z_{U}I_{A}I\{U\leqslant P\}]\geqslant E[Z_{V\wedge P}I_{A}I\{U\leqslant P\}]
+        \end{equation*}
+        令$p\rightarrow\infty$，由Fatou引理可得
+        \begin{align*}
+            E[Z_{U}I_{A}I\{U<\infty\}]
+            &\geqslant\operatorname*{lim}_{P\to\infty}E[Z_{V\wedge P}I_{A}I\{U\leqslant P\}]\\
+            &\geqslant E[\operatorname*{lim}_{P\to\infty}Z_{V\wedge P}I_{A}I\{U\leqslant P\}]\\
+            &=E[Z_{V}I_{A}I\{U<\infty\}]
+        \end{align*}
+        另一方面，由于$U=\infty\implies V=\infty$，所以有
+        \begin{align*}
+            E[Z_{U}I_{A}I\{U=\infty\}]
+            &=E[Z_{V}I_{A}I\{V=\infty\}]\\
+            &=E[Z_{\infty}I_{A}I\{U=\infty\}]
+        \end{align*}
+        即$E[Z_UI_A]\geqslant E[Z_VI_A]$，其与之前的式子相加，即可得到结论。
+    \end{proof}
+
+\clearpage
+\section{例子与习题}
+这一章的习题大概分为两类，
+一类是各种收敛性可积性的证明，
+另一类则是利用鞅的择停定理（总结：一致可积鞅的停止鞅也一致可积；右连续的前提下，一致可积鞅/停时有界/非负（上）鞅，可以使用择停定理，注意非负（上）鞅结论是不等号）
+的应用。后者往往技巧性较强，记一下\autoref{Martingale generated by Independent Increment}以及其延伸出的两个例子
+里面鞅的构造就行了，更抽象的构造要是考了那确实没办法。
+
+下面是一个上课讲的例子。
+\begin{example}
+    $B=(B_t)_{t\geqslant 0}$是布朗运动，对于常数$c$，记停时
+    \begin{equation*}
+        T_c=\fun{inf}{}\{ t\geqslant 0:B_t=c \}
+    \end{equation*}
+    即首次到达$c$的时刻。设$a<0<b$，$T=T_a\wedge T_b$，
+    \begin{enumerate}[(1).]
+        \item 求$\P(T_a<T_b)$.
+        \item 求$\E[T]$.
+        \item 求$\E[ {\rm e}^{-\lambda T_a} ]$，其中$\lambda>0$.
+        \item 设$a+b=0$，即
+            \begin{equation*}
+                T=\fun{inf}{}\{t\geqslant 0:|B_t|=b\}
+            \end{equation*}
+            求$\E[ T^2 ]$.
+    \end{enumerate}
+\end{example}
+\begin{solve}
+    \begin{enumerate}[(1).]
+        \item 我们注意到鞅$B_{t\wedge T}\in [a,b]$有界，从而一致可积，
+        由择停定理可知
+        \begin{equation*}
+            0=\E[B_{0\wedge T}]=\E[B_{\infty\wedge T}]=\E[B_T]=a\cdot \P(T_a<T_b)+b\cdot \P(T_a>T_b)
+        \end{equation*}
+        而且$\P(T_a<T_b)+\P(T_a>T_b)=1$，解得
+        \begin{equation*}
+            \P(T_a<T_b)=\frac{b}{b-a},\ \P(T_a>T_b)=\frac{-a}{b-a}
+        \end{equation*}
+        \item 注意到$X_t=B_t^2-t$是一个鞅，那么$X_{t\wedge T}$是一个鞅，可知
+        \begin{equation*}
+            0=\E[X_{0\wedge T}]=\E[X_{t\wedge T}]
+        \end{equation*}
+        所以
+        \begin{equation*}
+            \E[t\wedge T]=\E[ B_{t\wedge T}^2 ]
+        \end{equation*}
+        令$t\rightarrow\infty$，因为$B_{t\wedge T}^2\in [0,a^2\vee b^2]$有界，$t\wedge T$单调，
+        利用控制收敛定理和单调收敛定理可知
+        \begin{equation*}
+            \E[T]=\E[B_T^2]=a^2\P(T_a<T_b)+b^2\P(T_a>T_b)=-ab
+        \end{equation*}
+        \item 对于$\theta>0$，考虑如下的鞅：
+        \begin{equation*}
+            N_t={\rm exp}\left\{ \theta B_t-\frac{\theta^2}{2}t \right\}
+        \end{equation*}
+        那么
+        \begin{equation*}
+            N_{t\wedge T_a}\leqslant {\rm exp}\{ \theta B_{t\wedge T_a} \}\leqslant {\rm exp}\{ \theta a \}
+        \end{equation*}
+        一致有界$\Rightarrow (N_{t\wedge T_a})$一致可积，由Doob择停定理可知
+        \begin{equation*}
+            1=\E[ N_{0} ]=\E[ N_{T_a} ]=\E[{\rm exp}\{ \theta a-\frac{\theta^2}{2}T_a \}]
+        \end{equation*}
+        即
+        \begin{equation*}
+            \E[ {\rm exp}\{ -\frac{1}{2}\theta^2T_a \}]={\rm exp}\{ -\theta a \}
+        \end{equation*}
+        取$\theta=\sqrt{2\lambda}$就得到
+        \begin{equation*}
+            \E[ {\rm e}^{-\lambda T_a} ]={\rm e}^{-a\sqrt{2\lambda}}
+        \end{equation*}
+        \item 考虑如下的鞅：
+            \begin{equation*}
+                K_t=B_t^4-6B_t^2 t+3t^2
+            \end{equation*}
+            具体过程省略。
+    \end{enumerate}
+\end{solve}
+
+\begin{ex}[le gall(Exercise3.26)][le gall(Exercise3.26)]
+    \begin{enumerate}
+        \item $M=(M_t)_{t\geqslant 0}$是非负鞅，具有右连续轨道，$M_0=x$ a.s.，
+        并且
+        \begin{equation*}
+            \fun{lim}{t\rightarrow\infty}M_t=0{\rm\ a.s.}
+        \end{equation*}
+        证明：对于$\forall y>x$，
+        \begin{equation*}
+            \P( \fun{sup}{t\geqslant 0}M_t\geqslant y )=\frac{x}{y}
+        \end{equation*}
+        \item $B=(B_t)_{t\geqslant 0}$是初值为$x>0$的布朗运动，
+        $T_0\fun{inf}{}\{ t\geqslant 0:B_t=0 \}$，
+        求
+        \begin{equation*}
+            \fun{sup}{t\leqslant T_0} B_t
+        \end{equation*}
+        的分布。
+        \item $B=(B_t)_{t\geqslant 0}$是初值为$0$的布朗运动，$\mu>0$，
+        利用合适的指数鞅，证明
+        \begin{equation*}
+            \fun{sup}{t\geqslant 0} (B_t-\mu t)
+        \end{equation*}
+        满足参数为$2\mu$的指数分布。
+    \end{enumerate}
+\end{ex}
+\begin{solve}
+    \begin{enumerate}
+        \item 设
+            \begin{equation*}
+                T_y=\fun{inf}{}\{ t\geqslant 0:M_t\geqslant y \}
+            \end{equation*}
+            因为$M_t$具有（右）连续轨道，所以$(M_{t\wedge T_y})$也是一个鞅，那么
+            \begin{equation*}
+                \E[ M_{t\wedge T_y} ]=\E[ M_{0\wedge T_y} ]=x
+            \end{equation*}
+            而$M_{t\wedge y}\in [0,y]$，所以由控制收敛定理可得
+            \begin{equation*}
+                \E[ M_{T_y}I_{\{T_y<+\infty\}}+M_{\infty}I_{\{T_y=\infty\}} ]
+                =\E[yI_{\{T_y<+\infty\}}]=x
+            \end{equation*}
+            从而
+            \begin{equation*}
+                \P(\fun{sup}{t\geqslant 0}M_t\geqslant y)=\P(T_y<+\infty)=\frac{x}{y}
+            \end{equation*}
+        \item 注意到$(B_{t\wedge T_0})$满足1.中条件，所以$\forall y\geqslant 0$，
+            \begin{equation*}
+                \P( \fun{sup}{t\leqslant T_0}B_t\geqslant y )
+                =
+                \P( \fun{sup}{t\geqslant 0}B_{t\wedge T_0}\geqslant y )
+                =\frac{x}{y}
+            \end{equation*}
+        \item 观察$\fun{sup}{t\geqslant 0}(B_t-\mu t)$，我们可以作以下变换：
+            \begin{align*}
+                \P( \fun{sup}{t\geqslant 0}(B_t-\mu t)\geqslant y )
+                &=\P( \fun{sup}{t\geqslant 0}(B_{\frac{1}{4\mu^2}t}-\mu\cdot \frac{1}{4\mu^2}t)\geqslant y )\\
+                &=\P( \fun{sup}{t\geqslant 0}(2\mu B_{\frac{1}{4\mu^2}t}-\frac{1}{2}t)\geqslant 2\mu y )\\
+                &=\P( \fun{sup}{t\geqslant 0}(B_{t}-\frac{1}{2}t)\geqslant 2\mu y )\\
+                &=\P( \fun{sup}{t\geqslant 0}{\rm e}^{B_{t}-\frac{1}{2}t}\geqslant {\rm e}^{2\mu y} )
+            \end{align*}
+            其中$N_t={\rm e}^{B_{t}-\frac{1}{2}t}$是一个非负连续鞅，并且$N_t\ra{\rm a.s.}0$，
+            $N_0=1$，满足1.中条件，所以$\forall y>0$，
+            \begin{equation*}
+                \P( \fun{sup}{t\geqslant 0}(B_t-\mu t)\geqslant y )=
+                \P( \fun{sup}{t\geqslant 0} N_t\geqslant {\rm e}^{2\mu y} )={\rm e}^{-2\mu y}
+            \end{equation*}
+            $y\leqslant 0$时显然概率为$1$，于是$\fun{sup}{t\geqslant 0}(B_t-\mu t)$满足参数为$2\mu$的指数分布。
+    \end{enumerate}
+\end{solve}
+
+\begin{ex}[le gall(Exercise3.27)][le gall(Exercise3.27)]
+    $B=(B_t)_{t\geqslant 0}$是初值为$0$的布朗运动，$(\F_t=\sigma( B_s,s\in [0,t] ))$，
+    记
+    \begin{equation*}
+        T_x=\fun{inf}{}\{ t\geqslant 0:B_t=x \}
+    \end{equation*}
+    并设$T=T_a\wedge T_b$，其中$a<0<b$为常数，对于$\lambda>0$，求：
+    \begin{enumerate}
+        \item $\E[ {\rm e}^{-\lambda T} ]$.
+        \item $\E[ {\rm e}^{-\lambda T}I_{ \{ T=T_a \} } ]$.
+        \item $\P(T_a<T_b)$.
+    \end{enumerate}
+\end{ex}
+\begin{solve}
+    \begin{enumerate}
+        \item 注意到
+            \begin{equation*}
+                U_t={\rm e}^{\sqrt{2\lambda}B_t-\lambda t},\ 
+                V_t={\rm e}^{-\sqrt{2\lambda}B_t-\lambda t}
+            \end{equation*}
+            都是鞅，那么对于$\alpha>0$（待定），
+            \begin{equation*}
+                M_t={\rm e}^{-\alpha \sqrt{2\lambda}}U_t+{\rm e}^{\alpha \sqrt{2\lambda}}V_t
+            \end{equation*}
+            也是鞅。同时，
+            \begin{equation*}
+                0\leqslant U_{t\wedge T}\leqslant {\rm e}^{ b\sqrt{2\lambda} },\ 
+                0\leqslant V_{t\wedge T}\leqslant {\rm e}^{ -a\sqrt{2\lambda} }
+            \end{equation*}
+            说明$(U_{t\wedge T})$和$(V_{t\wedge T})$一致可积，
+            进而$(M_{t\wedge T})$也一致可积，因此由Doob择停定理，
+            \begin{align*}
+                {\rm e}^{-\alpha \sqrt{2\lambda}}+{\rm e}^{\alpha \sqrt{2\lambda}}=\E[M_0]
+                =&\E[M_T]\\
+                =&{\rm e}^{-\alpha \sqrt{2\lambda}}\E[ U_t]+{\rm e}^{\alpha \sqrt{2\lambda}}\E[V_t ]\\
+                =&{\rm e}^{-\alpha \sqrt{2\lambda}}\E[ {\rm e}^{\sqrt{2\lambda}\cdot a-\lambda T}I_{ \{ T_a<T_b \} }+{\rm e}^{\sqrt{2\lambda}\cdot b-\lambda T}I_{ \{ T_a>T_b \} } ]\\
+                +&{\rm e}^{\alpha \sqrt{2\lambda}}\E[ {\rm e}^{-\sqrt{2\lambda}\cdot a-\lambda T}I_{ \{ T_a<T_b \} }+{\rm e}^{-\sqrt{2\lambda}\cdot b-\lambda T}I_{ \{ T_a>T_b \} } ]
+            \end{align*}
+            我们这里令$\alpha=\frac{1}{2}(a+b)$，就得到
+            \begin{align*}
+                \E[M_T]
+                =&\E[ {\rm e}^{\sqrt{2\lambda}\cdot \frac{a-b}{2}-\lambda T}I_{ \{ T_a<T_b \} }+{\rm e}^{\sqrt{2\lambda}\cdot \frac{b-a}{2}-\lambda T}I_{ \{ T_a>T_b \} } ]\\
+                +&\E[ {\rm e}^{\sqrt{2\lambda}\cdot \frac{b-a}{2}-\lambda T}I_{ \{ T_a<T_b \} }+{\rm e}^{\sqrt{2\lambda}\cdot \frac{a-b}{2}-\lambda T}I_{ \{ T_a>T_b \} } ]\\
+                =&\left({\rm e}^{\sqrt{2\lambda}\cdot \frac{a-b}{2}}+{\rm e}^{\sqrt{2\lambda}\cdot \frac{b-a}{2}}\right)\E[ {\rm e}^{-\lambda T} ]
+            \end{align*}
+            从而
+            \begin{equation*}
+                \E[ {\rm e}^{-\lambda T} ]=\frac{{\rm e}^{-\frac{a+b}{2} \sqrt{2\lambda}}+{\rm e}^{\frac{a+b}{2} \sqrt{2\lambda}}}{{\rm e}^{\sqrt{2\lambda}\cdot \frac{a-b}{2}}+{\rm e}^{\sqrt{2\lambda}\cdot \frac{b-a}{2}}}
+                =\frac{{\rm cosh}(\frac{a+b}{2}\sqrt{2\lambda})}{{\rm cosh}( \frac{b-a}{2}\sqrt{2\lambda} )}
+            \end{equation*}
+        \item 令
+            \begin{equation*}
+                N_t={\rm e}^{-\alpha \sqrt{2\lambda}}U_t-{\rm e}^{\alpha \sqrt{2\lambda}}V_t
+            \end{equation*}
+            取$\alpha=\frac{1}{2}(a+b)$，类似于上一问，可求得
+            \begin{equation*}
+                \E[ {\rm e}^{-\lambda T} I_{ \{ T=T_a \} }]=\frac{ {\rm sinh}( b\sqrt{2}\lambda ) }{ {\rm sinh}( (b-a)\sqrt{2\lambda} ) }
+            \end{equation*}
+        \item 利用2.中的结论，令$\lambda \rightarrow 0^+$，由DCT可得
+            \begin{equation*}
+                \P( T_a<T_b )=\fun{lim}{\lambda \rightarrow 0^+}\frac{ {\rm sinh}( b\sqrt{2}\lambda ) }{ {\rm sinh}( (b-a)\sqrt{2\lambda} ) }
+                =\frac{b}{b-a}
+            \end{equation*}
+    \end{enumerate}
+\end{solve}
+\begin{remark}
+    这个构造方法多少有点逆天了，看看就好。
+\end{remark}
+
+\begin{ex}[le gall(Exercise3.28)][le gall(Exercise3.28)]
+    $B=(B_t)_{t\geqslant 0}$是初值为$0$的布朗运动，$(\F_t=\sigma( B_s,s\in [0,t] ))$，
+    $a>0$，设
+    \begin{equation*}
+        \sigma_a=\fun{inf}{}\{ t\geqslant 0:B_t\leqslant t-a \}
+    \end{equation*}
+    \begin{enumerate}
+        \item 证明$\sigma_a$是停时，且$\sigma_a<+\infty$ a.s.
+        \item 利用合适的指数鞅，证明：$\forall \lambda \geqslant 0$，
+            \begin{equation*}
+                \E[ {\rm e}^{-\lambda \sigma_a} ]={\rm exp}\{ -a( \sqrt{1+2\lambda}-1 ) \}
+            \end{equation*}
+            （实际上，对于$\lambda \in [-\frac{1}{2},0]$结论也成立，证明涉及到分析的知识所以较为复杂，此处不作要求，但下一问仍可使用此结论。）
+        \item 对于$\mu\in \R$，令$M_t={\rm exp}\{ \mu B_t-\frac{1}{2}\mu^2 t \}$，证明停止鞅$M_{\sigma_a\wedge t}$是闭的当且仅当$\mu\leqslant 1$.
+        （提示：仿照\autoref{Relationship between Martingale and Stoped-Martingale}的过程，证明$\E[ M_\sigma ]=1\Rightarrow M_{\sigma_a\wedge t}$闭）
+    \end{enumerate}
+\end{ex}
+\begin{solve}
+    \begin{enumerate}
+        \item 注意到$\fun{liminf}{t\rightarrow\infty}(B_t-t)=-\infty$即可。
+        \item 先取$\mu\in \R$（待定），考虑如下的鞅
+            \begin{equation*}
+                M_t={\rm e}^{ \mu B_t-\frac{1}{2}\mu^2 t }
+            \end{equation*}
+            那么
+            \begin{equation*}
+                M_{t\wedge \sigma_a}\leqslant 
+                {\rm e}^{ \mu( (t\wedge \sigma_a)-a )-\frac{1}{2}\mu^2(t\wedge \sigma_a) }
+                ={\rm e}^{ -\mu a }{\rm e}^{ (-\frac{1}{2}\mu^2+\mu)(t\wedge \sigma_a) }
+            \end{equation*}
+            于是我们后面取$\mu$时需要确保$-\frac{1}{2}\mu^2+\mu\leqslant 0$，这样的话就有
+            \begin{equation*}
+                M_{t\wedge \sigma_a}\leqslant {\rm e}^{ -\mu a }
+            \end{equation*}
+            所以$(M_{t\wedge \sigma_a})$一致可积， 由Doob择停定理可得
+            \begin{equation*}
+                1=\E[ M_0 ]=\E[M_{\sigma_a}]
+                =\E[{\rm e}^{ \mu (\sigma-a)-\frac{1}{2}\mu^2 \sigma_a }]
+            \end{equation*}
+            这就说明
+            \begin{equation*}
+                \E[{\rm e}^{ (-\frac{1}{2}\mu^2+\mu) \sigma_a }]
+                ={\rm e}^{\mu a}
+            \end{equation*}
+            我们取$\mu$使得
+            \begin{equation*}
+                -\frac{1}{2}\mu^2+\mu=-\lambda\leqslant 0
+            \end{equation*}
+            则得到结论。
+        \item 考虑
+            \begin{equation*}
+                \E[M_{\sigma_a}]=\E[ {\rm e}^{ -(\frac{1}{2}\mu^2-\mu)\sigma_a-\mu_a } ]
+                ={\rm e}^{-\mu a}\E[{\rm e}^{ -(\frac{1}{2}\mu^2-\mu)\sigma_a}]
+            \end{equation*}
+            注意到其中的$\frac{1}{2}\mu^2-\mu\geqslant -\frac{1}{2}$，套用上一问结论可得
+            \begin{equation*}
+                \E[M_{\sigma_a}]={\rm e}^{-\mu a}\cdot {\rm e}^{-a( |\mu-1|-1 )}={\rm e}^{-a( |\mu-1|-1+\mu )}
+            \end{equation*}
+            所以$\E[M_{\sigma_a}]=1\Leftrightarrow \mu\leqslant 1$. 如果$M_{t\wedge \sigma_a}$闭，那么
+            \begin{equation*}
+                1=\E[ M_{0\wedge \sigma_a} ]=\E[ M_{\infty\wedge \sigma_a} ]=\E[ M_{\sigma_a} ]
+            \end{equation*}
+            因此，我们只剩下证明$\E[ M_\sigma ]=1\Rightarrow M_{\sigma_a\wedge t}$闭，我们希望证明：$\forall t\geqslant 0$，
+            \begin{equation*}
+                M_{t\wedge \sigma_a}=\E[ M_{\sigma_a}|\F_t ]
+            \end{equation*}
+            首先，$M_{t\wedge \sigma_a}\in \F_{t\wedge \sigma_a}\subset \F_t$，故只需证$\forall A\in \F_t$，
+            \begin{equation*}
+                \E[ M_{t\wedge \sigma_a}I_A ]=\E[ M_{\sigma_a}I_A ]
+            \end{equation*}
+            也就是
+            \begin{equation*}
+                \E[ M_{t\wedge \sigma_a}I_{A\cap \{ \sigma_a\geqslant t \}} ]=\E[ M_{\sigma_a}I_{A\cap \{ \sigma_a\geqslant t \}} ]\tag*{$(\star)$}
+            \end{equation*}
+            然后我们考虑$M_t$，它是一个非负鞅（进而是非负上鞅），
+            套用非负上鞅的择停定理（\autoref{Non-negative Supermartingale Optional S.T. Theorem}）可得
+            \begin{equation*}
+                M_{t\wedge \sigma_a}\geqslant \E[ M_{\sigma_a}|\F_{t\wedge \sigma_a} ]
+            \end{equation*}
+            但因为$\E[ M_\sigma ]=1$，我们发现
+            \begin{equation*}
+                \E[ M_{t\wedge \sigma_a} ]=\E[M_{0\wedge \sigma_a}]=1=\E[ M_\sigma ]=\E[\E[ M_{\sigma_a}|\F_{t\wedge \sigma_a} ]]
+            \end{equation*}
+            因此
+            \begin{equation*}
+                M_{t\wedge \sigma_a}= \E[ M_{\sigma_a}|\F_{t\wedge \sigma_a} ]
+            \end{equation*}
+            容易验证$A\cap \{ \sigma_a\geqslant t \}\in \F_{t\wedge \sigma_a}$，根据条件期望的定义可得$(\star)$式成立。
+    \end{enumerate}
+\end{solve}
+
+\begin{ex}[le gall(Exercise3.29.1-2)][le gall(Exercise3.29.1-2)]
+    $(Y_t)$是一致可积鞅，且具有右连续轨道，$Y_0=0$ a.s.，设$Y_\infty=\fun{lim}{t\rightarrow \infty}Y_t$，
+    固定$p\geqslant 1$，我们称鞅$Y$满足性质(P)是指：
+    存在常数$C$使得对于任意停时$T$都有
+    \begin{equation*}
+        \E[ |Y_\infty-Y_T|^p |\F_T ]\leqslant C
+    \end{equation*}
+    \begin{enumerate}
+        \item 证明如果$Y_\infty$有界，则$Y$满足性质(P).
+        \item $B=(B_t)_{t\geqslant 0}$是初值为$0$的布朗运动，$(\F_t=\sigma( B_s,s\in [0,t] ))$，
+            证明鞅$Y_t=B_{t\wedge 1}$满足性质(P).
+    \end{enumerate}
+\end{ex}
+\begin{proof}
+    \begin{enumerate}
+        \item 不妨设$|Y_\infty|<C$，$(Y_t)$一致可积，于是$Y_t=\E[Y_\infty|\F_t]$，那么
+            \begin{equation*}
+                |Y_t|=|\E[Y_\infty|\F_t]|
+                \leqslant \E[|Y_\infty||\F_t]<C,\ \forall t\geqslant 0
+            \end{equation*}
+            从而$|Y_T|<C$. 那么我们就得到
+            \begin{equation*}
+                \E[ |Y_\infty-Y_T|^p |\F_T ]
+                \leqslant \E[ ( |Y_\infty|+|Y_T| )^p|\F_T ]\leqslant (2C)^p
+            \end{equation*}
+        \item 先考虑$p=1$的情形，任取$A\in \F_T$，
+            \begin{equation*}
+                \E[ \E[ |Y_\infty-Y_T|\ |F_T ]I_A ]
+                =\E[ |Y_\infty-Y_T|I_A ]\leqslant \E[ |Y_\infty|I_A ]+\E[ |Y_T|I_A ]
+            \end{equation*}
+            同时由一致可积鞅的择停定理，$Y_T=\E[ Y_\infty|\F_T ]$，因此
+            \begin{align*}
+                \E[ |Y_T|I_A ]&=\E[ |\E[ |Y_\infty-Y_T|]|\ I_A ]\\
+                &\leqslant \E[ \E[ |Y_\infty|\ |\F_T ]I_A ]\\
+                &=\E[ |Y_\infty|I_A ]
+            \end{align*}
+            从而
+            \begin{equation*}
+                \E[ \E[ |Y_\infty-Y_T|\ |F_T ]I_A ]\leqslant 2\E[ |Y_\infty|I_A ]\leqslant 2\E[ |Y_\infty|]
+            \end{equation*}
+            取$C=2\E[ |Y_\infty|]$即可。然后我们考虑$p>1$，根据Lp最大值不等式，
+            \begin{equation*}
+                \E[ \fun{sup}{t\geqslant 0}|Y_t|^p ]
+                \leqslant \E[ \fun{sup}{0\leqslant t\leqslant 1} |B_t|^p ]
+                \leqslant ( \frac{p}{p-1} )^p \E[ |B_1|^p ]
+            \end{equation*}
+            因此$\fun{sup}{t\geqslant 0}|Y_t|^p\in L^p$.
+            因此，对于任意的$A\in \F_T$，
+            \begin{align*}
+                \E[ \E[ |Y_\infty-Y_T|^p|\F_T ]I_A ]
+                &=\E[ |Y_\infty-Y_T|^pI_A ]\\
+                &\leqslant \E[ (|Y_\infty|+|Y_T|)^pI_A ]\\
+                &=\E[ (2\fun{sup}{t\geqslant 0}|Y_t|)^pI_A ]\\
+                &=2^p\E[ (\fun{sup}{t\geqslant 0}|Y_t|)^pI_A ]\\
+                &\leqslant 2^p\E[ \fun{sup}{t\geqslant 0}|Y_t|^p ]\leqslant 2^p(\frac{p}{p-1})^p\E[ |B_1|^p ]<+\infty
+            \end{align*}
+            那么由$A$的任意性，
+            \begin{equation*}
+                \E[ |Y_\infty-Y_T|^p|\F_T ]\leqslant 2^p(\frac{p}{p-1})^p\E[ |B_1|^p ]
+            \end{equation*}
+            后者是一个固定的常数，结论得证。
+    \end{enumerate}
+\end{proof}
+
+最后放两道去年期末题。第一道的解法应该是类比于\autoref{Cont-Martingale Convergence Theorem}
+的证明，第二道则是对\autoref{le gall(Exercise3.28)}的改编。
+\begin{ex}[2023SPFinal4.]
+    $(X_t)$是非负上鞅，且具有右连续轨道，证明：
+    存在$X_\infty\in L^1$使得$X_t\ra{\rm a.s.}X_\infty$，
+    并且$\E[X_\infty|\F_t]\leqslant X_t$.
+\end{ex}
+\begin{solve}
+    取$\R_+$的可数稠密子集$D$，对于$\forall t\in D$，有理数$a<b$，
+    由离散鞅的上穿次数估计不等式：
+    \begin{equation*}
+        \E[M_{a,b}^X(D\cap [0,t])]
+        \leqslant \frac{1}{b-a}\E[ (X_t-a)^- ]
+    \end{equation*}
+    由于$X_t$非负，$\E[ (X_t-a)^- ]\leqslant \E[ |a| ]=|a|$，所以
+    \begin{equation*}
+        \E[M_{a,b}^X(D\cap [0,t])]\leqslant \frac{|a|}{b-a}<+\infty
+    \end{equation*}
+    那么由Fatou引理，
+    \begin{equation*}
+        \E[M_{a,b}^X(D)]\leqslant \fun{liminf}{D\ni t\rightarrow\infty} \E[M_{a,b}^X(D\cap [0,t])]\leqslant \frac{|a|}{b-a}<+\infty
+    \end{equation*}
+    从而$\fun{lim}{D\ni t\rightarrow\infty}X_t$ a.s.存在。现在将收敛性扩展到
+    $\R_+$上，对于$\forall \varepsilon>0$，存在$N$使得$D\ni t\geqslant N$时，
+    \begin{equation*}
+        |X_t-X_\infty|\leqslant \varepsilon
+    \end{equation*}
+    那么，对于任意的$s\geqslant N$，（$D$稠密）取$D\ni s_n\searrow s$，由右连续性得到
+    \begin{equation*}
+        |X_s-X_\infty|=\fun{lim}{n\rightarrow\infty}|X_{s_n}-X_\infty|
+        \leqslant \varepsilon
+    \end{equation*}
+    这就说明了
+    \begin{equation*}
+        X_\infty=\fun{lim}{t\rightarrow\infty}X_t{\rm\ a.s.}\text{存在}
+    \end{equation*}
+
+    由Fatou引理，
+    \begin{equation*}
+        \E[|X_\infty|]\leqslant \fun{liminf}{D\ni t\rightarrow\infty}\E[ |X_t| ]<+\infty
+    \end{equation*}
+    因此$X_\infty\in L^1$.
+
+    最后，考虑常数$t<s$，根据$X$是上鞅
+    以及条件期望的Fatou引理，
+    \begin{equation*}
+        \E[ X_\infty|\F_t ]
+        \leqslant \fun{liminf}{s\rightarrow\infty}\E[ X_s|\F_t ]
+        \leqslant X_t
+    \end{equation*}
+    （或者考虑常数$t$和$\infty$作为停时利用非负上鞅的择停定理。）
+\end{solve}
+
+\begin{ex}[2023SPFinal.5]
+    $B=(B_t)_{t\geqslant 0}$是布朗运动，设停时$T=\fun{inf}{}\{ t\geqslant 0:B_t\geqslant 1-2t \}$，
+    \begin{enumerate}[(1).]
+        \item 证明$T<+\infty$ a.s.
+        \item 求$\E[ {\rm e}^{-\lambda T} ]$.
+    \end{enumerate}
+\end{ex}
+\begin{proof}
+    (1).设$T_1=\fun{inf}{}\{ t\geqslant 0:B_t\geqslant 1\}$，则$\{T_1<+\infty\}\subset \{T<+\infty\}$，
+    由于$T_1<+\infty$ a.s.，所以$T<+\infty$ a.s.
+
+    (2).对于任意的$\theta\in \R$，令
+    \begin{equation*}
+        X_t={\rm exp}\left\{ \theta B_t-\frac{1}{2}\theta^2 t \right\}
+    \end{equation*}
+    容易验证$\{X_t,t\geqslant 0\}$关于$\F_t=\sigma(B_s,0\leqslant s\leqslant t)$是一个鞅，
+    我们令$\theta>0$，这确保了
+    \begin{equation*}
+        0\leqslant X_{t\wedge T}
+        ={\rm exp}\left\{ \theta(B_{t\wedge T})-\frac{1}{2}\theta^2 T \right\}
+        \leqslant {\rm exp}\left\{ \theta(1-2T)-\frac{1}{2}\theta^2 T \right\}
+        = {\rm exp}\left\{ \theta-(\frac{1}{2}\theta^2+2\theta) T \right\}\leqslant {\rm exp}\{ \theta \}
+    \end{equation*}
+    一致有界从而一致可积，由择停定理可知
+    \begin{equation*}
+        1=\E[X_0]=\E[X_T]={\rm e}^\theta \E[ {\rm e}^{-(\frac{1}{2}\theta^2+2\theta) T} ]
+    \end{equation*}
+
+    我们取$\theta=\sqrt{2\lambda +4}-2>0$，就得到
+    \begin{equation*}
+        \E[ {\rm exp}\{ -\lambda T \} ]={\rm e}^{-\theta}={\rm e}^{ 2-\sqrt{2\lambda +4} }
+    \end{equation*}
+\end{proof}
+
+\if{0}{
+本小节用到的一个结论：
+\begin{lemma}
+    $B=(B_t)_{t\geqslant 0}$是布朗运动，$b>0$，
+    设停时
+    \begin{equation*}
+        T=\fun{inf}{}\{ t\geqslant 0:|B_t|=b \}
+    \end{equation*}
+    那么$B_T$与$T$相互独立。
+\end{lemma}
+\begin{proof}
+    设$B_t'=-B_t$，是一个新的布朗运动，那么
+    \begin{align*}
+        \P(B_T=b|T>u)
+        &=\P( B_T=b|\forall t\in [0,u],|B_t|<b )\\
+        &=\P( -B_T=-b|\forall t\in [0,u],|-B_t|<b )\\
+        &=\P( B_T'=-b|\forall t\in [0,u],|B_t'|<b )\\
+        &=\P( B_T=-b|\forall t\in [0,u],|B_t|<b )\\
+        &=\P( B_T=-b|T>u )=\frac{1}{2}=\P(B_T=b)
+    \end{align*}
+    所以$B_T$和$T$相互独立。
+\end{proof}
+\item 根据本小节给出的引理可知$B_T$与$T$独立，然后我们设
+            \begin{equation*}
+                U_t={\rm exp}\{ \sqrt{2\lambda}B_t-\lambda t \}
+            \end{equation*}
+            \begin{equation*}
+                V_t={\rm exp}\{ -\sqrt{2\lambda}B_t-\lambda t \}
+            \end{equation*}
+            \begin{equation*}
+                M_t=U_t+V_t
+            \end{equation*}
+            易证$M_{t\wedge T}$是一致可积鞅，因此
+            \begin{equation*}
+                \E[M_{T}]=\E[M_0]=2
+            \end{equation*}
+            同时
+            \begin{align*}
+                \E[M_T]
+                &=\E[{\rm exp}\{ \sqrt{2\lambda}B_{T}-\lambda T \}]+\E[{\rm exp}\{ -\sqrt{2\lambda}B_{T}-\lambda T \}]\\
+                &=\E[ {\rm exp}^{-\lambda T} ]\E[ {\rm exp}\{ \sqrt{2\lambda}B_T \}+{\rm exp}\{ -\sqrt{2\lambda}B_T \} ]\\
+                &=\E[ {\rm exp}^{-\lambda T} ]({\rm exp}\{ \sqrt{2\lambda}b \}+{\rm exp}\{ -\sqrt{2\lambda}b \})
+            \end{align*}
+            所以
+            \begin{equation*}
+                \E[ {\rm exp}^{-\lambda T} ]=\frac{2}{{\rm exp}\{ \sqrt{2\lambda}b \}+{\rm exp}\{ -\sqrt{2\lambda}b \}}=\frac{1}{{\rm cosh}(b\sqrt{2\lambda})}
+            \end{equation*}
+}\fi

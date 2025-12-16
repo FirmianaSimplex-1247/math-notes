@@ -12,21 +12,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install latexmk (TeX Live via apt)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y texlive-full latexmk
-
       - name: Compile Functional Analysis
-        run: |
-          cd tex/Functional_Analysis
-          latexmk -xelatex -f -interaction=nonstopmode -file-line-error Functional_Analysis.tex
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: Functional_Analysis.tex
+          working_directory: tex/Functional_Analysis
+          latexmk_use_xelatex: true
+          args: -f -interaction=nonstopmode -file-line-error
+          cache: true
 
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
         with:
           name: Functional-Analysis-PDF
           path: tex/Functional_Analysis/Functional_Analysis.pdf
+          if-no-files-found: error
 
       - name: Upload build logs
         uses: actions/upload-artifact@v4
@@ -34,6 +34,9 @@ jobs:
           name: Functional-Analysis-Logs
           path: |
             tex/Functional_Analysis/Functional_Analysis.log
+            tex/Functional_Analysis/Functional_Analysis.fls
+            tex/Functional_Analysis/Functional_Analysis.fdb_latexmk
+            tex/Functional_Analysis/Functional_Analysis.bcf
             tex/Functional_Analysis/Functional_Analysis.out
             tex/Functional_Analysis/Functional_Analysis.toc
-            tex/Functional_Analysis/Functional_Analysis.bcf
+          if-no-files-found: ignore

@@ -26,6 +26,38 @@
 
 \begin{document}
 
-\input{content.tex}
+% 如果外层没有定义 \KBStandalone，则默认当作“独立书”
+\providecommand{\KBStandalone}{1}
+
+\ifnum\KBStandalone=1
+  \chapterimage{empty.jpg} % 目录封面
+  \maketitle
+  \input{chapter/preface.tex} % 前言
+
+  \frontmatter
+  \thispagestyle{fancy}
+  \tableofcontents
+  \mainmatter
+\fi
+
+% 正文
+\mainmatter	
+	\chapterimage{empty.jpg}
+	\input{chapter/DiscreteMartingale.tex}
+
+	\chapterimage{empty.jpg}
+	\input{chapter/DiscreteMarkovProcess.tex}
+
+	\chapterimage{empty.jpg}
+	\input{chapter/PoissonProcess.tex}
+
+	\chapterimage{empty.jpg}
+	\input{chapter/BrownianMotion.tex}
+
+	\chapterimage{empty.jpg}
+	\input{chapter/ContinousMartingale.tex}
+
+	\chapterimage{empty.jpg}
+	\input{chapter/ContinousMarkovProcess.tex}
 
 \end{document}

@@ -161,8 +161,6 @@ jobs:
     needs: [plan, build]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
       - name: Download all PDF artifacts
         uses: actions/download-artifact@v4
         with:
@@ -174,26 +172,18 @@ jobs:
           set -euo pipefail
           mkdir -p dist
           find dl -name "*.pdf" -print -exec cp -f {} dist/ \;
-          echo "Collected PDFs:"
           ls -lah dist
           test -n "$(ls -A dist 2>/dev/null)"
 
-      - name: Create or update release, upload assets
+      - name: Publish GitHub Release (upload PDFs)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          name: ${{ inputs.title }}
+          body: ${{ inputs.body }}
+          files: dist/*.pdf
+          fail_on_unmatched_files: true
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          TAG="${{ inputs.tag }}"
-          TITLE="${{ inputs.title }}"
-          BODY="${{ inputs.body }}"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "Release $TAG exists; overwrite assets."
-          else
-            gh release create "$TAG" --title "$TITLE" --notes "$BODY"
-          fi
 
-          for f in dist/*.pdf; do
-            gh release upload "$TAG" "$f" --clobber
-          done
